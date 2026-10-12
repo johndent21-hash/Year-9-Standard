@@ -12,6 +12,7 @@
 //     ex: { stem, parts: [..] }  exAns: [..]   the WE DO example (a part is text, { t, fig } or { t, draw })
 //     hint: 'the method, in one line'          shown at the top of the YOU DO box
 //     rounds: [{ text, items, ans, cols?, work? }]   as in lib/drill.js: work gives each question a working box
+//     exTall: true   taller WE DO boxes, for examples with long working
 //   }
 //   mixed: [{ q, a, from, work? }]   optional (Year 9 standard series): a Mixed practice box at the end of the Medium
 //          page, as in the Year 7 booklets. Today's skill mixed with earlier lessons; from tags each question with
@@ -20,6 +21,16 @@ const { mbPage, banner, youDo } = require('./layout');
 const { exBlock, roundHtml, hint, withFig } = require('./lesson-blend').parts;
 
 const LEVEL_WORD = ['', 'Easy', 'Medium'];
+
+// Text is printed with a no-break space between a number and its unit ('4 m') and inside a spaced number
+// ('2 500 000'), so a line never breaks between them. Pictures ({ fig }) are left alone.
+const UNITS = 'mm|cm|m|km|μm|Mm|mg|g|kg|t|mL|L|kL|ML|ms|μs|s|min|h|B|kB|MB|GB|TB|°C|cm²|m²|mm²|km²|cm³|m³|mm³';
+const NB = '\u00a0';
+const unitGap = new RegExp(`(\\d) (?=(?:${UNITS})(?![A-Za-z²³]))`, 'g');
+const keep = (x) => (typeof x === 'string' ? x.replace(/(\d) (?=\d{3}(?!\d))/g, `$1${NB}`).replace(unitGap, `$1${NB}`)
+  : x && typeof x === 'object' && typeof x.t === 'string' ? { ...x, t: keep(x.t) } : x);
+const keepLevel = (L) => ({ ...L, hint: keep(L.hint), exAns: (L.exAns || []).map(keep), ex: { ...L.ex, stem: keep(L.ex.stem), parts: L.ex.parts.map(keep) },
+  rounds: L.rounds.map((x) => ({ ...x, text: keep(x.text), items: x.items.map(keep), ans: x.ans.map(keep) })) });
 const qn = (n) => `${n} question${n === 1 ? '' : 's'}`;
 const total = (rounds) => rounds.reduce((t, x) => t + x.items.length, 0);
 
@@ -52,10 +63,12 @@ const mixedBox = (list) => {
 
 const level = (lvl, L) => `
   ${banner(lvl, `${LEVEL_WORD[lvl]} · ${qn(total(L.rounds))}`)}
-  ${exBlock(lvl, L.ex, `parts-${L.ex.parts.length}`)}
+  ${exBlock(lvl, L.ex, `parts-${L.ex.parts.length}${L.exTall ? ' tall-boxes' : ''}`)}
   ${practice(lvl, L)}`;
 
-module.exports = (spec) => (chapter) => {
+module.exports = (raw) => (chapter) => {
+  const spec = { ...raw, li: keep(raw.li), sc: raw.sc.map(keep), easy: keepLevel(raw.easy), medium: keepLevel(raw.medium),
+    mixed: raw.mixed && raw.mixed.map((m) => ({ ...m, q: keep(m.q), a: keep(m.a) })) };
   ['easy', 'medium'].forEach((k) => {
     const L = spec[k];
     if (!L.exAns || L.exAns.length !== L.ex.parts.length) throw new Error(`${spec.code} ${k}: the example has ${L.ex.parts.length} parts but ${L.exAns ? L.exAns.length : 0} answers`);

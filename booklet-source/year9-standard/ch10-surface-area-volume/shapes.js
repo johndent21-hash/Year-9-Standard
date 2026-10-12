@@ -15,9 +15,10 @@ const T = (x, y, s, o = {}) => {
   EXT.push([x0, y - size * 0.8, x0 + w, y + size * 0.25]);
   return text(f(x), f(y), s, { size: 2.8, anchor: 'middle', ...o });
 };
-// The picture: the box 0..w by 0..h, grown to hold the labels placed since the last picture (plus a little air).
+// The picture: the box 0..w by 0..h, grown to hold the labels placed since the last picture.
 const svg = (w, h, body) => {
-  const xs = [0, w, ...EXT.flatMap((e) => [e[0] - 0.8, e[2] + 0.8])], ys = [0, h, ...EXT.flatMap((e) => [e[1] - 0.6, e[3] + 0.6])];
+  // -0.5 and + 0.5: a little air round the picture, so a line on its edge is never cut in half
+  const xs = [-0.5, w + 0.5, ...EXT.flatMap((e) => [e[0] - 0.8, e[2] + 0.8])], ys = [-0.5, h + 0.5, ...EXT.flatMap((e) => [e[1] - 0.6, e[3] + 0.6])];
   EXT = [];
   const x0 = Math.min(...xs), y0 = Math.min(...ys), W = f(Math.max(...xs) - x0), H = f(Math.max(...ys) - y0);
   return `<svg class="graph" viewBox="${f(x0)} ${f(y0)} ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="aspect-ratio:${W}/${H}; --w:${W}mm; --ar:${W}/${H}">${body}</svg>`;
