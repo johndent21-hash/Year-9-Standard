@@ -47,7 +47,7 @@ const sheet = ({ r, h, labL, hLab, maxW, maxH }) => {
 const curved = (r, h) => 2 * PI * r * h;
 const SA = (r, h, ends = 2) => ends * area(r) + curved(r, h);
 // (a no-break space after the thousands, so 1 187.5 never splits across two lines)
-const A = (v, unit) => u(v, `${unit}²`, 1).replace(/(\d) (?=\d{3}\b)/g, '$1\u00a0');
+const A = (v, unit, dp = 1) => u(v, `${unit}²`, dp).replace(/(\d) (?=\d{3}\b)/g, '$1\u00a0');
 const L = (v, unit) => `${num(v)} ${unit}`;
 const ENDS = { closed: 2, lid: 1, open: 0 };
 const CAPTION = { closed: 'Closed', lid: 'No lid', open: 'Open both ends' };
@@ -64,7 +64,7 @@ const EX1 = { r: 3, h: 8 };
 const EX2 = [cylQ(4, 10, 'cm', { kind: 'lid', t: 'No lid', box: EXBOX }), cylQ(7, 20, 'cm', { d: true, t: 'Closed', box: EXBOX })];
 const CAN = { r: 3.5, h: 11 };
 const TANK = { d: 2, h: 1.5, cost: 12 };
-const SOUP = { r: 4, h: 11 };
+const ROLLER = { d: 6, len: 20, turns: 10 };
 const tankSA = SA(TANK.d / 2, TANK.h);
 
 module.exports = {
@@ -74,7 +74,7 @@ module.exports = {
   easy: {
     ex: { stem: 'Find each area, correct to one decimal place.', parts: [
       { t: 'Area of the top', fig: cyl({ ...EX1, lab: '3 cm', hLab: '8 cm', shade: 'top', ...EXBOX }) },
-      { t: 'Curved surface, unrolled', fig: sheet({ ...EX1, labL: 'length = 2πr', hLab: '8 cm', ...EXBOX }) },
+      { t: 'Curved surface of a, unrolled', fig: sheet({ ...EX1, labL: 'length = 2πr', hLab: '8 cm', ...EXBOX }) },
       'Total surface area of the cylinder in part a',
       cylQ(5, 4, 'm', { d: true, t: 'Total surface area', box: EXBOX })[0]] },
     exAns: [`A = π × 3² = ${A(area(3), 'cm')}`, `A = 2 × π × 3 × 8 = ${A(curved(3, 8), 'cm')}`, `SA = 2 × π × 3² + 2 × π × 3 × 8 = ${A(SA(3, 8), 'cm')}`,
@@ -88,7 +88,7 @@ module.exports = {
     ],
   },
   medium: {
-    ex: { stem: 'Correct to one decimal place. First decide which surfaces are there.', parts: [EX2[0][0], EX2[1][0],
+    ex: { stem: 'Find each area, correct to one decimal place. List the surfaces first.', parts: [EX2[0][0], EX2[1][0],
       { t: 'The label', fig: cyl({ ...CAN, lab: '3.5 cm', hLab: '11 cm', shade: 'side', ...EXBOX }) },
       'A pipe open at both ends has r = 2 cm and length 50 cm. Find its outside area.'] },
     exAns: [`one end only: SA = π × 4² + 2 × π × 4 × 10 = ${EX2[0][1]}`, `r = 14 ÷ 2 = 7 cm; SA = 2 × π × 7² + 2 × π × 7 × 20 = ${EX2[1][1]}`,
@@ -98,21 +98,21 @@ module.exports = {
       figRound('find the total surface area, correct to one decimal place. Some are open.', [
         cylQ(5, 12, 'cm', { d: true, kind: 'lid' }), cylQ(4, 3, 'm', { d: true, t: 'Closed' }), cylQ(3, 20, 'cm', { d: true, kind: 'open' }), cylQ(12, 9, 'cm', { d: true, kind: 'lid' })]),
       problems('solve each problem. Show your working.', [
-        [keep(`A closed water tank is a cylinder with diameter ${L(TANK.d, 'm')} and height ${L(TANK.h, 'm')}. Paint costs $${TANK.cost} per m². Find the cost to paint it.`),
-          `SA = 2 × π × 1² + 2 × π × 1 × 1.5 = ${A(tankSA, 'm')}; cost = ${num(tankSA, 3)}… × $${TANK.cost} = $${(tankSA * TANK.cost).toFixed(2)} ($${(+tankSA.toFixed(1) * TANK.cost).toFixed(2)} using ${A(tankSA, 'm')})`],
-        [keep(`A soup can has r = ${L(SOUP.r, 'cm')} and h = ${L(SOUP.h, 'cm')}. Its label covers the curved surface. Find the label’s area, to the nearest cm².`),
-          `2 × π × 4 × 11 = ${u(curved(SOUP.r, SOUP.h), 'cm²', 0)}`],
+        [keep(`A closed tank is a cylinder, d = ${L(TANK.d, 'm')}, h = ${L(TANK.h, 'm')}. Paint costs $${TANK.cost} per m². Cost to paint it?`),
+          `r = 2 ÷ 2 = 1 m; SA = 2 × π × 1² + 2 × π × 1 × 1.5 = ${A(tankSA, 'm')}; cost = ${num(tankSA, 3)}… × $${TANK.cost} = $${(tankSA * TANK.cost).toFixed(2)} ($${(+tankSA.toFixed(1) * TANK.cost).toFixed(2)} using ${A(tankSA, 'm')})`],
+        [keep(`A paint roller, d = ${L(ROLLER.d, 'cm')}, is ${L(ROLLER.len, 'cm')} long. Find the area it paints in ${ROLLER.turns} turns, to the nearest cm².`),
+          `r = 6 ÷ 2 = 3 cm; one turn = 2 × π × 3 × 20 = ${A(curved(ROLLER.d / 2, ROLLER.len), 'cm')}; ${ROLLER.turns} turns = ${A(ROLLER.turns * curved(ROLLER.d / 2, ROLLER.len), 'cm', 0)}`],
       ]),
     ],
   },
   mixed: mix(...[
-    ['Curved surface area when r = 5 cm, h = 7 cm?', A(curved(5, 7), 'cm'), '10.9'],
+    ['Curved surface area when d = 10 cm, h = 7 cm?', A(curved(10 / 2, 7), 'cm'), '10.9'],
     ['Find the area of a circle with diameter 12 cm.', A(area(6), 'cm'), '10.7'],
     ['Closed tin, r = 6 cm, h = 10 cm. Surface area?', A(SA(6, 10), 'cm'), '10.9'],
     ['Surface area of a 5 cm by 4 cm by 2 cm box?', u(2 * (5 * 4 + 5 * 2 + 4 * 2), 'cm²'), '10.8'],
-    ['Bucket (no lid), d = 30 cm, h = 25 cm. Area?', A(SA(15, 25, 1), 'cm'), '10.9'],
+    ['Bucket (no lid), d = 30 cm, h = 25 cm. SA?', A(SA(15, 25, 1), 'cm'), '10.9'],
     ['Convert 1.5 m to cm.', u(conv(1.5, 'm', 'cm'), 'cm'), '10.1'],
     ['Curved surface = 314.2 cm², h = 10 cm. Find r.', `${u(314.2 / (2 * PI * 10), 'cm', 0)} (r = 314.2 ÷ (2 × π × 10))`, '10.9'],
-    ['Which has more curved surface: r = 2 cm, h = 6 cm or r = 3 cm, h = 4 cm?', `neither: both are 2 × π × 12 = ${A(curved(2, 6), 'cm')}`, '10.9'],
+    ['Which has more curved surface: r = 2 cm, h = 6 cm or r = 3 cm, h = 4 cm?', `neither: 2 × π × 2 × 6 = 2 × π × 3 × 4 = ${A(curved(2, 6), 'cm')}`, '10.9'],
   ].map(([q, ...rest]) => [keep(q), ...rest])),
 };

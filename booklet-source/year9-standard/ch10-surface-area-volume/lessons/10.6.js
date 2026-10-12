@@ -66,11 +66,13 @@ const biteQuad = (l, w, unit) => {
 };
 
 const EX2 = { l: 10, w: 6 };
+// A Mixed practice question kept from breaking between a number and its unit ('18.85 m') or around ' = '
+const keep = (s) => s.replace(/ = /g, '\u00a0=\u00a0').replace(/(\d) (?=(mm|cm|m|km)\b)/g, '$1\u00a0');
 
 module.exports = {
   code: '10.6', title: 'Circumference and arc length',
   li: 'find circumferences, arc lengths and perimeters of curved shapes.',
-  sc: ['use C = πd or C = 2πr to find a circumference', `find an arc length: ${F('θ', 360)} × 2πr`, 'find the perimeter of semicircles and sectors'],
+  sc: ['use C = πd or C = 2πr to find a circumference', `find an arc length: ${F('θ', 360)} × 2πr`, 'find the perimeter of sectors and composite shapes'],
   easy: {
     ex: { stem: 'Find each circumference or perimeter, correct to one decimal place.', parts: [
       { t: 'Circumference', fig: part({ R: 9.5, lab: '5 cm' }) }, { t: 'Circumference', fig: part({ R: 9.5, lab: '12 m', show: 'd' }) },
@@ -98,7 +100,7 @@ module.exports = {
       figRound('find the perimeter of each shape, correct to one decimal place.', [track(8, 4, 'cm'), archway(6, 5, 'm'), biteSemi(10, 4, 'm'), biteQuad(9, 5, 'cm')]),
     ],
   },
-  mixed: mix(
+  mixed: mix(...[
     ['Find the circumference when r = 9 cm.', d1(circ(9), 'cm'), '10.6'],
     ['Perimeter of a rectangle 7.5 m by 4 m?', u(2 * (7.5 + 4), 'm'), '10.4'],
     ['A wheel of diameter 64 cm turns 100 times. How far, in m?', d1(conv(PI * 64 * 100, 'cm', 'm'), 'm'), '10.6'],
@@ -107,5 +109,5 @@ module.exports = {
     ['A kite has diagonals of 6 m and 5 m. Area?', u((6 * 5) / 2, 'm²'), '10.5'],
     ['Find the arc length: 120° sector, r = 3 m.', d1(arcLen(120, 3), 'm'), '10.6'],
     ['Perimeter of a semicircle with d = 20 cm?', d1((PI * 20) / 2 + 20, 'cm'), '10.6'],
-  ),
+  ].map(([q, ...rest]) => [keep(q), ...rest])),
 };

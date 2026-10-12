@@ -136,9 +136,9 @@ module.exports = {
     ['Find the circumference of a circle, d = 10 m.', u(circ(10 / 2), 'm', 1), '10.6'],
     ['A sprinkler waters a circle of radius 4.5 m. Area watered?', A(area(4.5), 'm'), '10.7'],
     ['A rhombus has diagonals 8 m and 5 m. Area?', u((8 * 5) / 2, 'm²'), '10.5'],
-    ['A 30 cm pizza is cut into 8 equal slices. Area of one slice?', `${A(area(30 / 2) / 8, 'cm')} (r = 15 cm; each slice is a ${360 / 8}° sector)`, '10.7'],
-    ['Find the percentage error of a 4 cm radius.', `${num(pctErr(meas('4 cm').e, 4))}%`, '10.3'],
-    ['A circle’s area is 153.9 cm². Find its radius.', `${u(Math.sqrt(153.9 / PI), 'cm', 0)} (r² = 153.9 ÷ π ≈ ${num(153.9 / PI, 0)})`, '10.7'],
-    ['A 10 m square lawn has a round pond of radius 2 m. Lawn area?', A(10 * 10 - area(2), 'm'), '10.7'],
+    ['A pizza of diameter 30 cm is cut into 8 equal slices. Area of one slice?', `${A(area(30 / 2) / 8, 'cm')} (r = 15 cm; each slice is a ${360 / 8}° sector)`, '10.7'],
+    ['A radius is 4 cm, to the nearest cm. Percentage error?', `${num(pctErr(meas('4 cm').e, 4))}%`, '10.3'],
+    ['A circle has area 153.9 cm². Find its radius (÷\u00a0π,\u00a0then\u00a0√).', `${u(Math.sqrt(153.9 / PI), 'cm', 0)} (r² = 153.9 ÷ π ≈ ${num(153.9 / PI, 0)})`, '10.7'],
+    ['A 10 m by 10 m lawn has a round pond of radius 2 m. Lawn area?', A(10 * 10 - area(2), 'm'), '10.7'],
   ),
 };
