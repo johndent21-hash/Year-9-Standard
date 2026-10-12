@@ -5,11 +5,13 @@
 // middle of its side face. These fill the cell (maxW, maxH: the most room a picture may take, in mm), put each label
 // beside its own edge, clear of every line and every other label, and can show a box with no lid. A triangular prism's
 // slope label goes beyond the back edge of the sloping face, as the hidden edges cross that face near the front.
-const { u, num, conv, area, round, problems, mix } = require('../helpers');
+const { u, num, conv, round, problems, mix } = require('../helpers');
 const { C, f, T, svg, seg, poly, rightMark, rad, FILL, SIDE, TOP } = require('../shapes').parts;
 
 const DEP = [Math.cos(rad(35)) * 0.55, Math.sin(rad(35)) * 0.55]; // the depth, drawn 35° up to the right at 0.55 scale (y up)
-const SIZE = 2.8, textW = (s) => String(s).length * SIZE * 0.58; // as shapes.js T measures a label
+// A label's width: Lexend's own letter widths (an 'm' is much wider than a digit), so a '4 mm' beside an edge clears it
+const SIZE = 2.8, CW = { m: 0.93, c: 0.54, '.': 0.23, ' ': 0.28, 1: 0.5 };
+const textW = (s) => [...String(s)].reduce((t, ch) => t + (CW[ch] ?? 0.62), 0) * SIZE;
 const INSIDE = '#c2cbe6', INSIDE_L = '#a9b5d8'; // the inside of a box with no lid: back wall, left wall
 const BOX = { maxW: 33, maxH: 24 }; // a picture in a YOU DO round; the WE DO pictures are 21 mm high
 const EXBOX = { maxW: 36, maxH: 21 };
@@ -27,8 +29,8 @@ const overlap = (b1, b2, pad = 0.8) => b1[0] < b2[2] + pad && b2[0] < b1[2] + pa
 // A prism: its front face (corners x right, y up, in the question's units) pushed back by len.
 //   labs: [[i, text, at, ts]] a label for front edge i (corner i to corner i + 1). It goes outside the front face,
 //         beside the edge; if every place there touches a line or another label, beyond the back edge of that side face,
-//         then inside the front face. at: 'in' tries inside the front face first. ts: the places along the front edge
-//         to try (0 at corner i, 1 at corner i + 1), the middle first unless given.
+//         then inside the front face. at: 'in' tries inside the front face first, 'back' beyond the back edge first.
+//         ts: the places along the front edge to try (0 at corner i, 1 at corner i + 1), the middle first unless given.
 //   lenLab: [corner, text, side] the length, beside the edge going back from that corner (side 1 below right, −1 above left)
 //   right: corners of the front face with a right-angle mark; hidden: dashed hidden edges (default true)
 //   open: the face behind the top edge of a rectangular front face is left off (a box with no lid)
@@ -44,7 +46,7 @@ const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, open =
     const lines = [], boxes = []; // every line drawn and every label placed, to keep the labels clear of them
     const outline = (pts) => pts.forEach((p, i) => lines.push([p, pts[(i + 1) % pts.length]]));
     const line = (a, c, o) => { lines.push([a, c]); return seg(a, c, o); };
-    let b = '';
+    let b = '', seen = null; // seen: with no lid, the back corner whose inside edge shows, and where the edge goes out of sight
     // the side faces that show, the ones further back first (a nearer one may cover part of them), then the front face
     const sides = face.map((p, i) => i).filter(vis).sort((i, j) => {
       const m = (t) => { const a = face[t], c = face[(t + 1) % n]; return (a[0] + c[0]) * DEP[0] + (a[1] + c[1]) * DEP[1]; };
@@ -58,6 +60,7 @@ const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, open =
         const inner = [bk[j][0], bk[j][1] + len * DEP[1] * k];
         b += poly(quad, INSIDE, { w: 0.01, stroke: INSIDE }) + poly([fr[j], bk[j], inner], INSIDE_L, { w: 0.01, stroke: INSIDE_L });
         b += line(bk[j], inner, { w: 0.3 }) + poly(quad, 'none');
+        seen = [j, inner];
       } else b += poly(quad, up ? TOP : SIDE);
     });
     b += poly(fr, FILL);
@@ -67,7 +70,9 @@ const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, open =
       const hid = (i) => !vis(i) && !vis((i + n - 1) % n);
       face.forEach((p, i) => {
         const j = (i + 1) % n;
-        if (!vis(i)) b += line(bk[i], bk[j], { stroke: C.grey, w: 0.3, dash: true });
+        // with no lid, the inside corner edge shows down to the front's top edge: only the rest of it is hidden
+        const from = seen && seen[0] === i ? seen[1] : bk[i], to = seen && seen[0] === j ? seen[1] : bk[j];
+        if (!vis(i)) b += line(from, to, { stroke: C.grey, w: 0.3, dash: true });
         if (hid(i)) b += line(fr[i], bk[i], { stroke: C.grey, w: 0.3, dash: true });
       });
     }
@@ -93,7 +98,7 @@ const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, open =
     labs.forEach(([i, s, at, ts = TS]) => {
       const j = (i + 1) % n, o = outN(i), sn = [o[0], -o[1]], inv = [-sn[0], -sn[1]]; // the outward normal on the page (y down)
       const out = [...ts, ...TS].map((t) => [lerp(fr[i], fr[j], t), sn]), back = vis(i) ? TS.map((t) => [lerp(bk[i], bk[j], t), sn]) : [], inside = TS.map((t) => [lerp(fr[i], fr[j], t), inv]);
-      b += place(s, at === 'in' ? [...inside, ...out, ...back] : [...out, ...back, ...inside]);
+      b += place(s, at === 'in' ? [...inside, ...out, ...back] : at === 'back' ? [...back, ...out, ...inside] : [...out, ...back, ...inside]);
     });
     if (lenLab) {
       const [c, s, side = 1] = lenLab, d = unit([DEP[0], -DEP[1]]), dn = [-d[1], d[0]], up = [d[1], -d[0]];
@@ -127,12 +132,15 @@ const triQ = (b, h, s, len, unit) => [{ t: '', fig: tri(b, h, s, len, unit, BOX)
 const hypQ = (a, b, c, len, unit) => [{ t: '', fig: hypTri(a, b, c, len, unit, BOX) }, u(triSA(a, b, c, len), `${unit}²`)];
 const figRound = (text, list) => ({ text, items: list.map((x) => x[0]), ans: list.map((x) => x[1]), cols: 4 });
 
-// The teacher's examples. The L-shaped end is the L [[0,0],[6,0],[6,2],[2,2],[2,5],[0,5]] cm turned upside down (so the
-// four labelled sides face the open corner, clear of the side faces), 8 cm long.
-const L = [[4, 0], [6, 0], [6, 5], [0, 5], [0, 3], [4, 3]];
-const perim = (pts) => pts.reduce((t, p, i) => { const q = pts[(i + 1) % pts.length]; return t + Math.hypot(q[0] - p[0], q[1] - p[1]); }, 0);
+// The teacher's examples. The L-shaped end (cm) is 8 cm long. Its outside lengths are labelled outside the solid (6 cm
+// across, 5 cm up) and its two 2 cm thicknesses beside the back edges of their faces; students find the inside edges.
+const L = [[0, 0], [6, 0], [6, 2], [2, 2], [2, 5], [0, 5]], LLEN = 8;
+const edge = (pts, i) => { const p = pts[i], q = pts[(i + 1) % pts.length]; return Math.hypot(q[0] - p[0], q[1] - p[1]); };
+const perim = (pts) => pts.reduce((t, p, i) => t + edge(pts, i), 0);
 const areaOf = (pts) => Math.abs(pts.reduce((t, p, i) => { const q = pts[(i + 1) % pts.length]; return t + p[0] * q[1] - q[0] * p[1]; }, 0)) / 2;
 const ROOM = { l: 5, w: 4, h: 2.5 };
+// A question that wraps never splits a number from its unit (as in 10.6 and 10.9)
+const keep = (s) => s.replace(/(\d) (?=(mm|cm|m)\b)/g, '$1\u00a0');
 const walls = 2 * (ROOM.l * ROOM.h + ROOM.w * ROOM.h), ceiling = ROOM.l * ROOM.w;
 
 module.exports = {
@@ -156,10 +164,10 @@ module.exports = {
   medium: {
     ex: { stem: 'Find each surface area. In d, paint a room’s 4 walls and ceiling.', parts: [
       { t: 'Triangular prism', fig: tri(8, 6, 10, 12, 'cm', EXBOX) }, { t: 'Triangular prism', fig: hypTri(5, 12, 13, 10, 'cm', EXBOX) },
-      { t: 'L-shaped prism', fig: solid({ face: L, len: 8, labs: [[0, '2 cm'], [3, '2 cm'], [4, '4 cm', 'out', [0.3, 0.4]], [5, '3 cm', 'out', [0.75, 0.65]]], lenLab: [1, '8 cm'], hidden: false, ...EXBOX }) },
+      { t: 'L-shaped prism', fig: solid({ face: L, len: LLEN, labs: [[0, lab(edge(L, 0), 'cm')], [5, lab(edge(L, 5), 'cm')], [1, lab(edge(L, 1), 'cm'), 'back'], [4, lab(edge(L, 4), 'cm'), 'back']], lenLab: [1, lab(LLEN, 'cm')], hidden: false, ...EXBOX }) },
       { t: 'Walls and ceiling', fig: box(ROOM.l, ROOM.w, ROOM.h, 'm', EXBOX) }] },
     exAns: [`2 × (½ × 8 × 6) + (8 + 6 + 10) × 12 = 48 + 288 = ${u(triSA(8, 6, 10, 12), 'cm²')}`, `the right angle is between 5 and 12: 2 × (½ × 5 × 12) + (5 + 12 + 13) × 10 = 60 + 300 = ${u(triSA(5, 12, 13, 10), 'cm²')}`,
-      `top 4 + 2 = 6, side 2 + 3 = 5; end: area 6 × 2 + 2 × 3 = ${num(areaOf(L))}, perimeter ${num(perim(L))}; SA = 2 × ${num(areaOf(L))} + ${num(perim(L))} × 8 = ${u(2 * areaOf(L) + perim(L) * 8, 'cm²')}`,
+      `inside edges 6 − 2 = 4 and 5 − 2 = 3; end: area 6 × 2 + 2 × 3 = ${num(areaOf(L))}, perimeter 2 × (6 + 5) = ${num(perim(L))}; SA = 2 × ${num(areaOf(L))} + ${num(perim(L))} × ${num(LLEN)} = ${num(2 * areaOf(L))} + ${num(perim(L) * LLEN)} = ${u(2 * areaOf(L) + perim(L) * LLEN, 'cm²')}`,
       `walls 2 × (5 × 2.5 + 4 × 2.5) = ${num(walls)}, ceiling 5 × 4 = ${num(ceiling)}: ${num(walls)} + ${num(ceiling)} = ${u(walls + ceiling, 'm²')}`],
     hint: 'Any prism: SA = 2 × area of the end + perimeter of the end × length · Open: leave out the missing faces.',
     rounds: [
@@ -170,14 +178,14 @@ module.exports = {
       ]),
     ],
   },
-  mixed: mix(
+  mixed: mix(...[
     ['Find the SA of a cube with sides of 8 cm.', u(6 * 8 * 8, 'cm²'), '10.8'],
-    ['Find the area of a circle with radius 3 m.', u(area(3), 'm²', 1), '10.7'],
+    ['Right-angled triangle: 12, 16, 20 cm. Area?', `${u((12 * 16) / 2, 'cm²')} (½ × 12 × 16)`, '10.4'],
     ['Find the SA of a box 10 cm × 6 cm × 4 cm.', u(boxSA(10, 6, 4), 'cm²'), '10.8'],
     ['Trapezium: a = 5 m, b = 9 m, h = 4 m. Area?', u(((5 + 9) / 2) * 4, 'm²'), '10.5'],
     ['A cube’s SA is 54 m². How long is each side?', `${u(Math.sqrt(54 / 6), 'm')} (54 ÷ 6 = 9 = 3²)`, '10.8'],
     ['Convert 1.8 m to cm.', u(conv(1.8, 'm', 'cm'), 'cm'), '10.1'],
     ['A prism is 10 cm long. Its end has area 18 cm² and perimeter 22 cm. Find its SA.', u(2 * 18 + 22 * 10, 'cm²'), '10.8'],
     ['A tank 3 m × 2 m × 1 m high has no lid. SA?', u(openSA(3, 2, 1), 'm²'), '10.8'],
-  ),
+  ].map(([q, ...rest]) => [keep(q), ...rest])),
 };

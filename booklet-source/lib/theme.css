@@ -1102,3 +1102,6 @@ ul.plain { list-style: none; padding-left: 0; }
 /* a WE DO example part that is a picture: give the picture the part's full width */
 .theme-violet .ex-part .q-head .q-text { flex: 1 1 auto; min-width: 0; }
 .theme-violet .two-page .ex-part .inline-fig .graph { width: auto; max-width: 100%; max-height: 21mm; }
+/* answer key: keep each lesson's Mixed practice heading with its answers */
+.theme-violet .ans-lesson .ans-block:last-child { break-inside: avoid; }
+.theme-violet .ans-block h3 { break-after: avoid; }

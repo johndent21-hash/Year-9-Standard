@@ -41,7 +41,7 @@ const HOWTO_MIXED = `
       <div class="we"><span class="zone-pill">WE DO</span><span><b>Grey boxes.</b> Your teacher works each example on the board. <b>Copy every step</b> into the space.</span></div>
       <div class="you"><span class="zone-pill">YOU DO</span><span><b>Blue boxes.</b> Your turn. Work down the box one round at a time. Answers go on the line; show working in the boxes.</span></div>
       <div><span class="step">3</span><span><b>Mixed practice</b> ends page 2: today's skill mixed with earlier lessons. The tag on each question (like <b>10.2</b> or <b>Year 8</b>) says where it comes from.</span></div>
-      <div><span class="step">4</span><span>Stuck? Read the <b>Remember</b> line at the top of the blue box, then look back at the example you copied, or at the lesson in the tag.</span></div>
+      <div><span class="step">4</span><span>Stuck? Read the <b>Remember</b> line in the blue box, then look back at the example or the lesson in the tag. Answers with π: <b>one decimal place</b> unless the question says otherwise.</span></div>
     </div>`;
 
 module.exports = {

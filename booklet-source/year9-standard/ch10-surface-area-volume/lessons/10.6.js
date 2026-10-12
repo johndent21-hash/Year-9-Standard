@@ -51,7 +51,9 @@ const figRound = (text, list) => ({ text, items: list.map(([fig, , t = '']) => (
 
 // Composite shapes (Medium round 2), drawn from the same lengths as their perimeters
 const track = (l, w, unit) => [rectEnds(l, w, 2, unit, { size: 30, maxH: 14 }), d1(2 * l + PI * w, unit)];
-const archway = (w, h, unit) => [S.shape({ pts: [[0, 0], [w, 0], ...arc(w / 2, h, w / 2, 0, 180)], sides: [`${num(w)} ${unit}`, `${num(h)} ${unit}`], dash: [[[0, h], [w, h]]], right: [0, 1], size: 22, maxH: 16 }),
+const archway = (w, h, unit) => [S.shape({ pts: [[0, 0], [w, 0], ...arc(w / 2, h, w / 2, 0, 180)], sides: [`${num(w)} ${unit}`], dash: [[[0, h], [w, h]]], right: [0, 1], size: 22, maxH: 16,
+  // the straight side's length on a measurement line, so it cannot be read as the height of the whole arch
+  dims: [[[w, 0], [w, h], `${num(h)} ${unit}`, -1]] }),
   d1(h + w + h + (PI * w) / 2, unit)];
 const biteSemi = (l, w, unit) => {
   const pts = [[0, 0], ...arc(l, w / 2, w / 2, 270, 90), [0, w]];

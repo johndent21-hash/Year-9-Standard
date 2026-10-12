@@ -4,7 +4,9 @@
 // The solids are drawn here (with shapes.js parts) as in 10.8 and 10.9, not with shapes.js prism(), cuboid() and
 // cylinder(): those keep a 6 mm margin, so in a quarter-width cell they shrink and their labels get too small to read.
 // These fill the cell (maxW, maxH: the most room a picture may take, in mm). A prism's end can carry its area
-// ('A = 20 cm²', drawn from the same corners that give the area) and a dashed height.
+// ('A = 20 cm²', drawn from the same corners that give the area) and a dashed height; those prisms are drawn with
+// no hidden edges, so nothing crosses the label and the dashed height is the only dashed line on the end.
+// Labels on the sloping side of a triangle and on the right-hand side of an L go beyond the back edge (as in 10.8).
 const { PI, num, u, conv, area, round, problems, mix } = require('../helpers');
 const { C, f, T, svg, seg, poly, dot, rightMark, rad, FILL, SIDE, TOP } = require('../shapes').parts;
 
@@ -60,7 +62,7 @@ const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, faceLa
     dash.forEach(([p, q, s, side = 1]) => {
       const a = F(p), c = F(q);
       b += seg(a, c, { stroke: C.grey, w: 0.32, dash: true }) + rightMark(c, a, [c[0] + side, c[1]], 1.3);
-      if (s) b += labelAt([(a[0] + c[0]) / 2, (a[1] + c[1]) / 2], [side, 0], s, 0.7, FILL);
+      if (s) b += labelAt([(a[0] + c[0]) / 2, (a[1] + c[1]) / 2], [side, 0], s, 0.9, hidden ? FILL : '');
     });
     labs.forEach(([i, s, at = 'out']) => {
       const j = (i + 1) % n, o = outN(i), sn = [o[0], -o[1]]; // the outward normal on the page (y down)
@@ -73,7 +75,7 @@ const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, faceLa
       const [c, s, side = 1] = lenLab, mid = [(fr[c][0] + bk[c][0]) / 2, (fr[c][1] + bk[c][1]) / 2], d = unit([DEP[0], -DEP[1]]);
       b += labelAt(mid, side > 0 ? [-d[1], d[0]] : [d[1], -d[0]], s);
     }
-    if (faceLab) { const p = F([faceLab[1], faceLab[2]]); b += tag(p[0], p[1], faceLab[0], FILL, { size: 2.8, fill: C.blue, weight: 600 }); }
+    if (faceLab) { const p = F([faceLab[1], faceLab[2]]); b += tag(p[0], p[1], faceLab[0], hidden ? FILL : '', { size: 2.8, fill: C.blue, weight: 600 }); }
     return svg(f((Math.max(...xs) - Math.min(...xs)) * k), f((Math.max(...ys) - Math.min(...ys)) * k), b);
   };
   // the largest scale at which the picture, labels and all, fits the box
@@ -118,11 +120,11 @@ const box = (l, w, h, x, o = {}) => solid({ face: [[0, 0], [l, 0], [l, h], [0, h
 // A prism whose end is the polygon face, with its area A on the end (at the point at) and its length.
 const endQ = (face, at, len, x, box0 = BOX) => {
   const A = areaOf(face);
-  return [{ t: '', fig: solid({ face, len, faceLab: [`A = ${num(A)} ${x}²`, ...at], lenLab: [1, L(len, x)], ...box0 }) }, V(A * len, x)];
+  return [{ t: '', fig: solid({ face, len, faceLab: [`A = ${num(A)} ${x}²`, ...at], lenLab: [1, L(len, x)], hidden: false, ...box0 }) }, V(A * len, x)];
 };
 // A triangular prism with a right-angled end: legs b (across) and h (up), slope s (or no label), length len
 const tri = (b, h, s, len, x, o = {}) => solid({ face: [[0, 0], [b, 0], [0, h]], len, right: [0],
-  labs: [[0, L(b, x)], [2, L(h, x)], ...(s ? [[1, L(s, x)]] : [])], lenLab: [1, L(len, x)], ...o });
+  labs: [[0, L(b, x)], [2, L(h, x)], ...(s ? [[1, L(s, x), 'back']] : [])], lenLab: [1, L(len, x)], ...o });
 const cylQ = (r, h, x, { d = false, box: box0 = BOX } = {}) => [{ t: '', fig: cyl({ r, h, lab: L(d ? 2 * r : r, x), show: d ? 'd' : 'r', hLab: L(h, x), ...box0 }) }, V(cylV(r, h), x, 1)];
 const figRound = (text, list) => ({ text, items: list.map((q) => q[0]), ans: list.map((q) => q[1]), cols: 4 });
 // Text questions: keep each measurement on one line ('r = 2 cm', '1.5 m')
@@ -141,9 +143,9 @@ module.exports = {
   li: 'find the volume of a prism or a cylinder (V = Ah), and its capacity.',
   sc: ['use V = Ah to find the volume of any prism', 'use V = πr²h to find the volume of a cylinder', 'change between cm³, mL, L and m³'],
   easy: {
-    ex: { stem: 'Find each volume: V = Ah. Give d correct to one decimal place.', parts: [
+    ex: { stem: 'Find each volume: V = Ah. The cylinder: correct to one decimal place.', parts: [
       { t: 'Rectangular prism', fig: box(8, 5, 4, 'cm', EXBOX) }, { t: 'Cube', fig: box(5, 5, 5, 'm', EXBOX) },
-      { t: 'A = area of the end', fig: endQ(TRAP20, [3, 1.3], 6, 'cm', EXBOX)[0].fig },
+      { t: 'A = area of the end', fig: endQ(TRAP20, [3, 1], 6, 'cm', EXBOX)[0].fig },
       { t: 'Cylinder', fig: cylQ(3, 8, 'cm', { box: EXBOX })[0].fig }] },
     exAns: [`V = l × w × h = 8 × 5 × 4 = ${V(8 * 5 * 4, 'cm')}`, `V = 5 × 5 × 5 = 5³ = ${V(125, 'm')}`, `V = Ah = ${num(areaOf(TRAP20))} × 6 = ${V(areaOf(TRAP20) * 6, 'cm')}`,
       `V = πr²h = π × 3² × 8 = ${V(cylV(3, 8), 'cm', 1)}`],
@@ -155,13 +157,13 @@ module.exports = {
       figRound('A is the area of the end. Find the volume of each prism.', [
         endQ([[0, 0], [6, 0], [5, 3], [1, 3]], [3, 1.2], 7, 'cm'), endQ([[0, 0], [6, 0], [6, 2], [3, 2], [3, 5], [0, 5]], [3, 1], 3, 'm'),
         endQ([[0, 0], [6, 0], [6, 3], [3, 5], [0, 3]], [3, 1.6], 4, 'cm'), endQ([[1, 0], [7, 0], [8, 2], [7, 4], [1, 4], [0, 2]], [4, 2], 5, 'm')]),
-      figRound('find the volume of each cylinder, correct to one decimal place.', [cylQ(2, 5, 'cm'), cylQ(5, 3, 'm'), cylQ(4, 10, 'cm'), cylQ(1.5, 6, 'm')]),
+      figRound('find the volume of each cylinder, correct to one decimal place.', [cylQ(2, 5, 'cm'), cylQ(5, 3, 'm'), cylQ(4, 7, 'cm'), cylQ(1.5, 6, 'm')]),
     ],
   },
   medium: {
     ex: { stem: 'Find the area of the end first. 1 cm³ = 1 mL and 1000 cm³ = 1 L.', parts: [
       { t: 'Triangular prism', fig: tri(8, 6, 10, 12, 'cm', EXBOX) },
-      { t: 'L-shaped prism', fig: solid({ face: LFACE, len: 8, labs: [[0, '6 cm'], [1, '2 cm', 'in'], [4, '2 cm', 'back'], [5, '5 cm']], lenLab: [1, '8 cm'], ...EXBOX }) },
+      { t: 'L-shaped prism', fig: solid({ face: LFACE, len: 8, labs: [[0, '6 cm'], [1, '2 cm', 'back'], [4, '2 cm', 'back'], [5, '5 cm']], lenLab: [1, '8 cm'], ...EXBOX }) },
       { t: 'Cylinder (one decimal place)', fig: cylQ(5, 4, 'm', { d: true, box: EXBOX })[0].fig },
       'A fish tank is 50 cm long, 30 cm wide and 40 cm high. Find its capacity in litres.'] },
     exAns: [`A = ½ × 8 × 6 = ${num(0.5 * 8 * 6)} cm²; V = ${num(0.5 * 8 * 6)} × 12 = ${V(0.5 * 8 * 6 * 12, 'cm')} (the 10\u00a0cm side is not needed)`,
@@ -172,9 +174,9 @@ module.exports = {
     rounds: [
       figRound('find the volume of each prism or cylinder. Cylinders: correct to one decimal place.', [
         [{ t: '', fig: tri(12, 5, 13, 10, 'm', BOX) }, V(0.5 * 12 * 5 * 10, 'm')],
-        [{ t: '', fig: solid({ face: LQ, len: 5, labs: [[0, '7 cm'], [1, '2 cm', 'in'], [4, '3 cm', 'back'], [5, '6 cm']], lenLab: [1, '5 cm'], ...BOX }) }, V(areaOf(LQ) * 5, 'cm')],
+        [{ t: '', fig: solid({ face: LQ, len: 5, labs: [[0, '7 cm'], [1, '2 cm', 'back'], [4, '3 cm', 'back'], [5, '6 cm']], lenLab: [1, '5 cm'], ...BOX }) }, V(areaOf(LQ) * 5, 'cm')],
         cylQ(4, 5, 'm', { d: true }),
-        [{ t: '', fig: solid({ face: TRAP, len: 6, labs: [[0, '10 cm'], [2, '5 cm', 'back']], dash: [[[2.5, 4], [2.5, 0], '4 cm', 1]], lenLab: [1, '6 cm'], ...BOX }) }, V(areaOf(TRAP) * 6, 'cm')],
+        [{ t: '', fig: solid({ face: TRAP, len: 6, labs: [[0, '10 cm'], [2, '5 cm', 'back']], dash: [[[2.5, 4], [2.5, 0], '4 cm', 1]], lenLab: [1, '6 cm'], hidden: false, ...BOX }) }, V(areaOf(TRAP) * 6, 'cm')],
       ]),
       problems('solve each problem. Show your working.', [
         [keep(`A cylindrical water tank has diameter ${L(TANK.d, 'm')} and height ${L(TANK.h, 'm')}. Find its capacity, to the nearest litre.`),
@@ -189,9 +191,9 @@ module.exports = {
     ['Find the area of a circle with radius 4 cm.', keepN(u(area(4), 'cm²', 1)), '10.7'],
     ['Prism: end area 16 m², length 5 m. Volume?', V(16 * 5, 'm'), '10.10'],
     ['Closed tank, r = 2 m, h = 5 m. Surface area?', keepN(u(2 * area(2) + 2 * PI * 2 * 5, 'm²', 1)), '10.9'],
-    ['Volume of a cylinder, d = 6 cm, h = 10 cm?', V(cylV(3, 10), 'cm', 1), '10.10'],
+    ['A can: d = 6 cm, h = 10 cm. Capacity in mL?', `${keepN(u(cylV(3, 10), 'mL', 1))} (r = 3 cm; 1 cm³ = 1 mL)`, '10.10'],
     ['Convert 3.5 L to mL.', keepN(u(conv(3.5, 'L', 'mL'), 'mL')), '10.1'],
     ['A box: 120 cm³, base 6 cm × 4 cm. Height?', `${u(120 / (6 * 4), 'cm')} (120 ÷ 24)`, '10.10'],
-    ['Carton 10 cm × 6 cm × 20 cm. Capacity in L?', `${u(conv(10 * 6 * 20, 'mL', 'L'), 'L')} (${keepN(u(10 * 6 * 20, 'cm³'))})`, '10.10'],
+    ['Carton 8 cm × 5 cm × 25 cm. Capacity in L?', `${u(conv(8 * 5 * 25, 'mL', 'L'), 'L')} (${keepN(u(8 * 5 * 25, 'cm³'))})`, '10.10'],
   ].map(([q, ...rest]) => [keep(q), ...rest])),
 };
