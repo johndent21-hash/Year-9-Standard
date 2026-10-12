@@ -22,7 +22,7 @@ const chapter = {
   fileName: 'Year9-Standard-Ch10-Surface-Area-and-Volume', art: 'silver-spiral', accent: '#3a1d5e', bodyClass: 'theme-mb theme-gold theme-violet',
   homework: false,
   coverSub: 'Easy, Medium, then Mixed practice',
-  notesBox: 33, // a Notes box at the start of each lesson, 1.5 × the height of a WE DO copy box (22 mm)
+  notesBox: 49.5, // the Notes box at the start of each lesson: 1.5 × 33 mm (itself 1.5 × a 22 mm WE DO copy box)
   howto: front.HOWTO_MIXED,
   plan, // every lesson, for the cover and contents
   goals: ['convert between metric units, including very large and very small units', 'find the precision, absolute error and percentage error of a measurement',
@@ -32,7 +32,8 @@ const chapter = {
 };
 // One lesson on its own, with no front pages, for checking a lesson while it is written (see ../preview/README.md).
 // It loads only that lesson, so a lesson being written cannot break another lesson's preview.
-const only = (code) => ({ ...chapter, front: [], fileName: `Preview-${code}`, lessons: [lesson(code)] });
+// only(code, { teacher: true }) previews the teacher's copy, with the notes filled in.
+const only = (code, o = {}) => ({ ...chapter, ...o, front: [], fileName: `Preview-${code}${o.teacher ? '-Teacher' : ''}`, lessons: [lesson(code)] });
 // Every written lesson, loaded the first time the build asks for them.
 let built;
 Object.defineProperty(chapter, 'lessons', { enumerable: false, get: () => (built ??= plan.filter((p) => fs.existsSync(file(p.code))).map((p) => lesson(p.code))) });

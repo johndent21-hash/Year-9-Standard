@@ -1115,3 +1115,41 @@ ul.plain { list-style: none; padding-left: 0; }
 .notes-box { flex: none; position: relative; border: 0.8mm solid var(--charcoal); border-radius: 3mm; background: #fff; }
 .notes-box .zone-pill { position: absolute; top: 1.6mm; left: 2.5mm; background: var(--charcoal); }
 .notes-box .notes-text { position: absolute; top: 2.3mm; left: 24mm; font-size: 8.5pt; font-weight: 600; color: var(--charcoal); }
+/* Compact lesson header (with a Notes box): a slim title row, then the learning intention and success criteria side by
+   side in small type, each with its label on the left, so the whole header is about 25 mm */
+.theme-violet .lesson-title.two.compact { gap: 3mm; }
+.theme-violet .lesson-title.two.compact .lesson-badge { width: 10mm; height: 10mm; box-shadow: 0 0 0 0.6mm #fff, 0 0 0 1.1mm var(--gd-gold); }
+.theme-violet .lesson-title.two.compact .lesson-badge span { font-size: 4.4pt; }
+.theme-violet .lesson-title.two.compact .lesson-badge b { font-size: 8pt; margin-top: 0.1mm; }
+.theme-violet .lesson-title.two.compact h1 { font-size: 15pt; }
+.theme-violet .li-sc.two.compact { grid-template-columns: 0.82fr 1.4fr; gap: 3mm; }
+.theme-violet .li-sc.two.compact .card { display: grid; grid-template-columns: auto 1fr; column-gap: 2.5mm; align-items: start; padding: 1.2mm 3mm 1.3mm; border-top-width: 0.9mm; }
+.theme-violet .li-sc.two.compact .card > b { font-size: 7.5pt; line-height: 1.3; width: 13mm; }
+.theme-violet .li-sc.two.compact p, .theme-violet .li-sc.two.compact li { font-size: 8pt; line-height: 1.25; margin: 0; }
+.theme-violet .li-sc.two.compact ul.ticks { margin: 0; }
+.theme-violet .li-sc.two.compact .fr { font-size: 0.72em; line-height: 1; vertical-align: -0.2em; }
+/* Notes box: blank (students) or the lesson's key terms, formulas, steps and a labelled diagram (teacher's copy) */
+.notes-box { display: flex; flex-direction: column; overflow: hidden; }
+.notes-box .notes-head { display: flex; align-items: center; gap: 2.5mm; padding: 1.3mm 2.5mm 0; flex: none; }
+.notes-box .zone-pill, .notes-box .notes-text { position: static; }
+.notes-box .notes-copy { margin-left: auto; font-size: 7pt; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gd-green); border: 0.3mm solid var(--gd-green); border-radius: 1mm; padding: 0.2mm 1.6mm; }
+.notes-grid { flex: 1; display: grid; grid-template-columns: 1.15fr 1fr; gap: 4mm; padding: 0.8mm 3.5mm 1.4mm; min-height: 0; }
+.notes-grid.with-fig { grid-template-columns: 1.2fr 1.08fr 0.62fr; }
+.notes-grid h4 { font-size: 7pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gd-green); margin: 0 0 0.4mm; }
+.notes-grid h4 + * { margin-top: 0; }
+.notes-grid dl { margin: 0; }
+.notes-grid dl div { font-size: 7.8pt; line-height: 1.22; margin-bottom: 0.35mm; }
+.notes-grid dt { display: inline; font-weight: 700; }
+.notes-grid dt::after { content: ':'; }
+.notes-grid dd { display: inline; margin: 0 0 0 1mm; }
+.notes-grid ul.nb-formulas { list-style: none; padding: 0; margin: 0 0 1mm; font-size: 8pt; line-height: 1.26; }
+.notes-grid ul.nb-formulas li { font-weight: 600; }
+.notes-grid p.nb-steps { margin: 0; font-size: 7.8pt; line-height: 1.32; }
+.notes-grid p.nb-steps b { display: inline-block; min-width: 3.6mm; height: 3.6mm; border-radius: 50%; background: var(--gd-green); color: #fff; font-size: 6.5pt; text-align: center; line-height: 3.6mm; margin: 0 0.6mm 0 1mm; }
+.notes-grid p.nb-steps .nb-label { font-size: 7pt; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gd-green); margin-right: 0.6mm; }
+.notes-grid .nb-fig { display: flex; align-items: center; justify-content: center; min-height: 0; }
+.notes-grid .nb-fig .graph { width: auto; max-width: 100%; height: auto; max-height: 34mm; }
+/* a question from an earlier lesson, inside a YOU DO round: its lesson tag on the right */
+.dq .q-text .q-tag { float: right; margin-left: 2mm; font-size: 7pt; font-weight: 600; color: var(--muted); border: 0.3mm solid #b9b5a6; border-radius: 1mm; padding: 0 1.2mm; background: #fff; }
+/* the formulas' stacked fractions do not stretch their lines */
+.notes-grid .fr { font-size: 0.8em; line-height: 1; vertical-align: -0.25em; }

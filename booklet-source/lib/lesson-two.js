@@ -13,7 +13,9 @@
 //     hint: 'the method, in one line'          shown at the top of the YOU DO box
 //     rounds: [{ text, items, ans, cols?, work? }]   as in lib/drill.js: work gives each question a working box
 //     exTall: true   taller WE DO boxes, for examples with long working
+//     a round question may be { t, from }: a question from an earlier lesson, printed with its lesson tag
 //   }
+//   notes: { terms, formulas, steps, fig }   the Notes box in the teacher's copy (see notesBox)
 //   mixed: [{ q, a, from, work? }]   optional (Year 9 standard series): a Mixed practice box at the end of the Medium
 //          page, as in the Year 7 booklets. Today's skill mixed with earlier lessons; from tags each question with
 //          its lesson code or 'Year 8'. q is text or { t, fig }; work gives the question a working box.
@@ -29,26 +31,40 @@ const NB = '\u00a0';
 const unitGap = new RegExp(`(\\d) (?=(?:${UNITS})(?![A-Za-z²³]))`, 'g');
 const keep = (x) => (typeof x === 'string' ? x.replace(/(\d) (?=\d{3}(?!\d))/g, `$1${NB}`).replace(unitGap, `$1${NB}`).replace(/ = /g, `${NB}=${NB}`)
   : x && typeof x === 'object' && typeof x.t === 'string' ? { ...x, t: keep(x.t) } : x);
+// A round question from an earlier lesson is { t, from }: it is printed with its lesson tag, and its answer is tagged too.
+const tagged = (it) => it && typeof it === 'object' && it.from;
 const keepLevel = (L) => ({ ...L, hint: keep(L.hint), exAns: (L.exAns || []).map(keep), ex: { ...L.ex, stem: keep(L.ex.stem), parts: L.ex.parts.map(keep) },
-  rounds: L.rounds.map((x) => ({ ...x, text: keep(x.text), items: x.items.map(keep), ans: x.ans.map(keep) })) });
+  rounds: L.rounds.map((x) => ({ ...x, text: keep(x.text),
+    items: x.items.map((it) => (tagged(it) ? { ...keep(it), t: `<span class="q-tag">${it.from}</span>${keep(it.t)}` } : keep(it))),
+    ans: x.ans.map((a, i) => (tagged(x.items[i]) ? `${keep(a)} <span class="ans-from">(${x.items[i].from})</span>` : keep(a))) })) });
 const qn = (n) => `${n} question${n === 1 ? '' : 's'}`;
 const total = (rounds) => rounds.reduce((t, x) => t + x.items.length, 0);
 
-const header = (spec) => `
-  <div class="lesson-title two">
+// The lesson header. With a Notes box (chapter.notesBox) it is compact: a slim title row, and the learning intention and
+// success criteria in small type, to give the Notes box the room.
+const header = (spec, compact) => `
+  <div class="lesson-title two${compact ? ' compact' : ''}">
     <div class="lesson-badge"><span>Lesson</span><b>${spec.code}</b></div>
     <h1>${spec.title}</h1>
     <div class="date-line"><span>Date</span><i></i></div>
   </div>
-  <div class="li-sc two">
-    <div class="card"><h3>Learning intention</h3><p>We are learning to ${spec.li}</p></div>
-    <div class="card"><h3>Success criteria</h3><ul class="ticks">${spec.sc.map((x) => `<li>I can ${x}</li>`).join('')}</ul></div>
+  <div class="li-sc two${compact ? ' compact' : ''}">
+    ${compact ? `<div class="card li"><b>Learning intention</b><p>We are learning to ${spec.li}</p></div>
+    <div class="card sc"><b>Success criteria</b><ul class="ticks">${spec.sc.map((x) => `<li>I can ${x}</li>`).join('')}</ul></div>`
+    : `<div class="card"><h3>Learning intention</h3><p>We are learning to ${spec.li}</p></div>
+    <div class="card"><h3>Success criteria</h3><ul class="ticks">${spec.sc.map((x) => `<li>I can ${x}</li>`).join('')}</ul></div>`}
   </div>`;
 
-// The Notes box (chapter.notesBox: its height in mm): a blank box at the start of the lesson where students copy what the
-// teacher writes on the board (the teacher fills in the same box on the screen at the front of the room).
-const notesBox = (h) => `
-  <div class="notes-box" style="height:${h}mm"><span class="zone-pill">NOTES</span><span class="notes-text">Copy what your teacher writes on the board.</span></div>`;
+// The Notes box (chapter.notesBox: its height in mm), at the start of the lesson. In the students' booklet it is blank:
+// students copy what the teacher shows. In the teacher's copy (chapter.teacher) it holds the lesson's notes (spec.notes:
+// { terms: [[term, meaning]], formulas: [..], steps: [..], fig }), shown on the screen at the front of the room.
+const notesHtml = (n) => `<div class="notes-grid${n.fig ? ' with-fig' : ''}">
+    <div class="nb-col"><h4>Key terms</h4><dl>${n.terms.map(([t, d]) => `<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></div>
+    <div class="nb-col"><h4>Formulas</h4><ul class="nb-formulas">${n.formulas.map((x) => `<li>${x}</li>`).join('')}</ul>${n.steps ? `<p class="nb-steps"><span class="nb-label">Steps</span> ${n.steps.map((x, i) => `<b>${i + 1}</b> ${x}`).join(' ')}</p>` : ''}</div>
+    ${n.fig ? `<div class="nb-fig">${n.fig}</div>` : ''}
+  </div>`;
+const notesBox = (h, notes, teacher) => `
+  <div class="notes-box${teacher ? ' teacher' : ''}" style="height:${h}mm"><div class="notes-head"><span class="zone-pill">NOTES</span><span class="notes-text">${teacher ? 'Key ideas for this lesson' : 'Copy what your teacher writes on the board.'}</span>${teacher ? '<span class="notes-copy">Teacher copy</span>' : ''}</div>${teacher && notes ? notesHtml(notes) : ''}</div>`;
 
 // The YOU DO box of one level: the method hint, then the rounds, numbered on through the level.
 const practice = (lvl, L) => {
@@ -72,7 +88,8 @@ const level = (lvl, L) => `
   ${practice(lvl, L)}`;
 
 module.exports = (raw) => (chapter) => {
-  const spec = { ...raw, li: keep(raw.li), sc: raw.sc.map(keep), easy: keepLevel(raw.easy), medium: keepLevel(raw.medium),
+  const notes = raw.notes && { ...raw.notes, terms: raw.notes.terms.map(([t, d]) => [keep(t), keep(d)]), formulas: raw.notes.formulas.map(keep), steps: raw.notes.steps && raw.notes.steps.map(keep) };
+  const spec = { ...raw, notes, li: keep(raw.li), sc: raw.sc.map(keep), easy: keepLevel(raw.easy), medium: keepLevel(raw.medium),
     mixed: raw.mixed && raw.mixed.map((m) => ({ ...m, q: keep(m.q), a: keep(m.a) })) };
   ['easy', 'medium'].forEach((k) => {
     const L = spec[k];
@@ -82,7 +99,7 @@ module.exports = (raw) => (chapter) => {
   (spec.mixed || []).forEach((m, i) => { if (!m.q || m.a === undefined || !m.from) throw new Error(`${spec.code} mixed practice ${i + 1} needs q, a and from`); });
   const page = (section, body, first) => mbPage(chapter, { code: spec.code, title: spec.title, section, body, first, cls: 'two-page' });
   const pages = [
-    page('Easy', `${header(spec)}${chapter.notesBox ? notesBox(chapter.notesBox) : ''}${level(1, spec.easy)}`, true),
+    page('Easy', `${header(spec, !!chapter.notesBox)}${chapter.notesBox ? notesBox(chapter.notesBox, spec.notes, chapter.teacher) : ''}${level(1, spec.easy)}`, true),
     page('Medium', `${level(2, spec.medium)}${spec.mixed ? mixedBox(spec.mixed) : ''}`),
   ];
   const L = 'abcdefgh';

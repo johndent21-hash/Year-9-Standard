@@ -1,8 +1,9 @@
-// Lesson 10.6 Circumference and arc length (two pages: Easy, then Medium, then Mixed practice). See lib/lesson-two.js.
+// Lesson 10.6 Circumference and arc length (two pages: Easy, then Medium, whose last round mixes in earlier lessons).
+// See lib/lesson-two.js.
 // Textbook 10.06 (first half). Every circle answer is correct to one decimal place, using the calculator's π.
-const { F, PI, num, u, conv, circ, round, mix } = require('../helpers');
+const { F, PI, num, u, conv, circ, limits, meas, pctErr, round } = require('../helpers');
 const S = require('../shapes');
-const { C, f, T, svg, seg, dot, rightMark, arcD, FILL } = S.parts;
+const { C, f, T, svg, seg, dot, rightMark, arcD, FILL, SHADE } = S.parts;
 
 const d1 = (v, unit) => u(v, unit, 1);
 const arcLen = (angle, r) => (angle / 360) * circ(r);
@@ -68,13 +69,35 @@ const biteQuad = (l, w, unit) => {
 };
 
 const EX2 = { l: 10, w: 6 };
-// A Mixed practice question kept from breaking between a number and its unit ('18.85 m') or around ' = '
-const keep = (s) => s.replace(/ = /g, '\u00a0=\u00a0').replace(/(\d) (?=(mm|cm|m|km)\b)/g, '$1\u00a0');
+
+// The Notes diagram: a circle with its centre, radius, diameter, an arc and a sector (with the angle θ at its centre)
+const notesFig = () => {
+  const R = 13, a0 = 15, a1 = 85, c = [R + 3, R + 3];
+  const at = (a, r = R) => [c[0] + r * Math.cos((a * Math.PI) / 180), c[1] - r * Math.sin((a * Math.PI) / 180)];
+  const s = arcD(c, R, a0, a1), th = arcD(c, 3.4, a0, a1), mid = (a0 + a1) / 2;
+  let b = `<circle cx="${f(c[0])}" cy="${f(c[1])}" r="${R}" fill="${FILL}" stroke="${C.charcoal}" stroke-width="0.45"/>`;
+  b += `<path d="M${f(c[0])},${f(c[1])} L${f(s.p0[0])},${f(s.p0[1])} ${s.d} Z" fill="${SHADE}" stroke="${C.charcoal}" stroke-width="0.4"/>`;
+  b += `<path d="M${f(s.p0[0])},${f(s.p0[1])} ${s.d}" fill="none" stroke="${C.blue}" stroke-width="1.1"/>`;
+  b += `<path d="M${f(th.p0[0])},${f(th.p0[1])} ${th.d}" fill="none" stroke="${C.charcoal}" stroke-width="0.3"/>`;
+  b += seg(at(180), at(0), { stroke: C.charcoal, w: 0.45 }) + dot(c);
+  b += T(c[0], c[1] + 3.6, 'diameter d', { size: 2.5 }) + T(at(a1, R * 0.5)[0] - 1.2, at(a1, R * 0.5)[1] + 1, 'r', { size: 2.8, anchor: 'end', weight: 600 });
+  b += T(at(mid, 5.6)[0], at(mid, 5.6)[1] + 1, 'θ', { size: 2.6 }) + T(at(mid, R * 0.7)[0] + 0.6, at(mid, R * 0.7)[1] + 1, 'sector', { size: 2.4 });
+  b += T(at(mid, R + 2.4)[0] + 1, at(mid, R + 2.4)[1], 'arc', { size: 2.6, fill: C.blue, weight: 600, anchor: 'start' }) + T(c[0], c[1] + R + 3.8, 'circumference', { size: 2.5 });
+  return svg(f(2 * R + 6), f(2 * R + 8), b);
+};
 
 module.exports = {
   code: '10.6', title: 'Circumference and arc length',
   li: 'find circumferences, arc lengths and perimeters of curved shapes.',
   sc: ['use C = πd or C = 2πr to find a circumference', `find an arc length: ${F('θ', 360)} × 2πr`, 'find the perimeter of sectors and composite shapes'],
+  notes: {
+    terms: [['circumference (C)', 'the distance around a circle'], ['radius (r)', 'from the centre to the edge'], ['diameter (d)', 'across through the centre; d = 2r'],
+      ['arc', 'part of the circumference'], ['sector', 'a slice of a circle between two radii'], ['θ', 'the angle at the centre of a sector'],
+      ['perimeter', 'the distance around the outside of a shape']],
+    formulas: ['C = πd = 2πr', `Arc length = ${F('θ', 360)} × 2πr`, 'Semicircle: P = ½πd + d', 'Quadrant: P = ¼ × 2πr + 2r', 'Sector: P = arc + 2r'],
+    steps: ['r = d ÷ 2', 'write the formula', 'substitute (π key)', 'round to 1 d.p. + unit'],
+    fig: notesFig(),
+  },
   easy: {
     ex: { stem: 'Find each circumference or perimeter, correct to one decimal place.', parts: [
       { t: 'Circumference', fig: part({ R: 9.5, lab: '5 cm' }) }, { t: 'Circumference', fig: part({ R: 9.5, lab: '12 m', show: 'd' }) },
@@ -100,16 +123,14 @@ module.exports = {
     rounds: [
       figRound('find the perimeter of each sector, correct to one decimal place.', [sect(120, 6, 'cm', 15), sect(45, 8, 'm', 20), sect(270, 4, 'cm', 10.5), sect(150, 10, 'm', 14)]),
       figRound('find the perimeter of each shape, correct to one decimal place.', [track(8, 4, 'cm'), archway(6, 5, 'm'), biteSemi(10, 4, 'm'), biteQuad(9, 5, 'cm')]),
+      // Mixed: today's skill with earlier lessons (each earlier question is tagged with its lesson)
+      { text: 'mixed. Read each one carefully: a tag shows an earlier lesson.', cols: 2, items: [
+        'A wheel of diameter 64 cm turns 100 times. How far does it go, in m?', { t: 'Find the perimeter of a rectangle 7.5 m by 4 m.', from: '10.4' },
+        { t: 'Convert 345 cm to m.', from: '10.1' }, 'A round garden has a circumference of 18.85 m. Find its radius.',
+        { t: 'A kite has diagonals of 6 m and 5 m. Find its area.', from: '10.5' }, { t: 'Write the limits of accuracy of 4.5 m.', from: '10.2' },
+        'Find the arc length of a 120° sector with r = 3 m.', { t: 'Find the percentage error of 20 cm, to the nearest cm.', from: '10.3' }],
+      ans: [d1(conv(PI * 64 * 100, 'cm', 'm'), 'm'), u(2 * (7.5 + 4), 'm'), u(conv(345, 'cm', 'm'), 'm'), d1(18.85 / (2 * PI), 'm'),
+        u((6 * 5) / 2, 'm²'), limits('4.5 m'), d1(arcLen(120, 3), 'm'), `${num(pctErr(meas('20 cm').e, 20))}%`] },
     ],
   },
-  mixed: mix(...[
-    ['Find the circumference when r = 9 cm.', d1(circ(9), 'cm'), '10.6'],
-    ['Perimeter of a rectangle 7.5 m by 4 m?', u(2 * (7.5 + 4), 'm'), '10.4'],
-    ['A wheel of diameter 64 cm turns 100 times. How far, in m?', d1(conv(PI * 64 * 100, 'cm', 'm'), 'm'), '10.6'],
-    ['Convert 345 cm to m.', u(conv(345, 'cm', 'm'), 'm'), '10.1'],
-    ['A round garden has a circumference of 18.85 m. Radius?', d1(18.85 / (2 * PI), 'm'), '10.6'],
-    ['A kite has diagonals of 6 m and 5 m. Area?', u((6 * 5) / 2, 'm²'), '10.5'],
-    ['Find the arc length: 120° sector, r = 3 m.', d1(arcLen(120, 3), 'm'), '10.6'],
-    ['Perimeter of a semicircle with d = 20 cm?', d1((PI * 20) / 2 + 20, 'cm'), '10.6'],
-  ].map(([q, ...rest]) => [keep(q), ...rest])),
 };
