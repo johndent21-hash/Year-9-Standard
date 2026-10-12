@@ -22,12 +22,12 @@ const { exBlock, roundHtml, hint, withFig } = require('./lesson-blend').parts;
 
 const LEVEL_WORD = ['', 'Easy', 'Medium'];
 
-// Text is printed with a no-break space between a number and its unit ('4 m') and inside a spaced number
-// ('2 500 000'), so a line never breaks between them. Pictures ({ fig }) are left alone.
+// Text is printed with a no-break space between a number and its unit ('4 m'), inside a spaced number ('2 500 000')
+// and around ' = ', so a line never breaks between them. Pictures ({ fig }) are left alone.
 const UNITS = 'mm|cm|m|km|μm|Mm|mg|g|kg|t|mL|L|kL|ML|ms|μs|s|min|h|B|kB|MB|GB|TB|°C|cm²|m²|mm²|km²|cm³|m³|mm³';
 const NB = '\u00a0';
 const unitGap = new RegExp(`(\\d) (?=(?:${UNITS})(?![A-Za-z²³]))`, 'g');
-const keep = (x) => (typeof x === 'string' ? x.replace(/(\d) (?=\d{3}(?!\d))/g, `$1${NB}`).replace(unitGap, `$1${NB}`)
+const keep = (x) => (typeof x === 'string' ? x.replace(/(\d) (?=\d{3}(?!\d))/g, `$1${NB}`).replace(unitGap, `$1${NB}`).replace(/ = /g, `${NB}=${NB}`)
   : x && typeof x === 'object' && typeof x.t === 'string' ? { ...x, t: keep(x.t) } : x);
 const keepLevel = (L) => ({ ...L, hint: keep(L.hint), exAns: (L.exAns || []).map(keep), ex: { ...L.ex, stem: keep(L.ex.stem), parts: L.ex.parts.map(keep) },
   rounds: L.rounds.map((x) => ({ ...x, text: keep(x.text), items: x.items.map(keep), ans: x.ans.map(keep) })) });

@@ -58,13 +58,13 @@ const archway = (w, h, unit) => [S.shape({ pts: [[0, 0], [w, 0], ...arc(w / 2, h
 const biteSemi = (l, w, unit) => {
   const pts = [[0, 0], ...arc(l, w / 2, w / 2, 270, 90), [0, w]];
   return [S.shape({ pts, sides: pts.map((p, i) => (i === 0 ? `${num(l)} ${unit}` : i === pts.length - 1 ? `${num(w)} ${unit}` : '')), dash: [[[l, 0], [l, w]]], right: [0], size: 24, maxH: 14 }),
-    d1(l + w + l + (PI * w) / 2, unit), 'Semicircle cut out'];
+    d1(l + w + l + (PI * w) / 2, unit), `Cut-out: d = ${num(w)} ${unit}`];
 };
 // A rectangle l by w with a quadrant of radius w cut from its top right corner (the quadrant's radii dashed)
 const biteQuad = (l, w, unit) => {
   const pts = [[0, 0], ...arc(l, w, w, 270, 180), [0, w]];
   return [S.shape({ pts, sides: pts.map((p, i) => (i === 0 ? `${num(l)} ${unit}` : i === pts.length - 1 ? `${num(w)} ${unit}` : '')), dash: [[[l, 0], [l, w]], [[l, w], [l - w, w]]], right: [0], size: 24, maxH: 14 }),
-    d1(l + circ(w) / 4 + (l - w) + w, unit), 'Quadrant cut out'];
+    d1(l + circ(w) / 4 + (l - w) + w, unit), `Cut-out: r = ${num(w)} ${unit}`];
 };
 
 const EX2 = { l: 10, w: 6 };
@@ -96,7 +96,7 @@ module.exports = {
     exAns: [`l = 60/360 × 2 × π × 9 = ${d1(arcLen(60, 9), 'cm')}`, `P = ${num(arcLen(60, 9), 2)}… + 9 + 9 = ${d1(arcLen(60, 9) + 18, 'cm')}`,
       `P = 10 + 6 + 10 + ½ × π × 6 = ${d1(EX2.l * 2 + EX2.w + (PI * EX2.w) / 2, 'm')} (not the dashed side)`,
       `50 = 2 × π × r, so r = 50 ÷ (2 × π) = ${d1(50 / (2 * PI), 'cm')}`],
-    hint: `Arc length = ${F('θ', 360)} × 2πr · Sector P = arc + r + r · Composite: add the outside edges, not the dashed lines.`,
+    hint: `Arc length = ${F('θ', 360)} × 2πr (θ = the angle at the centre) · Sector P = arc + r + r · Composite: add the outside edges, not the dashed lines.`,
     rounds: [
       figRound('find the perimeter of each sector, correct to one decimal place.', [sect(120, 6, 'cm', 15), sect(45, 8, 'm', 20), sect(270, 4, 'cm', 10.5), sect(150, 10, 'm', 14)]),
       figRound('find the perimeter of each shape, correct to one decimal place.', [track(8, 4, 'cm'), archway(6, 5, 'm'), biteSemi(10, 4, 'm'), biteQuad(9, 5, 'cm')]),

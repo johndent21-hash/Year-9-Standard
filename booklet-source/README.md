@@ -17,7 +17,8 @@ You need Node.js (LTS). Once: `npm run setup` (downloads the PDF tools, about 15
 node build.js year9-standard/ch10-surface-area-volume
 ```
 
-This writes the booklet and its `-Answers.pdf` into that folder, and checks the layout: it prints a warning if anything
+This writes the booklet and its `-Answers.pdf` into that folder (copies of the finished PDFs are in
+`Chapter 10 Surface area and volume booklet/` at the top of this repository), and checks the layout: it prints a warning if anything
 overflows a page, is cut off, or spills out of its box. Fix any warning before printing.
 
 To check one lesson on its own while you write it, see `year9-standard/preview/README.md`.

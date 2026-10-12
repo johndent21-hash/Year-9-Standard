@@ -125,7 +125,7 @@ module.exports = {
     ex: { stem: 'Find each area, correct to one decimal place.', parts: [{ ...EX2[0][0], t: 'Sector' }, { ...EX2[1][0], t: 'Area' }, EX2[2][0], EX2[3][0]] },
     exAns: [`A = ${F(120, 360)} × π × 9² = ${EX2[0][1]}`, `10 × 6 + ½ × π × 3² = 60 + ${num(area(3) / 2, 1)} = ${EX2[1][1]}`,
       `π × 10² − π × 6² = ${num(area(10), 1)} − ${num(area(6), 1)} = ${EX2[2][1]}`, `the circle’s diameter is 8 cm: 8 × 8 − π × 4² = 64 − ${num(area(4), 1)} = ${EX2[3][1]}`],
-    hint: `Sector: A = ${F('θ', 360)} × πr² · Composite: add the parts · Shaded: whole shape − white part · Ring: πR² − πr²`,
+    hint: `Sector: A = ${F('θ', 360)} × πr² (θ = the angle at the centre) · Composite: add the parts · Shaded: whole − white part · Ring: πR² − πr² (R = outer radius, r = inner radius)`,
     rounds: [
       figRound('find the area of each sector, correct to one decimal place.', [sectorQ(60, 6, 'cm'), sectorQ(270, 4, 'm'), sectorQ(45, 12, 'cm'), sectorQ(150, 8, 'm', 180)]),
       figRound('find each area, correct to one decimal place.', [ringQ(8, 5, 'm'), capsuleQ(14, 8, 'cm'), capsuleQ(12, 4, 'm', 2), holedQ(10, 8, [5, 4, 3], 'cm', true)]),

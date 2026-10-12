@@ -18,7 +18,7 @@ const M2A = { b: 10, h: 6, s: 7 };
 const m2aFig = ({ b, h, s }, unit) => {
   const o = Math.sqrt(s * s - h * h);
   return S.shape({ pts: [[0, 0], [b, 0], [b + o, h], [o, h]], sides: [`${num(b)} ${unit}`, '', '', `${num(s)} ${unit}`],
-    dash: [[[b + o, h], [b + o, 0], `${num(h)} ${unit}`], [[b, 0], [b + o, 0]]], marks: [[[b + o, 0], [b + o, 1], [b + o - 1, 0]]], maxH: 6 });
+    dash: [[[b + o, h], [b + o, 0], `${num(h)} ${unit}`], [[b, 0], [b + o, 0]]], marks: [[[b + o, 0], [b + o, 1], [b + o - 1, 0]]], maxH: 10 });
 };
 
 module.exports = {

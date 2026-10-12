@@ -107,12 +107,12 @@ module.exports = {
   },
   mixed: mix(...[
     ['Curved surface area if d = 10 cm, h = 7 cm?', A(curved(10 / 2, 7), 'cm'), '10.9'],
-    ['Find the area of a circle with diameter 12 cm.', A(area(6), 'cm'), '10.7'],
+    ['Find the area of a circle with diameter 13 cm.', A(area(13 / 2), 'cm'), '10.7'],
     ['Closed tin, r = 6 cm, h = 10 cm. Surface area?', A(SA(6, 10), 'cm'), '10.9'],
     ['Surface area of a 5 cm by 4 cm by 2 cm box?', u(2 * (5 * 4 + 5 * 2 + 4 * 2), 'cm²'), '10.8'],
     ['Bucket (no lid), d = 30 cm, h = 25 cm. SA?', A(SA(15, 25, 1), 'cm'), '10.9'],
     ['A can is 11.5 cm tall. Write the limits.', limits('11.5 cm'), '10.2'],
-    ['Curved surface = 314.2 cm², h = 10 cm. Find r.', `${u(314.2 / (2 * PI * 10), 'cm', 0)} (r = 314.2 ÷ (2 × π × 10))`, '10.9'],
+    ['Curved SA = 314.2 cm², h = 10 cm. r? (÷ 2πh)', `${u(314.2 / (2 * PI * 10), 'cm', 0)} (r = 314.2 ÷ (2 × π × 10))`, '10.9'],
     ['Which has more curved surface: r = 2 cm, h = 6 cm or r = 3 cm, h = 4 cm?', `neither: 2 × π × 2 × 6 = 2 × π × 3 × 4 = ${A(curved(2, 6), 'cm')}`, '10.9'],
   ].map(([q, ...rest]) => [keep(q), ...rest])),
 };

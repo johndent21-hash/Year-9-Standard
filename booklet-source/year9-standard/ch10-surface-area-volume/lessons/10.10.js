@@ -149,7 +149,7 @@ module.exports = {
       { t: 'Cylinder', fig: cylQ(3, 8, 'cm', { box: EXBOX })[0].fig }] },
     exAns: [`V = l × w × h = 8 × 5 × 4 = ${V(8 * 5 * 4, 'cm')}`, `V = 5 × 5 × 5 = 5³ = ${V(125, 'm')}`, `V = Ah = ${num(areaOf(TRAP20))} × 6 = ${V(areaOf(TRAP20) * 6, 'cm')}`,
       `V = πr²h = π × 3² × 8 = ${V(cylV(3, 8), 'cm', 1)}`],
-    hint: 'Any prism: V = Ah (A = area of the end) · Box: V = l × w × h · Cube: V = s³ · Cylinder: V = πr²h',
+    hint: 'Any prism: V = Ah (A = area of the end, h = length between the ends) · Box: V = l × w × h · Cube: V = s³ · Cylinder: V = πr²h',
     rounds: [
       round('find the volume of each rectangular prism or cube.', [[6, 4, 3, 'cm'], [10, 5, 2, 'm'], [3, 'cm'], [8, 5, 5, 'mm'], [12, 10, 4, 'cm'], [6, 'm'], [2.5, 4, 3, 'm'], [10, 'cm']],
         (q) => keep(q.length === 2 ? `cube, side ${L(q[0], q[1])}` : `${L(q[0], q[3])} × ${L(q[1], q[3])} × ${L(q[2], q[3])}`),
@@ -170,7 +170,7 @@ module.exports = {
       `A = 6 × 2 + 2 × 3 = ${num(areaOf(LFACE))} cm²; V = ${num(areaOf(LFACE))} × 8 = ${V(areaOf(LFACE) * 8, 'cm')}`,
       `r = 10 ÷ 2 = 5 m; V = π × 5² × 4 = ${V(cylV(5, 4), 'm', 1)}`,
       `V = 50 × 30 × 40 = ${V(50 * 30 * 40, 'cm')} = ${keepN(u(50 * 30 * 40, 'mL'))} = ${u(conv(50 * 30 * 40, 'mL', 'L'), 'L')}`],
-    hint: 'Triangle: A = ½bh · L-shape: split it into rectangles · r = d ÷ 2 · 1 cm³ = 1 mL · 1 m³ = 1000 L',
+    hint: 'Triangle end: A = ½ × base × height · L-shape: split into rectangles · r = d ÷ 2 · 1 cm³ = 1 mL · 1 m³ = 1000 L',
     rounds: [
       figRound('find the volume of each prism or cylinder. Cylinders: correct to one decimal place.', [
         [{ t: '', fig: tri(12, 5, 13, 10, 'm', BOX) }, V(0.5 * 12 * 5 * 10, 'm')],
@@ -188,7 +188,7 @@ module.exports = {
   },
   mixed: mix(...[
     ['Volume of a 10 cm × 6 cm × 5 cm box?', V(10 * 6 * 5, 'cm'), '10.10'],
-    ['Find the area of a circle with radius 4 cm.', keepN(u(area(4), 'cm²', 1)), '10.7'],
+    ['Find the area of a circle with radius 5.5 cm.', keepN(u(area(5.5), 'cm²', 1)), '10.7'],
     ['Prism: end area 16 m², length 5 m. Volume?', V(16 * 5, 'm'), '10.10'],
     ['Closed tank, r = 2 m, h = 5 m. Surface area?', keepN(u(2 * area(2) + 2 * PI * 2 * 5, 'm²', 1)), '10.9'],
     ['A can: d = 6 cm, h = 10 cm. Capacity in mL?', `${keepN(u(cylV(3, 10), 'mL', 1))} (r = 3 cm; 1 cm³ = 1 mL)`, '10.10'],

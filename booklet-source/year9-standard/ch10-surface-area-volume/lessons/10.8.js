@@ -162,6 +162,7 @@ module.exports = {
     ],
   },
   medium: {
+    exTall: true, // Example 2's working is long (2c: inside edges, end area, end perimeter, SA)
     ex: { stem: 'Find each surface area. In d, paint a room’s 4 walls and ceiling.', parts: [
       { t: 'Triangular prism', fig: tri(8, 6, 10, 12, 'cm', EXBOX) }, { t: 'Triangular prism', fig: hypTri(5, 12, 13, 10, 'cm', EXBOX) },
       { t: 'L-shaped prism', fig: solid({ face: L, len: LLEN, labs: [[0, lab(edge(L, 0), 'cm')], [5, lab(edge(L, 5), 'cm')], [1, lab(edge(L, 1), 'cm'), 'back'], [4, lab(edge(L, 4), 'cm'), 'back']], lenLab: [1, lab(LLEN, 'cm')], hidden: false, ...EXBOX }) },
@@ -183,7 +184,7 @@ module.exports = {
     ['Right-angled triangle: 12, 16, 20 cm. Area?', `${u((12 * 16) / 2, 'cm²')} (½ × 12 × 16)`, '10.4'],
     ['Find the SA of a box 10 cm × 6 cm × 4 cm.', u(boxSA(10, 6, 4), 'cm²'), '10.8'],
     ['Trapezium: a = 5 m, b = 9 m, h = 4 m. Area?', u(((5 + 9) / 2) * 4, 'm²'), '10.5'],
-    ['A cube’s SA is 54 m². How long is each side?', `${u(Math.sqrt(54 / 6), 'm')} (54 ÷ 6 = 9 = 3²)`, '10.8'],
+    ['A cube’s SA is 54 m². Side? (÷ 6, then √)', `${u(Math.sqrt(54 / 6), 'm')} (54 ÷ 6 = 9 = 3²)`, '10.8'],
     ['Convert 1.8 m to cm.', u(conv(1.8, 'm', 'cm'), 'cm'), '10.1'],
     ['A prism is 10 cm long. Its end has area 18 cm² and perimeter 22 cm. Find its SA.', u(2 * 18 + 22 * 10, 'cm²'), '10.8'],
     ['A tank 3 m × 2 m × 1 m high has no lid. SA?', u(openSA(3, 2, 1), 'm²'), '10.8'],
