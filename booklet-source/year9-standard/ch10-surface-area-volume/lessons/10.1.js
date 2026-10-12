@@ -1,15 +1,18 @@
 // Lesson 10.1 Metric units (two pages: Easy, then Medium, then Mixed practice). See lib/lesson-two.js for the fields.
-const { num, u, conv, cq, ca, round, problems, mix } = require('../helpers');
+const { num, u, UNIT, conv, cq, ca, round, problems, mix } = require('../helpers');
 // A hint as a list of facts: a line can wrap only between facts, never inside one ('1 s =' / '1000 ms').
 const facts = (...list) => list.map((f) => f.replace(/ /g, '\u00a0')).join(' · ');
+// The Easy example: each conversion, and its working (8 × 1000 = 8 000 m; 4 500 ÷ 1000 = 4.5 L)
+const EX1 = [[8, 'km', 'm'], [250, 'cm', 'm'], [3.5, 'kg', 'g'], [4500, 'mL', 'L']];
+const exWork = ([v, a, b]) => { const f = UNIT[a] / UNIT[b]; return f > 1 ? `${num(v)} × ${f} = ${ca([v, a, b])}` : `${num(v)} ÷ ${+(1 / f).toPrecision(12)} = ${ca([v, a, b])}`; };
 
 module.exports = {
   code: '10.1', title: 'Metric units',
   li: 'convert between metric units, and between units of time and digital storage.',
   sc: ['convert units of length, mass and capacity', 'convert units of time', 'use the prefixes mega-, giga- and micro-'],
   easy: {
-    ex: { stem: 'Convert each one. To a smaller unit, multiply. To a bigger unit, divide.', parts: ['8 km to m', '250 cm to m', '3.5 kg to g', '4500 mL to L'] },
-    exAns: [`8 × 1000 = ${u(8000, 'm')}`, `250 ÷ 100 = ${u(2.5, 'm')}`, `3.5 × 1000 = ${u(3500, 'g')}`, `4500 ÷ 1000 = ${u(4.5, 'L')}`],
+    ex: { stem: 'Convert each one. To a smaller unit, multiply. To a bigger unit, divide.', parts: EX1.map(cq) },
+    exAns: EX1.map(exWork),
     hint: facts('1 km = 1000 m', '1 m = 100 cm', '1 cm = 10 mm', '1 t = 1000 kg', '1 kg = 1000 g', '1 g = 1000 mg', '1 kL = 1000 L', '1 L = 1000 mL'),
     rounds: [
       round('convert each length.', [[6, 'km', 'm'], [3000, 'm', 'km'], [4, 'm', 'cm'], [700, 'cm', 'm'], [9, 'cm', 'mm'], [120, 'mm', 'cm'], [2.5, 'km', 'm'], [45, 'cm', 'm']], cq, ca),

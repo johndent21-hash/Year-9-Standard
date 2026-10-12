@@ -1,5 +1,5 @@
 // Lesson 10.2 Precision and absolute error (two pages: Easy, then Medium, then Mixed practice). See lib/lesson-two.js.
-const { F, num, u, conv, prec, aerr, limits, round, problems, mix } = require('../helpers');
+const { F, num, u, conv, absErr, prec, aerr, limits, round, problems, mix } = require('../helpers');
 const S = require('../shapes');
 
 // The measuring scales: [picture, precision, unit]. EX are the teacher's examples.
@@ -17,6 +17,8 @@ const SCALES = [
 ];
 const both = ([, p, unit]) => `precision ${u(p, unit)}, absolute error ${u(p / 2, unit)}`;
 const NAMES = ['Kitchen scales', 'Jug', 'Thermometer', 'Tape measure'];
+// A Mixed practice question on an instrument marked every step units, and its absolute error (step ÷ 2)
+const every = (what, step, unit) => [`${what} marked every ${u(step, unit)}. Absolute error?`, u(absErr(step), unit), '10.2'];
 
 module.exports = {
   code: '10.2', title: 'Precision and absolute error',
@@ -41,7 +43,7 @@ module.exports = {
     hint: 'Smallest = measurement − absolute error · Largest = measurement + absolute error',
     rounds: [
       round('write the absolute error of each measurement.', ['3.25 kg', '0.8 m', '14.6 L', '7.125 km', '0.04 g', '2.05 m', '120.5 cm', '6.375 t'], (m) => m, aerr),
-      round('write the smallest and largest possible true value.', ['24 m', '6.4 cm', '153 g', '3.25 kg', '9.8 s', '72 kg', '1.6 L', '0.45 m'], (m) => m, (m) => limits(m)),
+      round('write the smallest and largest possible true value.', ['24 m', '6.4 cm', '153 g', '5.75 kg', '9.8 s', '72 kg', '1.6 L', '0.45 m'], (m) => m, (m) => limits(m)),
       problems('solve each problem. Show your working.', [
         ['Kai weighs 250 g of flour on scales marked every 10 g. Write the limits of the mass.', limits('250 g', 5)],
         ['A rope is 12.5 m long, to the nearest 0.1 m. Could it really be 12.56 m? Explain.', `No: the limits are ${limits('12.5 m')}, and 12.56 m is longer than 12.55 m`],
@@ -51,11 +53,11 @@ module.exports = {
   mixed: mix(
     ['What is the precision of 4.75 m?', prec('4.75 m'), '10.2'],
     ['Convert 3.2 km to m.', u(conv(3.2, 'km', 'm'), 'm'), '10.1'],
-    ['What is the absolute error of a ruler marked in mm?', u(0.5, 'mm'), '10.2'],
+    every('A jug is', 10, 'mL'),
     ['Find 5% of 60.', num(0.05 * 60), 'Year 8'],
     ['Write the limits of 18 cm.', limits('18 cm'), '10.2'],
     ['Convert 750 mL to L.', u(conv(750, 'mL', 'L'), 'L'), '10.1'],
-    ['Scales are marked every 20 g. Absolute error?', u(10, 'g'), '10.2'],
+    every('Scales are', 20, 'g'),
     ['What is the absolute error of 6.3 L?', aerr('6.3 L'), '10.2'],
   ),
 };

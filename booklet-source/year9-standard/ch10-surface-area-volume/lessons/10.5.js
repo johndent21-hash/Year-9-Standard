@@ -12,6 +12,14 @@ const figRound = (text, list) => ({ text, items: list.map(([fig]) => ({ t: '', f
 const raised = (s, h, lab) => ({ dash: [[[s, h], [s, 0], lab, 1, 0.35]] });
 
 const EX = [para(12, 4, 3, 'cm', 0, raised(3, 4, '4 cm')), trap(14, 8, 6, 3, 'cm'), kite(10, 6, 3, 'm'), kite(8, 12, 4, 'cm')];
+// Medium example a: base b, perpendicular height h and slant side s; the slant's offset is √(s² − h²), so the picture is true.
+// Its height is dashed outside the right end (the base extended), so the picture can stay small and the label clear.
+const M2A = { b: 10, h: 6, s: 7 };
+const m2aFig = ({ b, h, s }, unit) => {
+  const o = Math.sqrt(s * s - h * h);
+  return S.shape({ pts: [[0, 0], [b, 0], [b + o, h], [o, h]], sides: [`${num(b)} ${unit}`, '', '', `${num(s)} ${unit}`],
+    dash: [[[b + o, h], [b + o, 0], `${num(h)} ${unit}`], [[b, 0], [b + o, 0]]], marks: [[[b + o, 0], [b + o, 1], [b + o - 1, 0]]], maxH: 6 });
+};
 
 module.exports = {
   code: '10.5', title: 'Areas of quadrilaterals',
@@ -29,9 +37,9 @@ module.exports = {
   },
   medium: {
     ex: { stem: 'Choose the right formula. Some measurements are not needed.', parts: [
-      { t: 'Area', fig: S.para(12, 4, 3, { sides: ['12 cm', '5 cm'], ...raised(3, 4, '4 cm') }) }, 'A trapezium has parallel sides 7.5 m and 4.5 m, 3.2 m apart. Find its area.',
+      { t: 'Area', fig: m2aFig(M2A, 'cm') }, 'A trapezium has parallel sides 7.5 m and 4.5 m, 3.2 m apart. Find its area.',
       'A parallelogram has an area of 54 cm² and a base of 9 cm. Find its height.', 'A kite has diagonals of 1.2 m and 0.8 m. Find its area.'] },
-    exAns: [`the 5 cm side is not needed: A = 12 × 4 = ${u(48, 'cm²')}`, `½ × (7.5 + 4.5) × 3.2 = ${u(((7.5 + 4.5) / 2) * 3.2, 'm²')}`, `54 = 9 × h, so h = 54 ÷ 9 = ${u(54 / 9, 'cm')}`, `½ × 1.2 × 0.8 = ${u((1.2 * 0.8) / 2, 'm²')}`],
+    exAns: [`the ${num(M2A.s)} cm side is not needed: A = ${num(M2A.b)} × ${num(M2A.h)} = ${u(M2A.b * M2A.h, 'cm²')}`, `½ × (7.5 + 4.5) × 3.2 = ${u(((7.5 + 4.5) / 2) * 3.2, 'm²')}`, `54 = 9 × h, so h = 54 ÷ 9 = ${u(54 / 9, 'cm')}`, `½ × 1.2 × 0.8 = ${u((1.2 * 0.8) / 2, 'm²')}`],
     hint: 'The slanted side is not the height · Missing length: put the numbers into the formula, then work backwards.',
     rounds: [
       figRound('find the area of each shape. One length in each is not needed.', [para(9, 4, 3, 'm', 5), trap(13, 7, 4, 3, 'cm', 5),
@@ -48,7 +56,7 @@ module.exports = {
     ['Find the area of a parallelogram with base 7 m and height 3 m.', u(7 * 3, 'm²'), '10.5'],
     ['Find the perimeter of a rectangle 9 cm by 4 cm.', u(2 * (9 + 4), 'cm'), '10.4'],
     ['A trapezium has parallel sides 4 cm and 6 cm, 5 cm apart. Area?', u(((4 + 6) / 2) * 5, 'cm²'), '10.5'],
-    ['Find the percentage error of 2.5 kg.', `${num(pctErr(meas('2.5 kg').e, 2.5))}%`, '10.3'],
+    ['Percentage error of 16 kg, to the nearest kg?', `${num(pctErr(meas('16 kg').e, meas('16 kg').v))}%`, '10.3'],
     ['A rhombus has diagonals of 9 m and 4 m. Find its area.', u((9 * 4) / 2, 'm²'), '10.5'],
     ['Convert 0.6 km to m.', u(conv(0.6, 'km', 'm'), 'm'), '10.1'],
     ['A kite has diagonals of 10 cm and 7 cm. Find its area.', u((10 * 7) / 2, 'cm²'), '10.5'],
