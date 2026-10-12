@@ -36,7 +36,7 @@ const HOWTO = `
 // The Year 9 standard series adds a Mixed practice box at the end of each Medium page (lib/lesson-two.js spec.mixed).
 const HOWTO_MIXED = `
     <div class="howto">
-      <div><span class="step">1</span><span>Each lesson is <b>two pages</b>. Read the <b>learning intention</b> and tick each <b>success criterion</b> when you can do it.</span></div>
+      <div><span class="step">1</span><span>Each lesson is <b>two pages</b>. Read the <b>learning intention</b>, copy your teacher's notes into the <b>Notes</b> box, and tick each <b>success criterion</b> when you can do it.</span></div>
       <div><span class="step">2</span><span>Page 1 is <b class="lvl-word l1">Easy</b> and page 2 is <b class="lvl-word l2">Medium</b>. Each page starts with an example, then questions for you.</span></div>
       <div class="we"><span class="zone-pill">WE DO</span><span><b>Grey boxes.</b> Your teacher works each example on the board. <b>Copy every step</b> into the space.</span></div>
       <div class="you"><span class="zone-pill">YOU DO</span><span><b>Blue boxes.</b> Your turn. Work down the box one round at a time. Answers go on the line; show working in the boxes.</span></div>

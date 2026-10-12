@@ -154,10 +154,8 @@ module.exports = {
       round('find the volume of each rectangular prism or cube.', [[6, 4, 3, 'cm'], [10, 5, 2, 'm'], [3, 'cm'], [8, 5, 5, 'mm'], [12, 10, 4, 'cm'], [6, 'm'], [2.5, 4, 3, 'm'], [10, 'cm']],
         (q) => keep(q.length === 2 ? `cube, side ${L(q[0], q[1])}` : `${L(q[0], q[3])} × ${L(q[1], q[3])} × ${L(q[2], q[3])}`),
         (q) => (q.length === 2 ? V(q[0] ** 3, q[1]) : V(q[0] * q[1] * q[2], q[3]))),
-      figRound('A is the area of the end. Find the volume of each prism.', [
-        endQ([[0, 0], [6, 0], [5, 3], [1, 3]], [3, 1.2], 7, 'cm'), endQ([[0, 0], [6, 0], [6, 2], [3, 2], [3, 5], [0, 5]], [3, 1], 3, 'm'),
-        endQ([[0, 0], [6, 0], [6, 3], [3, 5], [0, 3]], [3, 1.6], 4, 'cm'), endQ([[1, 0], [7, 0], [8, 2], [7, 4], [1, 4], [0, 2]], [4, 2], 5, 'm')]),
-      figRound('find the volume of each cylinder, correct to one decimal place.', [cylQ(2, 5, 'cm'), cylQ(5, 3, 'm'), cylQ(4, 7, 'cm'), cylQ(1.5, 6, 'm')]),
+      figRound('find the volume of each prism (A = area of the end) or cylinder (one decimal place).', [
+        endQ([[0, 0], [6, 0], [5, 3], [1, 3]], [3, 1.2], 7, 'cm'), endQ([[0, 0], [6, 0], [6, 2], [3, 2], [3, 5], [0, 5]], [3, 1], 3, 'm'), cylQ(2, 5, 'cm'), cylQ(5, 3, 'm')]),
     ],
   },
   medium: {

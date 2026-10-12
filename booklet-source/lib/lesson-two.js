@@ -45,6 +45,11 @@ const header = (spec) => `
     <div class="card"><h3>Success criteria</h3><ul class="ticks">${spec.sc.map((x) => `<li>I can ${x}</li>`).join('')}</ul></div>
   </div>`;
 
+// The Notes box (chapter.notesBox: its height in mm): a blank box at the start of the lesson where students copy what the
+// teacher writes on the board (the teacher fills in the same box on the screen at the front of the room).
+const notesBox = (h) => `
+  <div class="notes-box" style="height:${h}mm"><span class="zone-pill">NOTES</span><span class="notes-text">Copy what your teacher writes on the board.</span></div>`;
+
 // The YOU DO box of one level: the method hint, then the rounds, numbered on through the level.
 const practice = (lvl, L) => {
   let from = 1;
@@ -77,7 +82,7 @@ module.exports = (raw) => (chapter) => {
   (spec.mixed || []).forEach((m, i) => { if (!m.q || m.a === undefined || !m.from) throw new Error(`${spec.code} mixed practice ${i + 1} needs q, a and from`); });
   const page = (section, body, first) => mbPage(chapter, { code: spec.code, title: spec.title, section, body, first, cls: 'two-page' });
   const pages = [
-    page('Easy', `${header(spec)}${level(1, spec.easy)}`, true),
+    page('Easy', `${header(spec)}${chapter.notesBox ? notesBox(chapter.notesBox) : ''}${level(1, spec.easy)}`, true),
     page('Medium', `${level(2, spec.medium)}${spec.mixed ? mixedBox(spec.mixed) : ''}`),
   ];
   const L = 'abcdefgh';

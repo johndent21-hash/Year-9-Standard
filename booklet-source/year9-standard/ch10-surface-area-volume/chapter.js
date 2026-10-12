@@ -22,6 +22,7 @@ const chapter = {
   fileName: 'Year9-Standard-Ch10-Surface-Area-and-Volume', art: 'silver-spiral', accent: '#3a1d5e', bodyClass: 'theme-mb theme-gold theme-violet',
   homework: false,
   coverSub: 'Easy, Medium, then Mixed practice',
+  notesBox: 33, // a Notes box at the start of each lesson, 1.5 × the height of a WE DO copy box (22 mm)
   howto: front.HOWTO_MIXED,
   plan, // every lesson, for the cover and contents
   goals: ['convert between metric units, including very large and very small units', 'find the precision, absolute error and percentage error of a measurement',

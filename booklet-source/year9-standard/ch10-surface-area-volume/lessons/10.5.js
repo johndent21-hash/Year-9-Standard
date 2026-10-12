@@ -30,8 +30,7 @@ module.exports = {
     exAns: [`A = bh = 12 × 4 = ${EX[0][1]}`, `A = ½(a + b)h = ½ × (14 + 8) × 6 = ${EX[1][1]}`, `A = ½xy = ½ × 10 × 6 = ${EX[2][1]}`, `A = ½xy = ½ × 8 × 12 = ${EX[3][1]}`],
     hint: 'h is the perpendicular height (the dashed line) · a and b are the parallel sides · x and y are the diagonals.',
     rounds: [
-      figRound('find the area of each parallelogram.', [para(10, 4, 2, 'cm'), para(8, 6, 3, 'm'), para(15, 7, 4, 'cm'), para(9, 5, 2.5, 'm')]),
-      figRound('find the area of each trapezium.', [trap(10, 6, 4, 2, 'cm'), trap(12, 8, 5, 2, 'm'), trap(9, 5, 6, 1, 'cm'), trap(11, 7, 4, 0, 'm')]),
+      figRound('find the area of each parallelogram or trapezium.', [para(10, 4, 2, 'cm'), para(8, 6, 3, 'm'), trap(10, 6, 4, 2, 'cm'), trap(11, 7, 4, 0, 'm')]),
       figRound('find the area of each rhombus or kite.', [kite(8, 6, 3, 'cm'), kite(6, 10, 3, 'm'), kite(14, 6, 3, 'cm'), kite(9, 16, 4, 'm')]),
     ],
   },

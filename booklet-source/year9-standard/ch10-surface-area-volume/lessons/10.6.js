@@ -83,9 +83,9 @@ module.exports = {
     hint: 'C = πd = 2πr · Semicircle P = ½ × πd + d · Quadrant P = ¼ × 2πr + r + r · Use the π key.',
     rounds: [
       round('find the circumference of each circle with radius r, correct to one decimal place.',
-        [[3, 'cm'], [7, 'm'], [10, 'cm'], [2.5, 'm'], [8, 'mm'], [1.5, 'km'], [20, 'cm'], [6.5, 'm']], ([r, x]) => `r = ${num(r)} ${x}`, ([r, x]) => d1(circ(r), x)),
+        [[3, 'cm'], [7, 'm'], [2.5, 'm'], [1.5, 'km']], ([r, x]) => `r = ${num(r)} ${x}`, ([r, x]) => d1(circ(r), x)),
       round('find the circumference of each circle with diameter d, correct to one decimal place.',
-        [[8, 'cm'], [15, 'm'], [30, 'mm'], [2, 'm'], [9, 'cm'], [50, 'cm'], [1.4, 'km'], [25, 'm']], ([d, x]) => `d = ${num(d)} ${x}`, ([d, x]) => d1(PI * d, x)),
+        [[8, 'cm'], [15, 'm'], [30, 'mm'], [1.4, 'km']], ([d, x]) => `d = ${num(d)} ${x}`, ([d, x]) => d1(PI * d, x)),
       figRound('find the perimeter of each shape, correct to one decimal place.', [semiD(8, 'cm'), quad(10, 'm'), semiR(7, 'm'), quad(4, 'cm')]),
     ],
   },

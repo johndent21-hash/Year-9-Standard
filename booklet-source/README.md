@@ -29,6 +29,8 @@ To check one lesson on its own while you write it, see `year9-standard/preview/R
 - `lessons/<code>.js` is one lesson: learning intention, success criteria, then `easy` and `medium` (an example with four
   parts, a one-line Remember hint, and rounds of questions) and `mixed` (8 Mixed practice questions, each tagged with the
   lesson it comes from). The fields are explained at the top of `lib/lesson-two.js`.
+- `chapter.js` also sets `notesBox: 33`: a blank Notes box (33 mm, 1.5 × a WE DO copy box) at the start of every lesson,
+  where students copy what the teacher writes on the board; the teacher fills in the same box on the screen.
 - `helpers.js` calculates every answer (nothing in the answer key is typed by hand); `shapes.js` draws the diagrams to
   scale from the same numbers.
 - The cover art is part of the Mandelbrot set, drawn by `tools/mandelbrot.py` (region `silver-spiral`, purple and silver).

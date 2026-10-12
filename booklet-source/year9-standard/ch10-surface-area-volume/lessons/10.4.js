@@ -33,12 +33,6 @@ module.exports = {
       `8 × 5 + ½ × 8 × 3 = 40 + 12 = ${u(areaOf(HOUSE.pts), 'cm²')}`, `10 × 6 − 3 × 2 = 60 − 6 = ${u(60 - 6, 'm²')}`],
     hint: 'Rectangle A = l × w · Triangle A = ½ × b × h · Shaded area = whole shape − the white part · Perimeter: add every side.',
     rounds: [
-      figRound('find the perimeter of each shape.', [
-        P({ pts: [[0, 0], [8, 0], [8, 3], [3, 3], [3, 7], [0, 7]], sides: ['8 cm', '3 cm', '', '', '3 cm', '7 cm'], right: [0, 5] }, 'cm'),
-        P({ pts: [[0, 0], [12, 0], [12, 10], [8, 10], [8, 4], [0, 4]], sides: ['12 m', '10 m', '4 m', '', '', '4 m'], right: [0, 1] }, 'm'),
-        P({ pts: [[5, 0], [9, 0], [9, 7], [14, 7], [14, 10], [0, 10], [0, 7], [5, 7]], sides: ['4 m', '7 m', '', '3 m', '14 m', '3 m', '', ''], dims: [[[0, 7], [5, 7], '5 m', -1]] }, 'm'),
-        P({ pts: [[0, 0], [12, 0], [12, 7], [9, 7], [9, 3], [3, 3], [3, 7], [0, 7]], sides: ['12 m', '7 m', '3 m', '', '', '', '3 m', '7 m'], dims: [[[9, 7], [9, 3], '4 m', -1]] }, 'm'),
-      ]),
       figRound('find the area of each shape.', [
         A({ pts: [[0, 0], [8, 0], [8, 3], [3, 3], [3, 7], [0, 7]], sides: ['8 cm', '3 cm', '', '', '3 cm', '7 cm'], right: [0, 5] }, 'cm'),
         A({ pts: [[0, 0], [10, 0], [10, 8], [6, 8], [6, 3], [0, 3]], sides: ['10 m', '8 m', '4 m', '', '', '3 m'], right: [0, 1] }, 'm'),

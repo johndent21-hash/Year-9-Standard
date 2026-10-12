@@ -1,5 +1,5 @@
 // Lesson 10.2 Precision and absolute error (two pages: Easy, then Medium, then Mixed practice). See lib/lesson-two.js.
-const { F, num, u, conv, absErr, prec, aerr, limits, round, problems, mix } = require('../helpers');
+const { num, u, conv, absErr, prec, aerr, limits, round, problems, mix } = require('../helpers');
 const S = require('../shapes');
 
 // The measuring scales: [picture, precision, unit]. EX are the teacher's examples.
@@ -23,15 +23,15 @@ const every = (what, step, unit) => [`${what} marked every ${u(step, unit)}. Abs
 module.exports = {
   code: '10.2', title: 'Precision and absolute error',
   li: 'find the precision and absolute error of a measuring instrument or a measurement.',
-  sc: ['find the precision: the smallest unit on the scale', `find the absolute error: ${F(1, 2)} of the precision`, 'find the smallest and largest possible true value'],
+  sc: ['find the precision: the smallest unit on the scale', 'find the absolute error: half the precision', 'find the smallest and largest possible true value'],
   easy: {
     ex: { stem: 'Find the precision and the absolute error of each.', parts: [
       { t: 'This ruler', fig: EX[0][0] }, { t: 'This jug', fig: EX[1][0] }, 'A path 24 m long, to the nearest metre', 'A bag of flour with a mass of 3.6 kg'] },
     exAns: [both(EX[0]), both(EX[1]), `precision ${prec('24 m')}, absolute error ${aerr('24 m')}`, `precision ${prec('3.6 kg')}, absolute error ${aerr('3.6 kg')}`],
-    hint: 'The precision of a measurement is the place value of its last digit: 3.6 kg is to the nearest 0.1 kg. Absolute error = precision ÷ 2.',
+    hint: 'Precision: the place value of the last digit (3.6 kg → 0.1 kg) · Absolute error = precision ÷ 2',
     rounds: [
-      round('write the precision of each measurement.', ['7 m', '3.6 cm', '12.45 kg', '58 mm', '2.8 L', '0.75 t', '104 g', '9.3 s'], (m) => m, prec),
-      round('write the absolute error of each measurement.', ['15 m', '6.2 kg', '43 mL', '8.25 m', '125 cm', '0.4 L', '19.75 s', '312 g'], (m) => m, aerr),
+      round('write the precision of each measurement.', ['7 m', '3.6 cm', '12.45 kg', '9.3 s'], (m) => m, prec),
+      round('write the absolute error of each measurement.', ['15 m', '6.2 kg', '8.25 m', '0.4 L'], (m) => m, aerr),
       round('write the precision and the absolute error of each scale.', SCALES.map((x, i) => [...x, NAMES[i]]), ([fig, , , t]) => ({ t, fig }), both),
     ],
   },

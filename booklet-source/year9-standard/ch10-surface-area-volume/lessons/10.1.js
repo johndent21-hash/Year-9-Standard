@@ -18,7 +18,6 @@ module.exports = {
       round('convert each length.', [[6, 'km', 'm'], [3000, 'm', 'km'], [4, 'm', 'cm'], [700, 'cm', 'm'], [9, 'cm', 'mm'], [120, 'mm', 'cm'], [2.5, 'km', 'm'], [45, 'cm', 'm']], cq, ca),
       round('convert each mass.', [[5, 'kg', 'g'], [2000, 'g', 'kg'], [3, 't', 'kg'], [6500, 'kg', 't'], [0.8, 'kg', 'g'], [750, 'g', 'kg'], [4000, 'mg', 'g'], [1.2, 't', 'kg']], cq, ca),
       round('convert each capacity.', [[7, 'L', 'mL'], [3000, 'mL', 'L'], [2, 'kL', 'L'], [4500, 'L', 'kL'], [1.5, 'L', 'mL'], [250, 'mL', 'L'], [0.6, 'kL', 'L'], [80, 'mL', 'L']], cq, ca),
-      round('convert each one. Some take two steps.', [[4, 'km', 'cm'], [3, 'm', 'mm'], [60000, 'cm', 'km'], [5000, 'mm', 'm'], [2, 'kg', 'mg'], [1, 'kL', 'mL'], [0.5, 'km', 'cm'], [80, 'mm', 'm']], cq, ca),
     ],
   },
   medium: {

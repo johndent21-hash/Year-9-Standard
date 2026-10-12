@@ -146,7 +146,7 @@ const walls = 2 * (ROOM.l * ROOM.h + ROOM.w * ROOM.h), ceiling = ROOM.l * ROOM.w
 module.exports = {
   code: '10.8', title: 'Surface area of a prism',
   li: 'find the surface area of a prism by adding the areas of its faces.',
-  sc: ['find the surface area of a cube and a rectangular prism', 'find the surface area of a triangular prism', 'find the surface area of an open prism'],
+  sc: ['find the surface area of a cube or a box', 'find the surface area of a triangular prism', 'find the surface area of an open prism'],
   easy: {
     ex: { stem: 'Surface area (SA) = the total area of all the faces of a solid.', parts: [
       { t: 'Cube: find the SA', fig: box(5, 5, 5, 'm', EXBOX) }, { t: 'Find the SA', fig: box(8, 5, 4, 'cm', EXBOX) },
@@ -155,9 +155,7 @@ module.exports = {
       '5 faces: 2 triangles (the ends) and 3 rectangles', `no top: ${num(boxSA(8, 5, 4))} − 8 × 5 = ${num(boxSA(8, 5, 4))} − 40 = ${u(openSA(8, 5, 4), 'cm²')}`],
     hint: 'Cube: SA = 6 × side² · Rectangular prism: SA = 2 × (lw + lh + wh) · No lid: take away the top, l × w',
     rounds: [
-      round('find the surface area of each cube with side s.', [[2, 'cm'], [4, 'm'], [10, 'mm'], [7, 'cm'], [1.5, 'm'], [9, 'cm'], [3, 'm'], [20, 'mm']],
-        ([s, x]) => `s = ${num(s)} ${x}`, ([s, x]) => u(6 * s * s, `${x}²`)),
-      figRound('find the surface area of each rectangular prism.', [boxQ(6, 4, 3, 'cm'), boxQ(10, 5, 2, 'm'), boxQ(7, 3, 5, 'cm'), boxQ(9, 6, 4, 'mm')]),
+      figRound('find the surface area of each cube or rectangular prism.', [boxQ(4, 4, 4, 'cm'), boxQ(6, 4, 3, 'cm'), boxQ(10, 5, 2, 'm'), boxQ(7, 3, 5, 'cm')]),
       figRound('each box has no lid. Find its surface area.', [openQ(6, 5, 3, 'cm'), openQ(10, 4, 5, 'cm'), openQ(8, 6, 3, 'm'), openQ(12, 5, 4, 'cm')]),
     ],
   },

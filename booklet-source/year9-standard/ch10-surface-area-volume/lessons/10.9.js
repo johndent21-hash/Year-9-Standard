@@ -83,8 +83,7 @@ module.exports = {
     rounds: [
       round('find the curved surface area (2πrh), correct to one decimal place.', [[2, 5, 'cm'], [5, 6, 'm'], [1, 9, 'm'], [7, 3, 'mm'], [2.5, 8, 'cm'], [10, 12, 'cm'], [1.5, 2, 'm'], [6, 2.5, 'm']],
         ([r, h, unit]) => `r = ${L(r, unit)}, h = ${L(h, unit)}`, ([r, h, unit]) => A(curved(r, h), unit)),
-      figRound('find the total surface area of each closed cylinder, correct to one decimal place.', [cylQ(2, 6, 'cm'), cylQ(5, 3, 'm'), cylQ(4, 9, 'cm'), cylQ(1.5, 4, 'm')]),
-      figRound('find the total surface area (all closed, r = d ÷ 2), correct to one decimal place.', [cylQ(3, 9, 'cm', { d: true }), cylQ(5, 12, 'm', { d: true }), cylQ(10, 5, 'cm', { d: true }), cylQ(2, 15, 'm', { d: true })]),
+      figRound('find the total surface area of each closed cylinder, correct to one decimal place.', [cylQ(2, 6, 'cm'), cylQ(5, 3, 'm'), cylQ(3, 9, 'cm', { d: true }), cylQ(10, 5, 'cm', { d: true })]),
     ],
   },
   medium: {

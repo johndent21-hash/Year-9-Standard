@@ -114,9 +114,9 @@ module.exports = {
     exAns: [`A = π × 5² = ${EX1[0][1]}`, `r = 12 ÷ 2 = 6 m; A = π × 6² = ${EX1[1][1]}`, `r = 10 ÷ 2 = 5 cm; A = ½ × π × 5² = ${EX1[2][1]}`, `A = ¼ × π × 6² = ${EX1[3][1]}`],
     hint: 'A = πr² · r = d ÷ 2 · Semicircle: ½ of a circle · Quadrant: ¼ of a circle · Use the π key, then round.',
     rounds: [
-      round('find the area of each circle, correct to one decimal place.', [[3, 'cm'], [7, 'm'], [10, 'mm'], [4, 'cm'], [2.5, 'm'], [9, 'cm'], [1.5, 'km'], [12, 'm']],
+      round('find the area of each circle, correct to one decimal place.', [[3, 'cm'], [7, 'm'], [2.5, 'm'], [1.5, 'km']],
         ([r, unit]) => `r = ${L(r, unit)}`, ([r, unit]) => A(area(r), unit)),
-      round('find the area of each circle. Halve the diameter first. Correct to one decimal place.', [[16, 'm'], [22, 'mm'], [2, 'm'], [30, 'cm'], [7, 'cm'], [26, 'm'], [50, 'cm'], [1.2, 'km']],
+      round('find the area of each circle. Halve the diameter first. Correct to one decimal place.', [[16, 'm'], [22, 'mm'], [7, 'cm'], [1.2, 'km']],
         ([d, unit]) => `d = ${L(d, unit)}`, ([d, unit]) => A(area(d / 2), unit)),
       figRound('find the area of each shape, correct to one decimal place.', [semiQ(14, 'cm'), quadQ(8, 'm'), semiQ(20, 'm', 180), quadQ(11, 'cm', 180)]),
     ],

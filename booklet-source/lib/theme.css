@@ -1111,3 +1111,7 @@ ul.plain { list-style: none; padding-left: 0; }
 /* answer key: each lesson in one piece, with its heading on one line */
 .theme-violet .ans-lesson { break-inside: avoid; }
 .theme-violet .ans-page { white-space: nowrap; }
+/* Notes box at the start of a lesson (lib/lesson-two.js notesBox): blank, with a WE DO-style border (copy from the board) */
+.notes-box { flex: none; position: relative; border: 0.8mm solid var(--charcoal); border-radius: 3mm; background: #fff; }
+.notes-box .zone-pill { position: absolute; top: 1.6mm; left: 2.5mm; background: var(--charcoal); }
+.notes-box .notes-text { position: absolute; top: 2.3mm; left: 24mm; font-size: 8.5pt; font-weight: 600; color: var(--charcoal); }
