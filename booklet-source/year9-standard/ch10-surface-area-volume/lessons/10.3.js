@@ -28,9 +28,9 @@ module.exports = {
     hint: 'The smaller the percentage error, the more accurate the measurement. Use the instrument’s precision when it is given.',
     rounds: [
       round('find the percentage error, correct to 2 decimal places.', ['24 m', '3.6 cm', '12.45 kg', '175 cm', '0.8 L', '2.35 m', '48 s', '9.5 kg'], (m) => m, (m) => pe(m, 2)),
-      round('find the percentage error, correct to 2 decimal places.', [['350 g', 'on scales marked every 10 g', 5], ['75 mL', 'in a jug marked every 25 mL', 12.5], ['38°C', 'on a thermometer marked every 2°', 1], ['1.2 m', 'on a tape marked every 5 cm', 0.025]],
-        ([m, d]) => `${m} ${d}`, ([m, , e]) => pe(m.replace('°C', ' °C'), 2, e)),
-      problems('solve each problem. Show your working.', [
+      round('find the percentage error, correct to 2 decimal places.', [['350 g', 'on scales marked every 10 g', 5], ['75 mL', 'in a jug marked every 25 mL', 12.5], ['60 km/h', 'on a speedo marked every 10 km/h', 5], ['1.2 m', 'on a tape marked every 5 cm', 0.025]],
+        ([m, d]) => `${m} ${d}`, ([m, , e]) => pe(m, 2, e)),
+      problems('solve each problem, correct to 2 decimal places. Show your working.', [
         ['Mia’s pencil is 15 cm long and she is 168 cm tall, both to the nearest cm. Which is more accurate?', `height: ${pe('168 cm', 2)} is smaller than ${pe('15 cm', 2)}`],
         ['A 100 m sprint is timed as 12.4 s. Find the percentage error of the time.', pe('12.4 s', 2)],
       ]),

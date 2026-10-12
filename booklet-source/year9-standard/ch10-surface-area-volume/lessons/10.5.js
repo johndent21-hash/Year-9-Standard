@@ -4,12 +4,14 @@ const S = require('../shapes');
 
 const half = F(1, 2);
 // Each question: [picture, area]. unit is the length unit.
-const para = (b, h, s, unit, slant) => [S.para(b, h, s, { sides: [`${num(b)} ${unit}`, slant ? `${num(slant)} ${unit}` : ''], hLabel: `${num(h)} ${unit}` }), u(b * h, `${unit}²`)];
+const para = (b, h, s, unit, slant, o = {}) => [S.para(b, h, s, { sides: [`${num(b)} ${unit}`, slant ? `${num(slant)} ${unit}` : ''], hLabel: `${num(h)} ${unit}`, ...o }), u(b * h, `${unit}²`)];
 const trap = (a, b, h, s, unit, slant) => [S.trap(a, b, h, s, { sides: [`${num(a)} ${unit}`, '', `${num(b)} ${unit}`, slant ? `${num(slant)} ${unit}` : ''], hLabel: s > 0.01 ? `${num(h)} ${unit}` : '', ...(s > 0.01 ? {} : { sides: [`${num(a)} ${unit}`, '', `${num(b)} ${unit}`, `${num(h)} ${unit}`] }) }), u(((a + b) / 2) * h, `${unit}²`)];
-const kite = (x, y, c, unit, side) => [S.kite(x, y, c, { xLabel: `${num(x)} ${unit}`, yLabel: `${num(y)} ${unit}`, sides: side ? [`${num(side)} ${unit}`] : [] }), u((x * y) / 2, `${unit}²`)];
+const kite = (x, y, c, unit) => [S.kite(x, y, c, { xLabel: `${num(x)} ${unit}`, yLabel: `${num(y)} ${unit}` }), u((x * y) / 2, `${unit}²`)];
 const figRound = (text, list) => ({ text, items: list.map(([fig]) => ({ t: '', fig })), ans: list.map((x) => x[1]), cols: 4 });
+// The 12 by 4 parallelogram is flat: its height label is raised (a third of the way down) so it clears the right-angle mark.
+const raised = (s, h, lab) => ({ dash: [[[s, h], [s, 0], lab, 1, 0.35]] });
 
-const EX = [para(12, 4, 3, 'cm'), trap(14, 8, 6, 3, 'cm'), kite(10, 6, 3, 'm'), kite(8, 12, 4, 'cm')];
+const EX = [para(12, 4, 3, 'cm', 0, raised(3, 4, '4 cm')), trap(14, 8, 6, 3, 'cm'), kite(10, 6, 3, 'm'), kite(8, 12, 4, 'cm')];
 
 module.exports = {
   code: '10.5', title: 'Areas of quadrilaterals',
@@ -27,12 +29,15 @@ module.exports = {
   },
   medium: {
     ex: { stem: 'Choose the right formula. Some measurements are not needed.', parts: [
-      { t: 'Area', fig: S.para(12, 4, 3, { sides: ['12 cm', '5 cm'], hLabel: '4 cm' }) }, 'A trapezium has parallel sides 7.5 m and 4.5 m, 3.2 m apart. Find its area.',
+      { t: 'Area', fig: S.para(12, 4, 3, { sides: ['12 cm', '5 cm'], ...raised(3, 4, '4 cm') }) }, 'A trapezium has parallel sides 7.5 m and 4.5 m, 3.2 m apart. Find its area.',
       'A parallelogram has an area of 54 cm² and a base of 9 cm. Find its height.', 'A kite has diagonals of 1.2 m and 0.8 m. Find its area.'] },
     exAns: [`the 5 cm side is not needed: A = 12 × 4 = ${u(48, 'cm²')}`, `½ × (7.5 + 4.5) × 3.2 = ${u(((7.5 + 4.5) / 2) * 3.2, 'm²')}`, `54 = 9 × h, so h = 54 ÷ 9 = ${u(54 / 9, 'cm')}`, `½ × 1.2 × 0.8 = ${u((1.2 * 0.8) / 2, 'm²')}`],
     hint: 'The slanted side is not the height · Missing length: put the numbers into the formula, then work backwards.',
     rounds: [
-      figRound('find the area of each shape. One length in each is not needed.', [para(9, 4, 3, 'm', 5), trap(13, 7, 4, 3, 'cm', 5), kite(16, 12, 6, 'cm', 10), [S.trap(11, 7, 4.5, 2, { sides: ['11 m', '', '7 m', '4.9 m'], hLabel: '4.5 m' }), u(((11 + 7) / 2) * 4.5, 'm²')]]),
+      figRound('find the area of each shape. One length in each is not needed.', [para(9, 4, 3, 'm', 5), trap(13, 7, 4, 3, 'cm', 5),
+        // the rhombus's 10 cm side is labelled outside its top-left side (as a side label it touched the side and the 12 cm line)
+        [S.kite(16, 12, 6, { xLabel: '16 cm', yLabel: '12 cm', labels: [['10 cm', -5.9, 11.6]] }), u((16 * 12) / 2, 'cm²')],
+        [S.trap(11, 7, 4.5, 2, { sides: ['11 m', '', '7 m', '4.9 m'], hLabel: '4.5 m' }), u(((11 + 7) / 2) * 4.5, 'm²')]]),
       { text: 'find the missing measurement. Show your working.', cols: 2, work: true, items: [
         'A parallelogram has an area of 72 cm² and a base of 9 cm. Find its height.', 'A rhombus has an area of 24 m² and one diagonal of 8 m. Find the other diagonal.',
         'A trapezium has parallel sides of 6 cm and 10 cm and an area of 40 cm². Find its height.', 'A square has diagonals of 10 cm. Use the rhombus formula to find its area.'],

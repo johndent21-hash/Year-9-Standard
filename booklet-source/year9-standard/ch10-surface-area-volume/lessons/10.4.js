@@ -16,7 +16,7 @@ const HOUSE = { pts: [[0, 0], [8, 0], [8, 5], [4, 8], [0, 5]], sides: ['8 cm', '
 const HOLE = { pts: [[0, 0], [10, 0], [10, 6], [0, 6]], sides: ['10 m', '6 m'], shade: true, holes: [[[3, 2], [6, 2], [6, 4], [3, 4]]], labels: [['3 m', 4.5, 4.8], ['2 m', 6.3, 2.6, { anchor: 'start' }]] };
 const STAIRS = { pts: [[0, 0], [12, 0], [12, 3], [8, 3], [8, 6], [4, 6], [4, 9], [0, 9]], sides: ['12 m', '3 m', '', '3 m', '', '', '', '9 m'], right: [0, 7] };
 const ROOF = { pts: [[0, 0], [7.5, 0], [7.5, 4], [3.75, 6.4], [0, 4]], sides: ['7.5 cm', '4 cm'], dash: [[[0, 4], [7.5, 4]], [[3.75, 6.4], [3.75, 4]]], dims: [[[0, 4], [0, 6.4], '2.4 cm', 1]], right: [0, 1] };
-const TRIHOLE = { pts: [[0, 0], [12, 0], [12, 8], [0, 8]], sides: ['', '', '12 m', '8 m'], shade: true, holes: [[[2, 2], [7, 2], [4.5, 6]]], dims: [[[7.4, 2], [7.4, 6], '4 m', -1]], labels: [['5 m', 4.5, 1.1]] };
+const TRIHOLE = { pts: [[0, 0], [12, 0], [12, 8], [0, 8]], sides: ['', '', '12 m', '8 m'], shade: true, holes: [[[2, 2], [7, 2], [4.5, 6]]], dims: [[[7, 2], [7, 6], '4 m', -1]], labels: [['5 m', 4.5, 1.1]] };
 
 module.exports = {
   code: '10.4', title: 'Perimeter and area of composite shapes',
@@ -32,8 +32,8 @@ module.exports = {
       figRound('find the perimeter of each shape.', [
         P({ pts: [[0, 0], [8, 0], [8, 3], [3, 3], [3, 7], [0, 7]], sides: ['8 cm', '3 cm', '', '', '3 cm', '7 cm'], right: [0, 5] }, 'cm'),
         P({ pts: [[0, 0], [12, 0], [12, 10], [8, 10], [8, 4], [0, 4]], sides: ['12 m', '10 m', '4 m', '', '', '4 m'], right: [0, 1] }, 'm'),
-        P({ pts: [[4, 0], [8, 0], [8, 7], [12, 7], [12, 10], [0, 10], [0, 7], [4, 7]], sides: ['4 cm', '7 cm', '4 cm', '3 cm', '12 cm', '3 cm', '', ''] }, 'cm'),
-        P({ pts: [[0, 0], [12, 0], [12, 7], [8, 7], [8, 3], [4, 3], [4, 7], [0, 7]], sides: ['12 m', '7 m', '4 m', '4 m', '', '', '4 m', '7 m'] }, 'm'),
+        P({ pts: [[5, 0], [9, 0], [9, 7], [14, 7], [14, 10], [0, 10], [0, 7], [5, 7]], sides: ['4 m', '7 m', '', '3 m', '14 m', '3 m', '5 m', ''] }, 'm'),
+        P({ pts: [[0, 0], [12, 0], [12, 7], [9, 7], [9, 3], [3, 3], [3, 7], [0, 7]], sides: ['12 m', '7 m', '3 m', '4 m', '', '', '3 m', '7 m'] }, 'm'),
       ]),
       figRound('find the area of each shape.', [
         A({ pts: [[0, 0], [8, 0], [8, 3], [3, 3], [3, 7], [0, 7]], sides: ['8 cm', '3 cm', '', '', '3 cm', '7 cm'], right: [0, 5] }, 'cm'),
@@ -41,7 +41,7 @@ module.exports = {
         A({ pts: [[0, 0], [6, 0], [6, 4], [3, 7], [0, 4]], sides: ['6 cm', '4 cm'], dash: [[[0, 4], [6, 4]], [[3, 7], [3, 4]]], dims: [[[0, 4], [0, 7], '3 cm', 1]], right: [0, 1] }, 'cm'),
         A({ pts: [[0, 0], [14, 0], [8, 5], [0, 5]], sides: ['14 m', '', '8 m', '5 m'], dash: [[[8, 5], [8, 0]]], right: [0, 3] }, 'm'),
       ]),
-      figRound('find each shaded area.', [
+      figRound('find each shaded area. In question 10 the white part is a square.', [
         A({ pts: [[0, 0], [10, 0], [10, 6], [0, 6]], sides: ['10 m', '6 m'], shade: true, holes: [[[3, 1.5], [7, 1.5], [7, 4.5], [3, 4.5]]], labels: [['4 m', 5, 5.3], ['3 m', 7.3, 2.6, { anchor: 'start' }]] }, 'm'),
         A({ pts: [[0, 0], [8, 0], [8, 8], [0, 8]], sides: ['8 cm', '8 cm'], shade: true, holes: [[[1.5, 1.5], [6.5, 1.5], [6.5, 6.5], [1.5, 6.5]]], labels: [['5 cm', 4, 4]] }, 'cm'),
         A({ pts: [[0, 0], [12, 0], [12, 7], [0, 7]], sides: ['12 m', '7 m'], shade: true, holes: [[[0, 0], [12, 0], [6, 7]]] }, 'm'),
@@ -58,12 +58,12 @@ module.exports = {
     rounds: [
       figRound('find the perimeter of each shape.', [
         P({ pts: [[0, 0], [10, 0], [10, 4], [5, 4], [5, 8], [0, 8]], sides: ['10 cm', '4 cm', '', '', '', '8 cm'], right: [0, 5] }, 'cm'),
-        P({ pts: [[0, 0], [9, 0], [9, 6], [6.5, 6], [6.5, 2.5], [2.5, 2.5], [2.5, 6], [0, 6]], sides: ['9 m', '6 m', '2.5 m', '', '4 m', '', '2.5 m', '6 m'] }, 'm'),
+        P({ pts: [[0, 0], [9, 0], [9, 6], [7, 6], [7, 2.5], [2, 2.5], [2, 6], [0, 6]], sides: ['9 m', '6 m', '2 m', '3.5 m', '', '', '2 m', '6 m'] }, 'm'),
         P({ pts: [[0, 0], [8, 0], [8, 5], [4, 8], [0, 5]], sides: ['8 m', '5 m', '5 m', '5 m', '5 m'], right: [0, 1] }, 'm'),
         P({ pts: [[4, 0], [8, 0], [8, 5], [12, 5], [12, 8], [0, 8], [0, 5], [4, 5]], sides: ['4 cm', '5 cm', '', '3 cm', '12 cm', '', '', ''] }, 'cm', 'It is symmetrical.'),
       ]),
       figRound('find the area of each shape.', [
-        A({ pts: [[0, 0], [10, 0], [10, 6], [7, 6], [7, 3], [3, 3], [3, 6], [0, 6]], sides: ['10 m', '6 m', '3 m', '3 m', '', '', '3 m', ''], right: [0, 1] }, 'm'),
+        A({ pts: [[0, 0], [10, 0], [10, 6], [8, 6], [8, 3], [2, 3], [2, 6], [0, 6]], sides: ['10 m', '6 m', '2 m', '3 m', '', '', '2 m', ''], right: [0, 1] }, 'm'),
         A({ pts: [[0, 0], [9, 0], [13, 3], [9, 6], [0, 6]], sides: ['9 cm', '', '', '', '6 cm'], dash: [[[9, 0], [9, 6]], [[9, 3], [13, 3]]], dims: [[[9, 0], [13, 0], '4 cm', -1]], right: [0, 4] }, 'cm'),
         A({ pts: [[0, 0], [10, 0], [10, 10], [0, 10]], sides: ['', '', '10 m', '10 m'], shade: true, holes: [[[4, 0], [10, 0], [10, 5]]], labels: [['6 m', 7, -1.5], ['5 m', 10.5, 2.1, { anchor: 'start' }]] }, 'm'),
         A({ pts: [[0, 0], [12, 0], [12, 8], [0, 8]], sides: ['12 cm', '8 cm'], shade: true, holes: [[[2, 2], [10, 2], [10, 6], [2, 6]]], labels: [['8 cm', 6, 4.9], ['4 cm', 9.6, 3.3, { anchor: 'end' }]] }, 'cm'),
@@ -73,11 +73,11 @@ module.exports = {
   mixed: mix(
     ['A rectangle is 12 m by 5 m. Find its perimeter.', u(2 * (12 + 5), 'm'), '10.4'],
     ['Find the percentage error of 40 cm, to the nearest cm.', `${num(pctErr(meas('40 cm').e, 40))}%`, '10.3'],
-    ['A 12 m by 8 m lawn has a 3 m by 2 m garden bed. Area of lawn?', u(12 * 8 - 3 * 2, 'm²'), '10.4'],
+    ['A 12 m by 8 m yard has a 3 m by 2 m garden bed; the rest is lawn. Lawn area?', u(12 * 8 - 3 * 2, 'm²'), '10.4'],
     ['Convert 2.4 m to cm.', u(conv(2.4, 'm', 'cm'), 'cm'), '10.1'],
     ['A triangle has base 9 m and height 4 m. Find its area.', u(0.5 * 9 * 4, 'm²'), '10.4'],
     ['Write the limits of 7.2 m.', limits('7.2 m'), '10.2'],
-    ['An L-shape is a 6 m by 2 m and a 3 m by 2 m rectangle. Area?', u(12 + 6, 'm²'), '10.4'],
+    ['An L-shape is made of a 6 m by 2 m and a 3 m by 2 m rectangle. Area?', u(12 + 6, 'm²'), '10.4'],
     ['A square has an area of 49 cm². Find its perimeter.', u(4 * 7, 'cm'), '10.4'],
   ),
 };

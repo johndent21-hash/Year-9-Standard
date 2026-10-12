@@ -3,14 +3,16 @@ const { F, num, u, conv, prec, aerr, limits, round, problems, mix } = require('.
 const S = require('../shapes');
 
 // The measuring scales: [picture, precision, unit]. EX are the teacher's examples.
+// The upright scales are capped at 21-24 mm tall on the page, so they are kept short (len) with at most 16 marks: then
+// the numbers print at about 5 pt and the marks about 1 mm apart.
 const EX = [
-  [S.scale({ max: 6, major: 1, minor: 0.1, unit: 'cm' }), 1, 'mm'],
-  [S.scale({ max: 1000, major: 200, minor: 50, unit: 'mL', kind: 'jug', level: 650, len: 30 }), 50, 'mL'],
+  [S.scale({ max: 3, major: 1, minor: 0.1, unit: 'cm' }), 1, 'mm'],
+  [S.scale({ max: 800, major: 200, minor: 50, unit: 'mL', kind: 'jug', level: 650, len: 18 }), 50, 'mL'],
 ];
 const SCALES = [
   [S.scale({ max: 2, major: 0.5, minor: 0.1, unit: 'kg' }), 0.1, 'kg'],
-  [S.scale({ max: 500, major: 100, minor: 20, unit: 'mL', kind: 'jug', level: 340, len: 30 }), 20, 'mL'],
-  [S.scale({ max: 40, major: 10, minor: 2, unit: '°C', kind: 'thermo', level: 24, len: 30 }), 2, '°C'],
+  [S.scale({ max: 300, major: 100, minor: 20, unit: 'mL', kind: 'jug', level: 240, len: 22 }), 20, 'mL'],
+  [S.scale({ max: 30, major: 10, minor: 2, unit: '°C', kind: 'thermo', level: 24, len: 18 }), 2, '°C'],
   [S.scale({ max: 5, major: 1, minor: 0.5, unit: 'm' }), 0.5, 'm'],
 ];
 const both = ([, p, unit]) => `precision ${u(p, unit)}, absolute error ${u(p / 2, unit)}`;
@@ -32,7 +34,7 @@ module.exports = {
     ],
   },
   medium: {
-    ex: { stem: 'Limits: from measurement − absolute error to measurement + absolute error.', parts: [
+    ex: { stem: 'Limits of accuracy: measurement − absolute error to measurement + absolute error.', parts: [
       'A plank is 2.45 m long. Find its precision and absolute error.', 'Write the limits of the plank’s length in part a.',
       'Jo is 162 cm tall, to the nearest cm. Write the limits.', 'A jug marked every 50 mL shows 650 mL. Write the limits.'] },
     exAns: [`precision ${prec('2.45 m')}, absolute error ${aerr('2.45 m')}`, limits('2.45 m'), limits('162 cm'), limits('650 mL', 25)],

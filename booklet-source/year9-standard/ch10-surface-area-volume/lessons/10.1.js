@@ -1,5 +1,7 @@
 // Lesson 10.1 Metric units (two pages: Easy, then Medium, then Mixed practice). See lib/lesson-two.js for the fields.
 const { num, u, conv, cq, ca, round, problems, mix } = require('../helpers');
+// A hint as a list of facts: a line can wrap only between facts, never inside one ('1 s =' / '1000 ms').
+const facts = (...list) => list.map((f) => f.replace(/ /g, '\u00a0')).join(' · ');
 
 module.exports = {
   code: '10.1', title: 'Metric units',
@@ -8,7 +10,7 @@ module.exports = {
   easy: {
     ex: { stem: 'Convert each one. To a smaller unit, multiply. To a bigger unit, divide.', parts: ['8 km to m', '250 cm to m', '3.5 kg to g', '4500 mL to L'] },
     exAns: [`8 × 1000 = ${u(8000, 'm')}`, `250 ÷ 100 = ${u(2.5, 'm')}`, `3.5 × 1000 = ${u(3500, 'g')}`, `4500 ÷ 1000 = ${u(4.5, 'L')}`],
-    hint: '1 km = 1000 m · 1 m = 100 cm · 1 cm = 10 mm · 1 t = 1000 kg · 1 kg = 1000 g · 1 kL = 1000 L · 1 L = 1000 mL',
+    hint: facts('1 km = 1000 m', '1 m = 100 cm', '1 cm = 10 mm', '1 t = 1000 kg', '1 kg = 1000 g', '1 g = 1000 mg', '1 kL = 1000 L', '1 L = 1000 mL'),
     rounds: [
       round('convert each length.', [[6, 'km', 'm'], [3000, 'm', 'km'], [4, 'm', 'cm'], [700, 'cm', 'm'], [9, 'cm', 'mm'], [120, 'mm', 'cm'], [2.5, 'km', 'm'], [45, 'cm', 'm']], cq, ca),
       round('convert each mass.', [[5, 'kg', 'g'], [2000, 'g', 'kg'], [3, 't', 'kg'], [6500, 'kg', 't'], [0.8, 'kg', 'g'], [750, 'g', 'kg'], [4000, 'mg', 'g'], [1.2, 't', 'kg']], cq, ca),
@@ -17,9 +19,9 @@ module.exports = {
     ],
   },
   medium: {
-    ex: { stem: 'Convert each one. Time is not metric: 1 h = 60 min and 1 min = 60 s.', parts: ['3.5 h to min', '150 s to min', '4.2 GB to MB', '2 500 000 μm to m'] },
+    ex: { stem: 'Convert each one. Hours and minutes are not metric: 1 h = 60 min and 1 min = 60 s.', parts: ['3.5 h to min', '150 s to min', '4.2 GB to MB', '2 500 000 μm to m'] },
     exAns: [`3.5 × 60 = ${u(210, 'min')}`, `150 ÷ 60 = ${u(2.5, 'min')}`, `4.2 × 1000 = ${u(4200, 'MB')}`, `2 500 000 ÷ 1 000 000 = ${u(2.5, 'm')}`],
-    hint: 'mega- (M) = 1 000 000 · giga- (G) = 1 000 000 000 · tera- (T) = 1000 giga- · micro- (μ) = one-millionth · 1 s = 1000 ms',
+    hint: facts('mega- (M) = 1 000 000', 'giga- (G) = 1 000 000 000', 'tera- (T) = 1000 giga-', 'micro- (μ) = one-millionth', '1 s = 1000 ms'),
     rounds: [
       round('convert each time.', [[5, 'min', 's'], [4, 'h', 'min'], [180, 's', 'min'], [2.5, 'h', 'min'], [90, 'min', 'h'], [3, 'day', 'h'], [4000, 'ms', 's'], [1.5, 'min', 's']], cq, ca),
       round('convert using the prefixes.', [[3, 'GB', 'MB'], [4500, 'MB', 'GB'], [2.4, 'TB', 'GB'], [34000, 'B', 'kB'], [2.6, 'Mm', 'm'], [0.7, 's', 'ms'], [3000000, 'μm', 'm'], [5, 'ms', 'μs']], cq, ca),
