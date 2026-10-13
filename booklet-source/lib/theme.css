@@ -1153,3 +1153,26 @@ ul.plain { list-style: none; padding-left: 0; }
 .dq .q-text .q-tag { float: right; margin-left: 2mm; font-size: 7pt; font-weight: 600; color: var(--muted); border: 0.3mm solid #b9b5a6; border-radius: 1mm; padding: 0 1.2mm; background: #fff; }
 /* the formulas' stacked fractions do not stretch their lines */
 .notes-grid .fr { font-size: 0.8em; line-height: 1; vertical-align: -0.25em; }
+/* the Date line in the Notes box's heading row */
+.notes-box .notes-head .date-line { margin-left: auto; width: 46mm; font-size: 8.5pt; }
+.notes-box.teacher .notes-head .date-line { width: 38mm; }
+/* Questions with working boxes (lib/lesson-two.js practiceWork): three to a row */
+.wround { display: flex; flex-direction: column; gap: 1.2mm; min-height: 0; }
+/* rows take their content's height, then share any spare height (1fr rows would all match the tallest row) */
+.wgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2mm 3mm; flex: 1 1 0; min-height: 0; grid-auto-rows: auto; align-content: stretch; }
+.wq { display: flex; flex-direction: column; background: #fff; border: 0.3mm solid #b8c3e0; border-radius: 1.6mm; padding: 1.2mm 2mm 1.4mm; min-height: 21mm; }
+.wq-head { display: flex; gap: 1.6mm; align-items: baseline; flex: none; }
+.wq-head .q-text { font-size: 9pt; flex: 1; line-height: 1.25; }
+.wq-body { flex: 1 1 auto; display: flex; gap: 2mm; min-height: 6mm; }
+.wq-fig { flex: none; display: flex; align-items: center; padding-top: 0.6mm; }
+.wq-fig .graph { width: min(var(--w), 30mm); height: auto; max-height: 20mm; }
+.wq-space { flex: 1; }
+.wq-ans { flex: none; display: flex; justify-content: flex-end; align-items: flex-end; gap: 1.5mm; font-size: 7pt; color: var(--muted); }
+.wq-ans i { width: 52%; border-bottom: 0.3mm solid #9aa6c8; height: 4.5mm; }
+.wq .q-tag { float: right; margin-left: 2mm; font-size: 7pt; font-weight: 600; color: var(--muted); border: 0.3mm solid #b9b5a6; border-radius: 1mm; padding: 0 1.2mm; background: #fff; }
+/* Worded problems at the end of the lesson: three side by side, each with room to draw and solve */
+.zone.you.worded { flex: none; background: #fff; }
+.wpgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+.wp { display: flex; flex-direction: column; border: 0.3mm solid #b8c3e0; border-radius: 1.6mm; padding: 1.4mm 2mm 1.6mm; height: 62mm; }
+.wp .wq-space { flex: 1; }
+.wp .wq-ans i { width: 60%; }

@@ -104,12 +104,12 @@ module.exports = {
       { t: 'Perimeter', fig: part({ angle: 180, R: 14, lab: '10 cm', show: 'd' }) }, { t: 'Perimeter', fig: part({ angle: 90, R: 14.5, lab: '6 m' }) }] },
     exAns: [`C = 2 × π × 5 = ${d1(circ(5), 'cm')}`, `C = π × 12 = ${d1(PI * 12, 'm')}`, `P = ½ × π × 10 + 10 = ${d1((PI * 10) / 2 + 10, 'cm')}`, `P = ¼ × 2 × π × 6 + 6 + 6 = ${d1(circ(6) / 4 + 12, 'm')}`],
     hint: 'C = πd = 2πr · Semicircle P = ½ × πd + d · Quadrant P = ¼ × 2πr + r + r · Use the π key.',
+    work: true,
     rounds: [
-      round('find the circumference of each circle with radius r, correct to one decimal place.',
-        [[3, 'cm'], [7, 'm'], [2.5, 'm'], [1.5, 'km']], ([r, x]) => `r = ${num(r)} ${x}`, ([r, x]) => d1(circ(r), x)),
-      round('find the circumference of each circle with diameter d, correct to one decimal place.',
-        [[8, 'cm'], [15, 'm'], [30, 'mm'], [1.4, 'km']], ([d, x]) => `d = ${num(d)} ${x}`, ([d, x]) => d1(PI * d, x)),
-      figRound('find the perimeter of each shape, correct to one decimal place.', [semiD(8, 'cm'), quad(10, 'm'), semiR(7, 'm'), quad(4, 'cm')]),
+      round('find the circumference of each circle, correct to one decimal place. Is it r or d?',
+        [[3, 'cm', 'r'], [7, 'm', 'r'], [2.5, 'm', 'r'], [8, 'cm', 'd'], [15, 'm', 'd'], [1.4, 'km', 'd']],
+        ([v, x, k]) => `${k} = ${num(v)} ${x}`, ([v, x, k]) => d1(k === 'r' ? circ(v) : PI * v, x)),
+      figRound('find the perimeter of each shape, correct to one decimal place.', [semiD(8, 'cm'), quad(10, 'm'), semiR(7, 'm')]),
     ],
   },
   medium: {
@@ -119,18 +119,30 @@ module.exports = {
     exAns: [`l = 60/360 × 2 × π × 9 = ${d1(arcLen(60, 9), 'cm')}`, `P = ${num(arcLen(60, 9), 2)}… + 9 + 9 = ${d1(arcLen(60, 9) + 18, 'cm')}`,
       `P = 10 + 6 + 10 + ½ × π × 6 = ${d1(EX2.l * 2 + EX2.w + (PI * EX2.w) / 2, 'm')} (not the dashed side)`,
       `50 = 2 × π × r, so r = 50 ÷ (2 × π) = ${d1(50 / (2 * PI), 'cm')}`],
-    hint: `Arc length = ${F('θ', 360)} × 2πr (θ = the angle at the centre) · Sector P = arc + r + r · Composite: add the outside edges, not the dashed lines.`,
-    rounds: [
-      figRound('find the perimeter of each sector, correct to one decimal place.', [sect(120, 6, 'cm', 15), sect(45, 8, 'm', 20), sect(270, 4, 'cm', 10.5), sect(150, 10, 'm', 14)]),
-      figRound('find the perimeter of each shape, correct to one decimal place.', [track(8, 4, 'cm'), archway(6, 5, 'm'), biteSemi(10, 4, 'm'), biteQuad(9, 5, 'cm')]),
-      // Mixed: today's skill with earlier lessons (each earlier question is tagged with its lesson)
-      { text: 'mixed. Read each one carefully: a tag shows an earlier lesson.', cols: 2, items: [
-        'A wheel of diameter 64 cm turns 100 times. How far does it go, in m?', { t: 'Find the perimeter of a rectangle 7.5 m by 4 m.', from: '10.4' },
-        { t: 'Convert 345 cm to m.', from: '10.1' }, 'A round garden has a circumference of 18.85 m. Find its radius.',
-        { t: 'A kite has diagonals of 6 m and 5 m. Find its area.', from: '10.5' }, { t: 'Write the limits of accuracy of 4.5 m.', from: '10.2' },
-        'Find the arc length of a 120° sector with r = 3 m.', { t: 'Find the percentage error of 20 cm, to the nearest cm.', from: '10.3' }],
-      ans: [d1(conv(PI * 64 * 100, 'cm', 'm'), 'm'), u(2 * (7.5 + 4), 'm'), u(conv(345, 'cm', 'm'), 'm'), d1(18.85 / (2 * PI), 'm'),
-        u((6 * 5) / 2, 'm²'), limits('4.5 m'), d1(arcLen(120, 3), 'm'), `${num(pctErr(meas('20 cm').e, 20))}%`] },
-    ],
+    hint: 'Arc = θ ÷ 360 × 2πr (θ = angle at the centre) · Sector P = arc + 2r · Composite: add the outside edges only',
+    work: true, set: true,
+    // One set: today's skill, with a question from an earlier lesson (tagged) every third question
+    rounds: [(() => {
+      const Q = [
+        [{ t: 'Perimeter', fig: sect(120, 6, 'cm', 15)[0] }, sect(120, 6, 'cm', 15)[1]],
+        [{ t: 'Perimeter', fig: track(8, 4, 'cm')[0] }, track(8, 4, 'cm')[1]],
+        [{ t: 'Perimeter. Cut-out: r = 5 cm', fig: biteQuad(9, 5, 'cm')[0] }, biteQuad(9, 5, 'cm')[1]],
+        [{ t: 'A kite has diagonals of 6 m and 5 m. Find its area.', from: '10.5' }, u((6 * 5) / 2, 'm²')],
+        ['Find the arc length of a 120° sector with r = 3 m.', d1(arcLen(120, 3), 'm')],
+        [{ t: 'Write the limits of accuracy of 4.5 m.', from: '10.2' }, limits('4.5 m')],
+        ['A circle has a circumference of 18.85 m. Find its radius.', d1(18.85 / (2 * PI), 'm')],
+        ['Find the perimeter of a semicircle with d = 20 cm.', d1((PI * 20) / 2 + 20, 'cm')],
+        [{ t: 'Percentage error of 20 cm, to the nearest cm?', from: '10.3' }, `${num(pctErr(meas('20 cm').e, 20))}%`],
+      ];
+      return { text: '', items: Q.map((x) => x[0]), ans: Q.map((x) => x[1]) };
+    })()],
   },
+  worded: [
+    { q: 'A round garden bed has a diameter of 3.2 m. Edging costs $12 per metre. Find the cost to edge the bed, to the nearest dollar.',
+      a: `C = π × 3.2 = ${num(PI * 3.2, 2)} m; ${num(PI * 3.2, 2)} × $12 = $${num(Math.round(PI * 3.2 * 12))}` },
+    { q: 'A bike wheel has a radius of 33 cm. How many full turns does it make to travel 1 km?',
+      a: `C = 2 × π × 33 = ${num(circ(33), 1)} cm; 100 000 ÷ ${num(circ(33), 1)} = ${num(100000 / circ(33), 1)}, so ${num(Math.floor(100000 / circ(33)))} full turns` },
+    { q: 'A running track is a rectangle 84 m long with a semicircle on each end. Each semicircle has a diameter of 64 m. Find one lap, to the nearest metre.',
+      a: `84 + 84 + π × 64 = ${num(168 + PI * 64, 1)}, so ${u(Math.round(168 + PI * 64), 'm')}` },
+  ],
 };
