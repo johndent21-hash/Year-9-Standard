@@ -98,14 +98,16 @@ const formLines = (form) => `<div class="fq-lines"><div class="fq-line"><span>Fo
     <div class="fq-line"><span>Substitute</span><i></i></div><div class="fq-line"><span>Answer</span><i></i></div></div>`;
 // A formula question with a picture has the picture beside its number and question, so the lines start higher.
 const wqHead = (it, n) => `<div class="wq-head"><span class="q-num">${n}</span><span class="q-text">${typeof it === 'string' ? it : it.t}</span></div>`;
-const wq = (it, n) => (isForm(it) && isFig(it) ? `<div class="wq fig form"><div class="wq-top">${wqHead(it, n)}<div class="wq-fig">${it.fig}</div></div>
+// (beside a picture the head is narrow, so an earlier lesson's tag follows the question instead of floating above it)
+const tagAfter = (it) => ({ ...it, t: it.t.replace(/^(<span class="q-tag">[^<]*<\/span>)(.*)$/s, '$2 $1') });
+const wq = (it, n) => (isForm(it) && isFig(it) ? `<div class="wq fig form"><div class="wq-top">${wqHead(tagAfter(it), n)}<div class="wq-fig">${it.fig}</div></div>
     <div class="wq-body">${formLines(it.form)}</div></div>` : `<div class="wq${isFig(it) ? ' fig' : ''}${isForm(it) ? ' form' : ''}">${wqHead(it, n)}
     <div class="wq-body">${isFig(it) ? `<div class="wq-fig">${it.fig}</div>` : ''}${isForm(it) ? formLines(it.form) : '<div class="wq-space"></div>'}</div>${isForm(it) ? '' : '<div class="wq-ans"><i></i></div>'}</div>`);
 const workRound = (x, k, from, head) => {
   let n = from - 1;
   const cells = x.items.map((it) => wq(it, ++n)).join('');
   const cols = x.cols || 3;
-  return `<div class="round wround" style="flex-grow:${Math.ceil(x.items.length / cols) * (x.items.some(isFig) ? 1.35 : 1)}">${head ? `<p class="round-h"><b>Round ${k}</b><span>Questions ${from}–${n}: ${x.text}</span></p>` : ''}<div class="wgrid" style="grid-template-columns: repeat(${cols}, 1fr)">${cells}</div></div>`;
+  return `<div class="round wround" style="flex-grow:${Math.ceil(x.items.length / cols) * (x.items.some(isFig) ? 1.35 : 1)}">${head ? `<p class="round-h"><b>Round ${k}</b><span>Questions ${from}–${n}: ${x.text}</span></p>` : ''}<div class="wgrid" style="grid-template-columns: repeat(${cols}, minmax(0, 1fr))">${cells}</div></div>`;
 };
 // o: { start: first question number, round: first round number, head: the YOU DO instruction, plain: no Easy/Medium tag }
 // A round with short: true is quick drill: four to a row, an answer line each (no working box).
@@ -114,7 +116,7 @@ const practiceWork = (lvl, L, o = {}) => {
   const body = L.rounds.map((x, i) => { const k = (o.round || 1) + i; const h = x.short ? roundHtml(x, k - 1, from) : workRound(x, k, from, !L.set); from += x.items.length; return h; }).join('');
   const what = o.head || (L.set ? 'work in order. A tag shows an earlier lesson.' : 'work down the box, one round at a time.');
   return youDo(`${o.plain ? '' : `<b class="lvl-word l${lvl}">${LEVEL_WORD[lvl]}</b> `}${what} Show your working.<span class="count">${qn(total(L.rounds))}</span>`,
-    `${hint(L.hint)}${body}`, `grow skill-zone work-zone${L.set ? ' set-zone' : ''}`);
+    `${hint(L.hint)}${body}`, `grow skill-zone work-zone${L.set ? ' set-zone' : ''}${o.zone ? ` ${o.zone}` : ''}`);
 };
 // The worded problems that finish the lesson (spec.worded: [{ q, a }]): side by side, each with room to draw and solve.
 const wordedBox = (list) => `<div class="zone you worded"><div class="zone-head"><span class="zone-pill">WORDED PROBLEMS</span><span class="zone-text">Draw a diagram if it helps, then solve. Show your working.<span class="count">${list.length} problems</span></span></div>
@@ -144,7 +146,7 @@ module.exports = (raw) => (chapter) => {
   const nEasy = total(spec.easy.rounds);
   const pages = spec.drill ? [
     page('Easy', `${header(spec, true)}${notesHtmlBox}${level(1, spec.easy, { plain: true })}`, true),
-    page('Easy', practiceWork(1, spec.drill, { plain: true, start: nEasy + 1, round: spec.easy.rounds.length + 1, head: 'keep going, one round at a time.' })),
+    page('Easy', practiceWork(1, spec.drill, { plain: true, zone: 'drill-zone', start: nEasy + 1, round: spec.easy.rounds.length + 1, head: 'keep going, one round at a time.' })),
     page('Medium', `${level(2, spec.medium, { plain: true, head: 'work in order. A tag shows an earlier lesson.' })}${spec.worded ? wordedBox(spec.worded) : ''}`),
   ] : [
     page('Easy', `${header(spec, !!chapter.notesBox)}${notesHtmlBox}${level(1, spec.easy)}`, true),

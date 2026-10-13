@@ -16,7 +16,10 @@ const arc = (cx, cy, r, a0, a1, n = 24) => Array.from({ length: n + 1 }, (_, i) 
 // A circle, semicircle, quadrant or sector of radius R mm, drawn anticlockwise from its bottom radius (pointing right).
 // show 'r': the radius (a full circle draws it in blue; a sector labels its bottom edge), 'd': the diameter,
 // 'up': a blue radius straight up (a semicircle whose radius is given). angleLabel shows the angle at the centre.
-const part = ({ angle = 360, R = 10, lab = '', show = 'r', angleLabel = '' }) => {
+// The question's unknown (ask) is written beside the shape with a ? ('d = ?', 'C = ?', 'P = ?'); an unknown length is
+// also drawn dashed (d straight up and down, r straight down, or across when nothing else is drawn). ask 'arc': the arc
+// drawn in blue with 'arc = ?' by it. given: a value beside the shape that is not a length on it ('C = 50 cm').
+const part = ({ angle = 360, R = 10, lab = '', show = 'r', angleLabel = '', ask = '', given = '' }) => {
   const full = angle >= 360, m = 1, rad = (a) => (a * Math.PI) / 180;
   const ends = full ? [0, 90, 180, 270] : [0, angle, ...[90, 180, 270].filter((a) => a < angle)];
   const xs = [...(full ? [] : [0]), ...ends.map((a) => R * Math.cos(rad(a)))], ys = [...(full ? [] : [0]), ...ends.map((a) => R * Math.sin(rad(a)))];
@@ -29,9 +32,21 @@ const part = ({ angle = 360, R = 10, lab = '', show = 'r', angleLabel = '' }) =>
     const a = arcD(c, 3.4, 0, angle), d = Math.max(6.6, 3.8 / Math.sin(rad(Math.min(angle, 180) / 2))), p = at(angle / 2, d);
     b += `<path d="M${f(a.p0[0])},${f(a.p0[1])} ${a.d}" fill="none" stroke="${C.blue}" stroke-width="0.35"/>` + T(p[0], p[1] + 1, angleLabel, { size: 2.8, fill: C.blue, weight: 600 });
   }
-  if (full) b += seg(show === 'd' ? at(180) : c, at(0), blue) + T(show === 'd' ? c[0] : c[0] + R * 0.34, c[1] - 1.4, lab, { size: 3 });
+  const Q = { size: 3, weight: 700 }, gap = { stroke: C.grey, w: 0.4, dash: true };
+  if (ask === 'arc') {
+    const a = arcD(c, R, 0, angle), mid = angle / 2, p = at(mid, R + 2.6), cx = Math.cos(rad(mid));
+    b += `<path d="M${f(a.p0[0])},${f(a.p0[1])} ${a.d}" fill="none" stroke="${C.blue}" stroke-width="1"/>` + T(p[0], p[1] + 1, 'arc = ?', { ...Q, anchor: cx > 0.3 ? 'start' : cx < -0.3 ? 'end' : 'middle' });
+  }
+  if (full && ask === 'd') b += seg(at(270), at(90), gap);
+  if (full && ask === 'r') b += lab ? seg(c, at(270), gap) : seg(c, at(0), gap);
+  // (with d dashed up and down, the radius's length starts just right of it)
+  if (full && lab) b += seg(show === 'd' ? at(180) : c, at(0), blue) + T(show === 'd' ? c[0] : ask === 'd' ? c[0] + 0.7 : c[0] + R * 0.34, c[1] - 1.4, lab, { size: ask === 'd' ? 2.7 : 3, ...(ask === 'd' ? { anchor: 'start' } : {}) });
   else if (show === 'up') b += seg(c, at(90), blue) + T(c[0] + 1.4, c[1] - R / 2 + 1, lab, { size: 3, anchor: 'start' });
   else b += T(show === 'd' ? c[0] : c[0] + R / 2, c[1] + 4, lab, { size: 3 });
+  // C = ?, P = ? or a given value beside the shape, halfway up it
+  const beside = [given, ['C', 'P', 'd', 'r'].includes(ask) ? `${ask} = ?` : ''].filter(Boolean);
+  const top = full ? c[1] - R : c[1] - R * Math.min(1, Math.sin(rad(Math.min(angle, 90)))), bottom = full ? c[1] + R : c[1];
+  beside.forEach((t, i) => { b += T(m + Math.max(...xs) - Math.min(...xs) + 1.5, (top + bottom) / 2 + 1 + (i - (beside.length - 1) / 2) * 4, t, { ...(ask && t.endsWith('?') ? Q : { size: 3 }), anchor: 'start' }); });
   b += dot(c);
   return svg(f(Math.max(...xs) - Math.min(...xs) + 2 * m), f(Math.max(...ys) - Math.min(...ys) + 2 * m), b);
 };
@@ -45,15 +60,16 @@ const rectEnds = (l, w, ends, unit, o = {}) => {
 };
 
 // Each question: [picture, answer, caption]
-const semiD = (d, unit, R = 15) => [part({ angle: 180, R, lab: `${num(d)} ${unit}`, show: 'd' }), d1((PI * d) / 2 + d, unit)];
-const semiR = (r, unit, R = 15) => [part({ angle: 180, R, lab: `${num(r)} ${unit}`, show: 'up' }), d1(PI * r + 2 * r, unit)];
-const quad = (r, unit, R = 17) => [part({ angle: 90, R, lab: `${num(r)} ${unit}` }), d1(circ(r) / 4 + 2 * r, unit)];
+const semiD = (d, unit, R = 15, ask) => [part({ angle: 180, R, lab: `${num(d)} ${unit}`, show: 'd', ask }), d1((PI * d) / 2 + d, unit)];
+const semiR = (r, unit, R = 15, ask) => [part({ angle: 180, R, lab: `${num(r)} ${unit}`, show: 'up', ask }), d1(PI * r + 2 * r, unit)];
+const quad = (r, unit, R = 17, ask) => [part({ angle: 90, R, lab: `${num(r)} ${unit}`, ask }), d1(circ(r) / 4 + 2 * r, unit)];
+// A drill circle: the radius or diameter given (k: 'r' or 'd', value v), the unknown marked with a ? (ask)
+const circleQ = (v, unit, k, ask, R = 8) => part({ R, lab: `${num(v)} ${unit}`, show: k, ask });
 const sect = (angle, r, unit, R) => [part({ angle, R, lab: `${num(r)} ${unit}`, angleLabel: `${angle}°` }), d1(arcLen(angle, r) + 2 * r, unit)];
 const figRound = (text, list) => ({ text, items: list.map(([fig, , t = '']) => ({ t, fig })), ans: list.map((x) => x[1]), cols: 4 });
-// Formula questions (Formula / Substitute / Answer lines): from values, or from [picture, answer] pairs with the formula
+// Formula questions (Formula / Substitute / Answer lines) from [picture, answer, text?, formula?], with the round's formula
 // printed (a string) or left for students to write (true)
-const formQ = (list, q, a) => ({ items: list.map(q), ans: list.map(a) });
-const formFig = (list, form) => ({ items: list.map(([fig, , t = '']) => ({ t, fig, form })), ans: list.map((x) => x[1]) });
+const formFig = (list, form) => ({ items: list.map(([fig, , t = '', own]) => ({ t, fig, form: own || form })), ans: list.map((x) => x[1]) });
 
 // Composite shapes (Medium round 2), drawn from the same lengths as their perimeters
 const track = (l, w, unit) => [rectEnds(l, w, 2, unit, { size: 30, maxH: 14 }), d1(2 * l + PI * w, unit)];
@@ -69,7 +85,7 @@ const biteSemi = (l, w, unit) => {
 // A rectangle l by w with a quadrant of radius w cut from its top right corner (the quadrant's radii dashed)
 const biteQuad = (l, w, unit) => {
   const pts = [[0, 0], ...arc(l, w, w, 270, 180), [0, w]];
-  return [S.shape({ pts, sides: pts.map((p, i) => (i === 0 ? `${num(l)} ${unit}` : i === pts.length - 1 ? `${num(w)} ${unit}` : '')), dash: [[[l, 0], [l, w]], [[l, w], [l - w, w]]], right: [0], size: 24, maxH: 14 }),
+  return [S.shape({ pts, sides: pts.map((p, i) => (i === 0 ? `${num(l)} ${unit}` : i === pts.length - 1 ? `${num(w)} ${unit}` : '')), dash: [[[l, 0], [l, w]], [[l, w], [l - w, w], `r = ${num(w)} ${unit}`, -1]], right: [0], size: 24, maxH: 14 }),
     d1(l + circ(w) / 4 + (l - w) + w, unit), `Cut-out: r = ${num(w)} ${unit}`];
 };
 
@@ -110,48 +126,48 @@ module.exports = {
     exAns: [`C = 2 × π × 5 = ${d1(circ(5), 'cm')}`, `C = π × 12 = ${d1(PI * 12, 'm')}`, `P = ½ × π × 10 + 10 = ${d1((PI * 10) / 2 + 10, 'cm')}`, `P = ¼ × 2 × π × 6 + 6 + 6 = ${d1(circ(6) / 4 + 12, 'm')}`],
     hint: 'd = 2r · r = d ÷ 2 · C = πd · Use the π key, then round to one decimal place.',
     work: true,
-    // Small steps: the radius and diameter, then C = πd (the formula printed on the Formula line)
+    // Small steps: the radius and diameter, then C = πd (the formula printed on the Formula line). Each question is its
+    // diagram: the given length on it, the unknown marked with a ?. The round heading says what to find.
     rounds: [
-      { text: 'find the diameter or the radius.', cols: 4, ...formQ([[4, 'cm', 'r'], [10, 'm', 'd'], [6.5, 'cm', 'r'], [9, 'm', 'd']],
-        ([v, x, k]) => ({ t: `${k} = ${num(v)} ${x}. Find ${k === 'r' ? 'd' : 'r'}.`, form: k === 'r' ? 'd = 2r' : 'r = d ÷ 2' }), ([v, x, k]) => u(k === 'r' ? 2 * v : v / 2, x)) },
-      { text: 'the diameter is given. Find the circumference.', cols: 4, ...formQ([[6, 'cm'], [10, 'm'], [2.5, 'm'], [14, 'cm']],
-        ([v, x]) => ({ t: `d = ${num(v)} ${x}`, form: 'C = πd' }), ([v, x]) => d1(PI * v, x)) },
+      { text: 'find the diameter or the radius.', cols: 4, ...formFig([[4, 'cm', 'r'], [10, 'm', 'd'], [7, 'm', 'r'], [9, 'cm', 'd']]
+        .map(([v, x, k]) => [circleQ(v, x, k, k === 'r' ? 'd' : 'r', 8.5), u(k === 'r' ? 2 * v : v / 2, x), '', k === 'r' ? 'd = 2r' : 'r = d ÷ 2'])) },
+      { text: 'find the circumference. The diameter is given.', cols: 4, ...formFig([[6, 'cm'], [10, 'm'], [2.5, 'm'], [14, 'cm']]
+        .map(([v, x]) => [circleQ(v, x, 'd', 'C'), d1(PI * v, x)]), 'C = πd') },
     ],
   },
-  // Page 2: more drill. C = 2πr, then choose the formula, then semicircles and quadrants (formula given), then all three mixed.
+  // Page 2: more drill. C = 2πr, then choose the formula, then semicircles and quadrants (formula given).
   drill: {
     hint: 'C = 2πr = πd · Semicircle P = ½πd + d · Quadrant P = ¼ × 2πr + 2r · Find d first when r is given.',
     rounds: [
-      { text: 'the radius is given. Find the circumference.', ...formQ([[2, 'cm'], [8, 'm'], [1.5, 'm']],
-        ([v, x]) => ({ t: `r = ${num(v)} ${x}`, form: 'C = 2πr' }), ([v, x]) => d1(circ(v), x)) },
-      { text: 'is it r or d? Write the right formula, then find the circumference.', ...formQ([[4, 'cm', 'r'], [9, 'm', 'd'], [12, 'mm', 'r']],
-        ([v, x, k]) => ({ t: `${k} = ${num(v)} ${x}`, form: true }), ([v, x, k]) => d1(k === 'r' ? circ(v) : PI * v, x)) },
-      { text: 'find the perimeter of each semicircle.', ...formFig([semiD(8, 'cm', 13), semiD(12, 'm', 13), semiR(5, 'm', 13)], 'P = ½πd + d') },
-      { text: 'find the perimeter of each quadrant.', ...formFig([quad(4, 'cm', 14), quad(10, 'm', 14), quad(6, 'cm', 14)], 'P = ¼ × 2πr + 2r') },
-      { text: 'circle, semicircle or quadrant? Write the formula, then find the perimeter.', ...formFig([[part({ R: 8, lab: '7 m', show: 'd' }), d1(PI * 7, 'm')], semiD(20, 'cm', 13), quad(8, 'm', 14)], true) },
+      { text: 'find the circumference. The radius is given.', ...formFig([[2, 'cm'], [8, 'm'], [1.5, 'm']].map(([v, x]) => [circleQ(v, x, 'r', 'C', 11), d1(circ(v), x)]), 'C = 2πr') },
+      { text: 'is it r or d? Write the right formula, then find the circumference.', ...formFig([[4, 'cm', 'r'], [9, 'm', 'd'], [12, 'mm', 'r']]
+        .map(([v, x, k]) => [circleQ(v, x, k, 'C', 11), d1(k === 'r' ? circ(v) : PI * v, x)]), true) },
+      { text: 'find the perimeter of each semicircle.', ...formFig([semiD(8, 'cm', 19, 'P'), semiD(12, 'm', 19, 'P'), semiR(5, 'm', 19, 'P')], 'P = ½πd + d') },
+      { text: 'find the perimeter of each quadrant.', ...formFig([quad(4, 'cm', 19, 'P'), quad(10, 'm', 19, 'P'), quad(6, 'cm', 19, 'P')], 'P = ¼ × 2πr + 2r') },
     ],
   },
   medium: {
     ex: { stem: 'Give each answer correct to one decimal place.', parts: [
-      { t: 'Arc length', fig: part({ angle: 60, R: 12.5, lab: '9 cm', angleLabel: '60°' }) }, 'Perimeter of the sector in part a',
-      { t: 'Perimeter', fig: rectEnds(EX2.l, EX2.w, 1, 'm', { size: 24, maxH: 12 }) }, 'The radius of a circle with C = 50 cm'] },
+      { t: 'Arc length', fig: part({ angle: 60, R: 11.5, lab: '9 cm', angleLabel: '60°', ask: 'arc' }) }, 'Perimeter of the sector in part a',
+      { t: 'Perimeter', fig: rectEnds(EX2.l, EX2.w, 1, 'm', { size: 24, maxH: 12 }) }, { t: 'Radius', fig: part({ R: 7, ask: 'r', given: 'C = 50 cm' }) }] },
     exAns: [`l = 60/360 × 2 × π × 9 = ${d1(arcLen(60, 9), 'cm')}`, `P = ${num(arcLen(60, 9), 2)}… + 9 + 9 = ${d1(arcLen(60, 9) + 18, 'cm')}`,
       `P = 10 + 6 + 10 + ½ × π × 6 = ${d1(EX2.l * 2 + EX2.w + (PI * EX2.w) / 2, 'm')} (not the dashed side)`,
       `50 = 2 × π × r, so r = 50 ÷ (2 × π) = ${d1(50 / (2 * PI), 'cm')}`],
     hint: 'Arc = θ ÷ 360 × 2πr (θ = angle at the centre) · Sector P = arc + 2r · Composite: add the outside edges only',
     work: true, set: true,
     // One set: today's skill, building from arcs to composite shapes, with a question from an earlier lesson (tagged)
-    // in each row. A question that needs a formula has Formula / Substitute / Answer lines (form: true).
+    // in each row. Every question that can be drawn is its diagram, with a word saying what to find; a question that
+    // needs a formula has Formula / Substitute / Answer lines (form: true).
     rounds: [(() => {
       const fq = (t, a, from) => [{ t, form: true, ...(from ? { from } : {}) }, a];
-      const ff = ([fig, a], t = 'Perimeter') => [{ t, fig, form: true }, a];
+      const ff = ([fig, a], t = 'Perimeter', from) => [{ t, fig, form: true, ...(from ? { from } : {}) }, a];
       const Q = [
-        fq('Find the arc length of a 120° sector with r = 3 m.', d1(arcLen(120, 3), 'm')),
-        fq('A kite has diagonals of 6 m and 5 m. Find its area.', u((6 * 5) / 2, 'm²'), '10.5'),
-        fq('Find the arc length of a 45° sector with r = 10 cm.', d1(arcLen(45, 10), 'cm')),
-        ff(sect(120, 6, 'cm', 14)), ff(track(8, 4, 'cm')), ff(biteQuad(9, 5, 'cm'), 'Perimeter. Cut-out: r = 5 cm'),
+        ff([part({ angle: 120, R: 11, lab: '3 m', angleLabel: '120°', ask: 'arc' }), d1(arcLen(120, 3), 'm')], 'Arc length'),
+        ff([S.kite(6, 5, 1.7, { xLabel: '6 m', yLabel: '5 m', size: 16, maxH: 10 }), u((6 * 5) / 2, 'm²')], 'Area', '10.5'),
+        ff([part({ angle: 45, R: 16, lab: '10 cm', angleLabel: '45°', ask: 'arc' }), d1(arcLen(45, 10), 'cm')], 'Arc length'),
+        ff(sect(120, 6, 'cm', 14)), ff(track(8, 4, 'cm')), ff(biteQuad(9, 5, 'cm')),
         [{ t: 'Write the limits of accuracy of 4.5 m.', from: '10.2' }, limits('4.5 m')],
-        fq('A circle has a circumference of 18.85 m. Find its radius.', d1(18.85 / (2 * PI), 'm')),
+        ff([part({ R: 7, ask: 'r', given: 'C = 18.85 m' }), d1(18.85 / (2 * PI), 'm')], 'Radius'),
         fq('Percentage error of 20 cm, to the nearest cm?', `${num(pctErr(meas('20 cm').e, 20))}%`, '10.3'),
       ];
       return { text: '', items: Q.map((x) => x[0]), ans: Q.map((x) => x[1]) };
