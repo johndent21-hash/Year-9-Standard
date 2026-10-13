@@ -1,4 +1,5 @@
-// Lesson 10.6 Circumference and arc length (two pages: Easy, then Medium, whose last round mixes in earlier lessons).
+// Lesson 10.6 Circumference and arc length (three pages: Easy with the Notes box, Easy drill, then Medium with earlier
+// lessons mixed in and three worded problems).
 // See lib/lesson-two.js.
 // Textbook 10.06 (first half). Every circle answer is correct to one decimal place, using the calculator's π.
 const { F, PI, num, u, conv, circ, limits, meas, pctErr, round } = require('../helpers');
@@ -49,6 +50,10 @@ const semiR = (r, unit, R = 15) => [part({ angle: 180, R, lab: `${num(r)} ${unit
 const quad = (r, unit, R = 17) => [part({ angle: 90, R, lab: `${num(r)} ${unit}` }), d1(circ(r) / 4 + 2 * r, unit)];
 const sect = (angle, r, unit, R) => [part({ angle, R, lab: `${num(r)} ${unit}`, angleLabel: `${angle}°` }), d1(arcLen(angle, r) + 2 * r, unit)];
 const figRound = (text, list) => ({ text, items: list.map(([fig, , t = '']) => ({ t, fig })), ans: list.map((x) => x[1]), cols: 4 });
+// Formula questions (Formula / Substitute / Answer lines): from values, or from [picture, answer] pairs with the formula
+// printed (a string) or left for students to write (true)
+const formQ = (list, q, a) => ({ items: list.map(q), ans: list.map(a) });
+const formFig = (list, form) => ({ items: list.map(([fig, , t = '']) => ({ t, fig, form })), ans: list.map((x) => x[1]) });
 
 // Composite shapes (Medium round 2), drawn from the same lengths as their perimeters
 const track = (l, w, unit) => [rectEnds(l, w, 2, unit, { size: 30, maxH: 14 }), d1(2 * l + PI * w, unit)];
@@ -89,7 +94,7 @@ const notesFig = () => {
 module.exports = {
   code: '10.6', title: 'Circumference and arc length',
   li: 'find circumferences, arc lengths and perimeters of curved shapes.',
-  sc: ['use C = πd or C = 2πr to find a circumference', `find an arc length: ${F('θ', 360)} × 2πr`, 'find the perimeter of sectors and composite shapes'],
+  sc: ['use C = πd or C = 2πr to find a circumference', 'find an arc length: θ ÷ 360 × 2πr', 'find the perimeter of sectors and composite shapes'],
   notes: {
     terms: [['circumference (C)', 'the distance around a circle'], ['radius (r)', 'from the centre to the edge'], ['diameter (d)', 'across through the centre; d = 2r'],
       ['arc', 'part of the circumference'], ['sector', 'a slice of a circle between two radii'], ['θ', 'the angle at the centre of a sector'],
@@ -103,36 +108,51 @@ module.exports = {
       { t: 'Circumference', fig: part({ R: 9.5, lab: '5 cm' }) }, { t: 'Circumference', fig: part({ R: 9.5, lab: '12 m', show: 'd' }) },
       { t: 'Perimeter', fig: part({ angle: 180, R: 14, lab: '10 cm', show: 'd' }) }, { t: 'Perimeter', fig: part({ angle: 90, R: 14.5, lab: '6 m' }) }] },
     exAns: [`C = 2 × π × 5 = ${d1(circ(5), 'cm')}`, `C = π × 12 = ${d1(PI * 12, 'm')}`, `P = ½ × π × 10 + 10 = ${d1((PI * 10) / 2 + 10, 'cm')}`, `P = ¼ × 2 × π × 6 + 6 + 6 = ${d1(circ(6) / 4 + 12, 'm')}`],
-    hint: 'C = πd = 2πr · Semicircle P = ½ × πd + d · Quadrant P = ¼ × 2πr + r + r · Use the π key.',
+    hint: 'd = 2r · r = d ÷ 2 · C = πd · Use the π key, then round to one decimal place.',
     work: true,
+    // Small steps: the radius and diameter, then C = πd (the formula printed on the Formula line)
     rounds: [
-      round('find the circumference of each circle, correct to one decimal place. Is it r or d?',
-        [[3, 'cm', 'r'], [7, 'm', 'r'], [2.5, 'm', 'r'], [8, 'cm', 'd'], [15, 'm', 'd'], [1.4, 'km', 'd']],
-        ([v, x, k]) => `${k} = ${num(v)} ${x}`, ([v, x, k]) => d1(k === 'r' ? circ(v) : PI * v, x)),
-      figRound('find the perimeter of each shape, correct to one decimal place.', [semiD(8, 'cm'), quad(10, 'm'), semiR(7, 'm')]),
+      { text: 'find the diameter or the radius.', cols: 4, ...formQ([[4, 'cm', 'r'], [10, 'm', 'd'], [6.5, 'cm', 'r'], [9, 'm', 'd']],
+        ([v, x, k]) => ({ t: `${k} = ${num(v)} ${x}. Find ${k === 'r' ? 'd' : 'r'}.`, form: k === 'r' ? 'd = 2r' : 'r = d ÷ 2' }), ([v, x, k]) => u(k === 'r' ? 2 * v : v / 2, x)) },
+      { text: 'the diameter is given. Find the circumference.', cols: 4, ...formQ([[6, 'cm'], [10, 'm'], [2.5, 'm'], [14, 'cm']],
+        ([v, x]) => ({ t: `d = ${num(v)} ${x}`, form: 'C = πd' }), ([v, x]) => d1(PI * v, x)) },
+    ],
+  },
+  // Page 2: more drill. C = 2πr, then choose the formula, then semicircles and quadrants (formula given), then all three mixed.
+  drill: {
+    hint: 'C = 2πr = πd · Semicircle P = ½πd + d · Quadrant P = ¼ × 2πr + 2r · Find d first when r is given.',
+    rounds: [
+      { text: 'the radius is given. Find the circumference.', ...formQ([[2, 'cm'], [8, 'm'], [1.5, 'm']],
+        ([v, x]) => ({ t: `r = ${num(v)} ${x}`, form: 'C = 2πr' }), ([v, x]) => d1(circ(v), x)) },
+      { text: 'is it r or d? Write the right formula, then find the circumference.', ...formQ([[4, 'cm', 'r'], [9, 'm', 'd'], [12, 'mm', 'r']],
+        ([v, x, k]) => ({ t: `${k} = ${num(v)} ${x}`, form: true }), ([v, x, k]) => d1(k === 'r' ? circ(v) : PI * v, x)) },
+      { text: 'find the perimeter of each semicircle.', ...formFig([semiD(8, 'cm', 13), semiD(12, 'm', 13), semiR(5, 'm', 13)], 'P = ½πd + d') },
+      { text: 'find the perimeter of each quadrant.', ...formFig([quad(4, 'cm', 14), quad(10, 'm', 14), quad(6, 'cm', 14)], 'P = ¼ × 2πr + 2r') },
+      { text: 'circle, semicircle or quadrant? Write the formula, then find the perimeter.', ...formFig([[part({ R: 8, lab: '7 m', show: 'd' }), d1(PI * 7, 'm')], semiD(20, 'cm', 13), quad(8, 'm', 14)], true) },
     ],
   },
   medium: {
     ex: { stem: 'Give each answer correct to one decimal place.', parts: [
-      { t: 'Arc length', fig: part({ angle: 60, R: 17, lab: '9 cm', angleLabel: '60°' }) }, 'Perimeter of the sector in part a',
-      { t: 'Perimeter', fig: rectEnds(EX2.l, EX2.w, 1, 'm', { size: 24, maxH: 16 }) }, 'Radius of a circle with circumference 50 cm'] },
+      { t: 'Arc length', fig: part({ angle: 60, R: 12.5, lab: '9 cm', angleLabel: '60°' }) }, 'Perimeter of the sector in part a',
+      { t: 'Perimeter', fig: rectEnds(EX2.l, EX2.w, 1, 'm', { size: 24, maxH: 12 }) }, 'The radius of a circle with C = 50 cm'] },
     exAns: [`l = 60/360 × 2 × π × 9 = ${d1(arcLen(60, 9), 'cm')}`, `P = ${num(arcLen(60, 9), 2)}… + 9 + 9 = ${d1(arcLen(60, 9) + 18, 'cm')}`,
       `P = 10 + 6 + 10 + ½ × π × 6 = ${d1(EX2.l * 2 + EX2.w + (PI * EX2.w) / 2, 'm')} (not the dashed side)`,
       `50 = 2 × π × r, so r = 50 ÷ (2 × π) = ${d1(50 / (2 * PI), 'cm')}`],
     hint: 'Arc = θ ÷ 360 × 2πr (θ = angle at the centre) · Sector P = arc + 2r · Composite: add the outside edges only',
     work: true, set: true,
-    // One set: today's skill, with a question from an earlier lesson (tagged) every third question
+    // One set: today's skill, building from arcs to composite shapes, with a question from an earlier lesson (tagged)
+    // in each row. A question that needs a formula has Formula / Substitute / Answer lines (form: true).
     rounds: [(() => {
+      const fq = (t, a, from) => [{ t, form: true, ...(from ? { from } : {}) }, a];
+      const ff = ([fig, a], t = 'Perimeter') => [{ t, fig, form: true }, a];
       const Q = [
-        [{ t: 'Perimeter', fig: sect(120, 6, 'cm', 15)[0] }, sect(120, 6, 'cm', 15)[1]],
-        [{ t: 'Perimeter', fig: track(8, 4, 'cm')[0] }, track(8, 4, 'cm')[1]],
-        [{ t: 'Perimeter. Cut-out: r = 5 cm', fig: biteQuad(9, 5, 'cm')[0] }, biteQuad(9, 5, 'cm')[1]],
-        [{ t: 'A kite has diagonals of 6 m and 5 m. Find its area.', from: '10.5' }, u((6 * 5) / 2, 'm²')],
-        ['Find the arc length of a 120° sector with r = 3 m.', d1(arcLen(120, 3), 'm')],
+        fq('Find the arc length of a 120° sector with r = 3 m.', d1(arcLen(120, 3), 'm')),
+        fq('A kite has diagonals of 6 m and 5 m. Find its area.', u((6 * 5) / 2, 'm²'), '10.5'),
+        fq('Find the arc length of a 45° sector with r = 10 cm.', d1(arcLen(45, 10), 'cm')),
+        ff(sect(120, 6, 'cm', 14)), ff(track(8, 4, 'cm')), ff(biteQuad(9, 5, 'cm'), 'Perimeter. Cut-out: r = 5 cm'),
         [{ t: 'Write the limits of accuracy of 4.5 m.', from: '10.2' }, limits('4.5 m')],
-        ['A circle has a circumference of 18.85 m. Find its radius.', d1(18.85 / (2 * PI), 'm')],
-        ['Find the perimeter of a semicircle with d = 20 cm.', d1((PI * 20) / 2 + 20, 'cm')],
-        [{ t: 'Percentage error of 20 cm, to the nearest cm?', from: '10.3' }, `${num(pctErr(meas('20 cm').e, 20))}%`],
+        fq('A circle has a circumference of 18.85 m. Find its radius.', d1(18.85 / (2 * PI), 'm')),
+        fq('Percentage error of 20 cm, to the nearest cm?', `${num(pctErr(meas('20 cm').e, 20))}%`, '10.3'),
       ];
       return { text: '', items: Q.map((x) => x[0]), ans: Q.map((x) => x[1]) };
     })()],

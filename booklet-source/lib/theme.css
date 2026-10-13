@@ -1173,6 +1173,21 @@ ul.plain { list-style: none; padding-left: 0; }
 /* Worded problems at the end of the lesson: three side by side, each with room to draw and solve */
 .zone.you.worded { flex: none; background: #fff; }
 .wpgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
-.wp { display: flex; flex-direction: column; border: 0.3mm solid #b8c3e0; border-radius: 1.6mm; padding: 1.4mm 2mm 1.6mm; height: 62mm; }
+.wp { display: flex; flex-direction: column; border: 0.3mm solid #b8c3e0; border-radius: 1.6mm; padding: 1.4mm 2mm 1.6mm; height: var(--wp-h, 62mm); }
 .wp .wq-space { flex: 1; }
 .wp .wq-ans i { width: 60%; }
+/* Formula questions: three labelled lines (Formula, Substitute, Answer); a given formula is printed on its line */
+.wq.form .wq-body { flex-direction: column; gap: 0.6mm; }
+.wq-top { display: flex; align-items: flex-start; gap: 1.5mm; }
+.wq-top .wq-head { flex: 0 1 auto; max-width: 45%; }
+.wq-top .wq-fig { flex: 1 1 auto; display: flex; justify-content: center; min-width: 0; padding-top: 0.6mm; }
+.wq-top .wq-fig .graph { width: min(var(--w), 34mm); height: auto; max-height: 17mm; }
+.fq-lines { display: flex; flex-direction: column; justify-content: flex-end; flex: 1; gap: 0; }
+.fq-line { display: grid; grid-template-columns: 14mm 1fr; align-items: end; height: 7mm; }
+.fq-line span { font-size: 7pt; font-weight: 600; color: var(--muted); padding-bottom: 0.6mm; }
+.fq-line i { border-bottom: 0.3mm solid #9aa6c8; height: 100%; display: flex; align-items: flex-end; padding: 0 0 0.6mm 1mm; font-style: normal; }
+.fq-line em { font-style: normal; font-weight: 600; color: var(--blue); font-size: 9.5pt; }
+
+/* Three-page lessons: the worded problems a little shorter, to leave the Medium set its formula lines */
+.three-page .wp { --wp-h: 50mm; }
+.three-page .set-zone .wq-top .wq-fig .graph { max-height: 14mm; }

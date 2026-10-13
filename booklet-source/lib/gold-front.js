@@ -5,7 +5,7 @@
 // being written; every lesson is two pages, so lesson i starts on page 3 + 2i.
 const { insideCover, ART } = require('./blend-front');
 
-const planned = (chapter, lessons) => (chapter.plan || lessons).map((p, i) => ({ ...p, startPage: (lessons.find((l) => l.code === p.code) || {}).startPage || 3 + 2 * i }));
+const planned = (chapter, lessons) => (chapter.plan || lessons).map((p, i) => ({ ...p, startPage: (lessons.find((l) => l.code === p.code) || {}).startPage || 3 + (chapter.pagesPerLesson || 2) * i }));
 
 const cover = (chapter, built) => { const lessons = planned(chapter, built); return `
 <section class="page gd-cover" style="background-image:url({{ASSETSREL}}/mandelbrot/${chapter.art}-page.jpg)">
@@ -17,7 +17,7 @@ const cover = (chapter, built) => { const lessons = planned(chapter, built); ret
     <div class="gdc-badge"><span>Chapter</span><b>${chapter.number}</b></div>
     <p class="gdc-kicker">Year ${chapter.year} Mathematics</p>
     <h1>${chapter.title}</h1>
-    <p class="gdc-sub">${lessons.length} lessons · two pages each · ${chapter.coverSub || 'Easy, then Medium'}</p>
+    <p class="gdc-sub">${lessons.length} lessons · ${chapter.pagesPerLesson === 3 ? 'three' : 'two'} pages each · ${chapter.coverSub || 'Easy, then Medium'}</p>
     <div class="gdc-lessons">${lessons.map((l) => `<div><b>${l.code}</b>${l.title}</div>`).join('')}</div>
   </div>
   <div class="gdc-name"><div><span>Name</span><i></i></div><div><span>Class</span><i></i></div><div><span>Teacher</span><i></i></div></div>

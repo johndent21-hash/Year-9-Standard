@@ -22,6 +22,7 @@ const chapter = {
   fileName: 'Year9-Standard-Ch10-Surface-Area-and-Volume', art: 'silver-spiral', accent: '#3a1d5e', bodyClass: 'theme-mb theme-gold theme-violet',
   homework: false,
   coverSub: 'Easy, Medium, then Mixed practice',
+  pagesPerLesson: 3, // Easy (with the Notes box), Easy drill, Medium
   notesBox: 49.5, // the Notes box at the start of each lesson: 1.5 × 33 mm (itself 1.5 × a 22 mm WE DO copy box)
   howto: front.HOWTO_MIXED,
   plan, // every lesson, for the cover and contents
