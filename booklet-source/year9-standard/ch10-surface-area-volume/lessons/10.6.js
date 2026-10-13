@@ -118,7 +118,7 @@ const notesFig = () => {
   b += `<path d="M${f(th.p0[0])},${f(th.p0[1])} ${th.d}" fill="none" stroke="${C.charcoal}" stroke-width="0.3"/>`;
   b += seg(at(180), at(0), { stroke: C.charcoal, w: 0.45 }) + dot(c);
   b += T(c[0], c[1] + 3.6, 'diameter d', { size: 2.5 }) + T(at(a1, R * 0.5)[0] - 1.2, at(a1, R * 0.5)[1] + 1, 'r', { size: 2.8, anchor: 'end', weight: 600 });
-  b += T(at(mid, 5.6)[0], at(mid, 5.6)[1] + 1, 'θ', { size: 2.6 }) + T(at(mid, R * 0.7)[0] + 0.6, at(mid, R * 0.7)[1] + 1, 'sector', { size: 2.4 });
+  b += T(at(mid, 5.6)[0], at(mid, 5.6)[1] + 1, 'θ', { size: 2.6 }) + T(at(mid, R * 0.6)[0], at(mid, R * 0.6)[1] + 1, 'sector', { size: 2.4 });
   b += T(at(mid, R + 2.4)[0] + 1, at(mid, R + 2.4)[1], 'arc', { size: 2.6, fill: C.blue, weight: 600, anchor: 'start' }) + T(c[0], c[1] + R + 3.8, 'circumference', { size: 2.5 });
   return svg(f(2 * R + 6), f(2 * R + 8), b);
 };
@@ -164,7 +164,7 @@ module.exports = {
   },
   medium: {
     ex: { stem: 'Give each answer correct to one decimal place.', parts: [
-      { t: 'Arc length', fig: part({ angle: 60, R: 11.5, lab: '9 cm', angleLabel: '60°', ask: 'arc' }) }, { t: 'Perimeter', fig: part({ angle: 60, R: 11.5, lab: '9 cm', angleLabel: '60°', ask: 'P' }) },
+      { t: 'Arc length', fig: part({ angle: 60, R: 11.5, lab: '9 cm', angleLabel: '60°', ask: 'arc' }) }, { t: 'Perimeter', fig: part({ angle: 60, R: 11.5, lab: '9 cm', angleLabel: '60°' }) },
       { t: 'Perimeter', fig: rectEnds(EX2.l, EX2.w, 1, 'm', { size: 24, maxH: 12 }) }, { t: 'Radius', fig: part({ R: 7.5, ask: 'r', given: 'C = 50 cm' }) }] },
     exAns: [`l = 60/360 × 2 × π × 9 = ${d1(arcLen(60, 9), 'cm')}`, `P = ${num(arcLen(60, 9), 2)}… + 9 + 9 = ${d1(arcLen(60, 9) + 18, 'cm')}`,
       `P = 10 + 6 + 10 + ½ × π × 6 = ${d1(EX2.l * 2 + EX2.w + (PI * EX2.w) / 2, 'm')} (not the dashed side)`,
