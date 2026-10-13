@@ -44,8 +44,21 @@ const HOWTO_MIXED = `
       <div><span class="step">4</span><span>Stuck? Read the <b>Remember</b> line in the blue box, then look back at the example or the lesson in the tag. Answers with π: <b>one decimal place</b> unless the question says otherwise.</span></div>
     </div>`;
 
+// Three-page lessons (lib/lesson-two.js spec.drill): Notes, two Easy pages of drill, a Medium page with earlier lessons
+// mixed in, then worded problems.
+const HOWTO_THREE = `
+    <div class="howto">
+      <div><span class="step">1</span><span>Each lesson is <b>three pages</b>. Read the <b>learning intention</b>, copy your teacher's notes into the <b>Notes</b> box, and tick each <b>success criterion</b> when you can do it.</span></div>
+      <div><span class="step">2</span><span>Pages 1 and 2 are <b class="lvl-word l1">Easy</b>: small steps, one round at a time. Page 3 is <b class="lvl-word l2">Medium</b>, then three <b>worded problems</b>.</span></div>
+      <div class="we"><span class="zone-pill">WE DO</span><span><b>Grey boxes.</b> Your teacher works each example on the board. <b>Copy every step</b> into the space.</span></div>
+      <div class="you"><span class="zone-pill">YOU DO</span><span><b>Blue boxes.</b> Your turn. The <b>?</b> on each diagram shows what to find. Write the <b>formula</b>, <b>substitute</b> the numbers, then the <b>answer</b> with its unit.</span></div>
+      <div><span class="step">3</span><span>Some Medium questions come from earlier lessons. The tag (like <b>10.2</b> or <b>Year 8</b>) says which one.</span></div>
+      <div><span class="step">4</span><span>Stuck? Read the <b>Remember</b> line in the blue box, then look back at your notes and the example. Answers with π: <b>one decimal place</b> unless the question says otherwise.</span></div>
+    </div>`;
+
 module.exports = {
   HOWTO_MIXED,
+  HOWTO_THREE,
   cover,
   // The artwork panel uses the full-page picture, which has no white fade at the top.
   insideCover: (chapter, lessons) => insideCover({ ...chapter, howto: chapter.howto || HOWTO }, planned(chapter, lessons)).replace(`${chapter.art}-cover.jpg`, `${chapter.art}-page.jpg`),

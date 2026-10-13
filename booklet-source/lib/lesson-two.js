@@ -91,11 +91,12 @@ const mixedBox = (list) => {
 // the level's questions one numbered set with no round headings (the Medium page: today's skill with earlier lessons
 // mixed all through it, each earlier question tagged).
 // A question that needs a formula ({ t, form }) gets three labelled lines: Formula, Substitute, Answer. form: a string
-// prints that formula on the Formula line (the first questions of a drill); true leaves it blank.
+// prints that formula on the Formula line (the first questions of a drill); true leaves it blank. lines: other labels
+// for a skill with no formula, e.g. ['Rule', 'Working', 'Answer'] for a unit conversion (form then prints the rule).
 const isFig = (it) => typeof it === 'object' && it.fig;
 const isForm = (it) => typeof it === 'object' && it.form;
-const formLines = (form) => `<div class="fq-lines"><div class="fq-line"><span>Formula</span><i>${typeof form === 'string' ? `<em>${form}</em>` : ''}</i></div>
-    <div class="fq-line"><span>Substitute</span><i></i></div><div class="fq-line"><span>Answer</span><i></i></div></div>`;
+const formLines = (form, [l1, l2, l3] = ['Formula', 'Substitute', 'Answer']) => `<div class="fq-lines"><div class="fq-line"><span>${l1}</span><i>${typeof form === 'string' ? `<em>${form}</em>` : ''}</i></div>
+    <div class="fq-line"><span>${l2}</span><i></i></div><div class="fq-line"><span>${l3}</span><i></i></div></div>`;
 // A formula question with a picture has the picture beside its number and question, so the lines start higher.
 // A short question beside a picture ('Arc length', 'Area') stays on one line.
 const plainLen = (t) => t.replace(/<[^>]+>/g, '').length;
@@ -104,8 +105,8 @@ const wqHead = (it, n, top) => { const t = typeof it === 'string' ? it : it.t;
 // (beside a picture the head is narrow, so an earlier lesson's tag follows the question instead of floating above it)
 const tagAfter = (it) => ({ ...it, t: it.t.replace(/^(<span class="q-tag">[^<]*<\/span>)(.*)$/s, '$2 $1') });
 const wq = (it, n) => (isForm(it) && isFig(it) ? `<div class="wq fig form"><div class="wq-top">${wqHead(tagAfter(it), n, true)}<div class="wq-fig">${it.fig}</div></div>
-    <div class="wq-body">${formLines(it.form)}</div></div>` : `<div class="wq${isFig(it) ? ' fig' : ''}${isForm(it) ? ' form' : ''}">${wqHead(it, n)}
-    <div class="wq-body">${isFig(it) ? `<div class="wq-fig">${it.fig}</div>` : ''}${isForm(it) ? formLines(it.form) : '<div class="wq-space"></div>'}</div>${isForm(it) ? '' : '<div class="wq-ans"><span>Answer</span><i></i></div>'}</div>`);
+    <div class="wq-body">${formLines(it.form, it.lines)}</div></div>` : `<div class="wq${isFig(it) ? ' fig' : ''}${isForm(it) ? ' form' : ''}">${wqHead(it, n)}
+    <div class="wq-body">${isFig(it) ? `<div class="wq-fig">${it.fig}</div>` : ''}${isForm(it) ? formLines(it.form, it.lines) : '<div class="wq-space"></div>'}</div>${isForm(it) ? '' : '<div class="wq-ans"><span>Answer</span><i></i></div>'}</div>`);
 const workRound = (x, k, from, head) => {
   let n = from - 1;
   const cells = x.items.map((it) => wq(it, ++n)).join('');
