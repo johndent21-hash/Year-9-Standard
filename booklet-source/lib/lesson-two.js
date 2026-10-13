@@ -64,7 +64,7 @@ const header = (spec, compact) => `${compact ? '' : `
 // { terms: [[term, meaning]], formulas: [..], steps: [..], fig }), shown on the screen at the front of the room.
 const notesHtml = (n) => `<div class="notes-grid${n.fig ? ' with-fig' : ''}">
     <div class="nb-col"><h4>Key terms</h4><dl>${n.terms.map(([t, d]) => `<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></div>
-    <div class="nb-col"><h4>Formulas</h4><ul class="nb-formulas">${n.formulas.map((x) => `<li>${x}</li>`).join('')}</ul>${n.steps ? `<p class="nb-steps"><span class="nb-label">Steps</span> ${n.steps.map((x, i) => `<b>${i + 1}</b> ${x}`).join(' ')}</p>` : ''}</div>
+    <div class="nb-col"><h4>Formulas</h4><ul class="nb-formulas">${n.formulas.map((x) => `<li>${x}</li>`).join('')}</ul>${n.steps ? `<p class="nb-steps"><span class="nb-label">Steps</span> ${n.steps.map((x, i) => `<span class="nb-step"><b>${i + 1}</b> ${x}</span>`).join(' ')}</p>` : ''}</div>
     ${n.fig ? `<div class="nb-fig">${n.fig}</div>` : ''}
   </div>`;
 const notesBox = (h, notes, teacher) => `
@@ -97,12 +97,15 @@ const isForm = (it) => typeof it === 'object' && it.form;
 const formLines = (form) => `<div class="fq-lines"><div class="fq-line"><span>Formula</span><i>${typeof form === 'string' ? `<em>${form}</em>` : ''}</i></div>
     <div class="fq-line"><span>Substitute</span><i></i></div><div class="fq-line"><span>Answer</span><i></i></div></div>`;
 // A formula question with a picture has the picture beside its number and question, so the lines start higher.
-const wqHead = (it, n) => `<div class="wq-head"><span class="q-num">${n}</span><span class="q-text">${typeof it === 'string' ? it : it.t}</span></div>`;
+// A short question beside a picture ('Arc length', 'Area') stays on one line.
+const plainLen = (t) => t.replace(/<[^>]+>/g, '').length;
+const wqHead = (it, n, top) => { const t = typeof it === 'string' ? it : it.t;
+  return `<div class="wq-head${top && plainLen(t) <= 16 ? ' short' : ''}"><span class="q-num">${n}</span><span class="q-text">${t}</span></div>`; };
 // (beside a picture the head is narrow, so an earlier lesson's tag follows the question instead of floating above it)
 const tagAfter = (it) => ({ ...it, t: it.t.replace(/^(<span class="q-tag">[^<]*<\/span>)(.*)$/s, '$2 $1') });
-const wq = (it, n) => (isForm(it) && isFig(it) ? `<div class="wq fig form"><div class="wq-top">${wqHead(tagAfter(it), n)}<div class="wq-fig">${it.fig}</div></div>
+const wq = (it, n) => (isForm(it) && isFig(it) ? `<div class="wq fig form"><div class="wq-top">${wqHead(tagAfter(it), n, true)}<div class="wq-fig">${it.fig}</div></div>
     <div class="wq-body">${formLines(it.form)}</div></div>` : `<div class="wq${isFig(it) ? ' fig' : ''}${isForm(it) ? ' form' : ''}">${wqHead(it, n)}
-    <div class="wq-body">${isFig(it) ? `<div class="wq-fig">${it.fig}</div>` : ''}${isForm(it) ? formLines(it.form) : '<div class="wq-space"></div>'}</div>${isForm(it) ? '' : '<div class="wq-ans"><i></i></div>'}</div>`);
+    <div class="wq-body">${isFig(it) ? `<div class="wq-fig">${it.fig}</div>` : ''}${isForm(it) ? formLines(it.form) : '<div class="wq-space"></div>'}</div>${isForm(it) ? '' : '<div class="wq-ans"><span>Answer</span><i></i></div>'}</div>`);
 const workRound = (x, k, from, head) => {
   let n = from - 1;
   const cells = x.items.map((it) => wq(it, ++n)).join('');
@@ -145,7 +148,7 @@ module.exports = (raw) => (chapter) => {
   // from page 1); page 3 Example 2, the Medium set and the worded problems. No Easy/Medium strips: the page band says it.
   const nEasy = total(spec.easy.rounds);
   const pages = spec.drill ? [
-    page('Easy', `${header(spec, true)}${notesHtmlBox}${level(1, spec.easy, { plain: true })}`, true),
+    page('Easy', `${header(spec, true)}${notesHtmlBox}${level(1, spec.easy, { plain: true, zone: 'first-zone' })}`, true),
     page('Easy', practiceWork(1, spec.drill, { plain: true, zone: 'drill-zone', start: nEasy + 1, round: spec.easy.rounds.length + 1, head: 'keep going, one round at a time.' })),
     page('Medium', `${level(2, spec.medium, { plain: true, head: 'work in order. A tag shows an earlier lesson.' })}${spec.worded ? wordedBox(spec.worded) : ''}`),
   ] : [

@@ -1191,6 +1191,11 @@ ul.plain { list-style: none; padding-left: 0; }
 /* Three-page lessons: the worded problems a little shorter, to leave the Medium set its formula lines */
 .three-page .wp { --wp-h: 45mm; }
 .three-page .set-zone .fq-line { height: 6.4mm; }
-.three-page .drill-zone .wq-top .wq-fig .graph { width: min(var(--w), 40mm); max-height: 26mm; }
-.three-page .set-zone .wq-top .wq-fig .graph { max-height: 14mm; }
+.three-page .drill-zone .wq-top .wq-fig .graph { width: min(var(--w), 46mm); max-height: 26mm; }
+.three-page .first-zone .wq-top .wq-fig .graph { max-height: 20mm; }
+.three-page .set-zone .wq-top .wq-fig .graph { max-height: 15mm; }
 .wq-top .q-tag { float: none; display: inline-block; margin: 0 0 0 1mm; vertical-align: 0.2mm; }
+.wq-top .wq-head.short { max-width: none; }
+.wq-top .wq-head.short .q-text { white-space: nowrap; }
+.nb-steps .nb-step { white-space: nowrap; }
+.theme-violet .two-page.three-page .ex-part .inline-fig .graph { width: min(var(--w), 100%); }
