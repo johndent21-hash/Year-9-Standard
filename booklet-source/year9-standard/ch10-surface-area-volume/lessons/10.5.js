@@ -36,7 +36,9 @@ const quad = (o) => {
   const outN = (i) => { const a = P[i], c = P[(i + 1) % n], dx = c[0] - a[0], dy = c[1] - a[1], l = Math.hypot(dx, dy); return signed > 0 ? [dy / l, -dx / l] : [-dy / l, dx / l]; };
   const DIR = { down: [0, 1], up: [0, -1], left: [-1, 0], right: [1, 0] };
   let b = poly(P, holes.length ? SHADE : FILL);
-  holes.forEach((hp) => { b += poly(hp.map(map), '#fff'); });
+  // a hole's sharp corners touch the outline: round joins, so no mitred spur pokes past it, then the outline again on top
+  holes.forEach((hp) => { b += poly(hp.map(map), '#fff').replace('/>', ' stroke-linejoin="round"/>'); });
+  if (holes.length) b += poly(P, 'none');
   split.forEach(([p, q]) => { b += seg(map(p), map(q), { stroke: C.grey, w: 0.32, dash: true }); });
   right.forEach((i) => { b += rightMark(P[i], P[(i + n - 1) % n], P[(i + 1) % n], 1.5); });
   diag.forEach(([p, q]) => { b += seg(map(p), map(q), blueDash); });
@@ -44,8 +46,9 @@ const quad = (o) => {
   sides.forEach(([i, s, across]) => { const a = P[i], c = P[(i + 1) % n], m = [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2], nn = outN(i);
     if (!across) { b += out(m, nn, s); return; }
     // across: level with the side's midpoint, out to the side, so the label adds no height (a slanted side whose label
-    // would otherwise stand above the shape); far enough out that the slanted side clears the label's box
-    const sd = Math.sign(nn[0]), g = 1.1 + (Math.abs(c[0] - a[0]) / Math.abs(c[1] - a[1])) * SZ * 0.36;
+    // would otherwise stand above the shape); far enough out that the label's box is 1.2 mm clear of the slanted side,
+    // measured square to the side
+    const dx = Math.abs(c[0] - a[0]), dy = Math.abs(c[1] - a[1]), sd = Math.sign(nn[0]), g = (1.2 * Math.hypot(dx, dy)) / dy + (dx / dy) * SZ * 0.36;
     b += put(m[0] + sd * g, m[1] + SZ * 0.36, s, { anchor: sd > 0 ? 'start' : 'end' }); });
   hts.forEach(([x, foot, top, s, sd = 1]) => {
     const a = map([x, top]), c = map([x, foot]), up = c[1] > a[1]; // up: the foot is at the bottom
@@ -109,10 +112,10 @@ const rhombus = (x, y, unit, o) => kite(x, y, y / 2, unit, o);
 const formFig = (list, form) => ({ items: list.map(([fig, , t = '', own]) => ({ t, fig, form: own || form })), ans: list.map((x) => x[1]) });
 
 // Example 1: one of each shape
-const EX1 = { para: [12, 4, 3], trap: [14, 8, 6, 3], rh: [10, 6], kite: [7, 12, 8.5] };
+const EX1 = { para: [9, 5, 2], trap: [14, 8, 6, 3], rh: [10, 6], kite: [7, 12, 8.5] };
 // Example 2: a parallelogram and a trapezium each with a slanted side that is not needed (each slant's offset is
 // √(slant² − h²), so the picture is true), a height from the area, and a rectangle with a trapezium on top
-const EX2 = { para: { b: 10, h: 6, sl: 7 }, trap: { bot: 7.5, top: 4.5, h: 3.2, sl: 4 }, ht: { A: 54, b: 12, s: 2 },
+const EX2 = { para: { b: 10, h: 6, sl: 7 }, trap: { bot: 7.5, top: 4.5, h: 3.2, sl: 4 }, ht: { A: 91, b: 13, s: 1 },
   comp: { l: 10, w: 3, top: 6, h: 4 } };
 const off = (sl, h) => Math.sqrt(sl * sl - h * h);
 const compFig = ({ l, w, top, h }, unit, o = {}) => quad({ pts: [[0, 0], [l, 0], [l, w], [(l + top) / 2, w + h], [(l - top) / 2, w + h], [0, w]],
@@ -144,7 +147,7 @@ module.exports = {
   sc: ['use A = bh for a parallelogram', 'use A = ½(a + b)h for a trapezium', 'use A = ½xy for a rhombus or a kite'],
   notes: {
     terms: [['parallelogram', 'two pairs of parallel sides'], ['trapezium', 'one pair of parallel sides, a and b'], ['rhombus', 'a parallelogram with 4 equal sides'],
-      ['kite', 'two pairs of equal sides, next to each other'], ['base (b)', 'the side the height is measured from'], ['height (h)', 'perpendicular: at right angles to b'],
+      ['kite', 'two pairs of equal sides, next to each other'], ['base (b)', 'the side the height is measured from'], ['height (h)', 'perpendicular (at right angles) to b'],
       ['diagonals (x, y)', 'join opposite corners']],
     formulas: ['Parallelogram: A = bh', 'Trapezium: A = ½(a + b)h', 'Rhombus or kite: A = ½xy', 'Missing length: substitute, then solve'],
     steps: ['name the shape', 'write the formula', 'substitute', 'work out + unit (cm²)'],
@@ -152,8 +155,8 @@ module.exports = {
   },
   easy: {
     ex: { stem: 'Find the area of each shape. Write the formula first.', parts: [
-      { t: 'Parallelogram', fig: para(...EX1.para, 'cm', { size: 26, noAsk: true })[0] }, { t: 'Trapezium', fig: trap(...EX1.trap, 'cm', { size: 24, maxH: 10, noAsk: true })[0] },
-      { t: 'Rhombus', fig: rhombus(...EX1.rh, 'm', { size: 20, maxH: 12, noAsk: true })[0] }, { t: 'Kite', fig: kite(...EX1.kite, 'cm', { maxH: 13, noAsk: true })[0] }] },
+      { t: 'Parallelogram', fig: para(...EX1.para, 'cm', { size: 31, maxH: 13.5, noAsk: true })[0] }, { t: 'Trapezium', fig: trap(...EX1.trap, 'cm', { size: 26, maxH: 11, noAsk: true })[0] },
+      { t: 'Rhombus', fig: rhombus(...EX1.rh, 'm', { size: 20, maxH: 12, noAsk: true })[0] }, { t: 'Kite', fig: kite(...EX1.kite, 'cm', { maxH: 12, noAsk: true })[0] }] },
     exAns: [`A = bh = ${num(EX1.para[0])} × ${num(EX1.para[1])} = ${para(...EX1.para, 'cm')[1]}`,
       `A = ½(a + b)h = ½ × (${num(EX1.trap[1])} + ${num(EX1.trap[0])}) × ${num(EX1.trap[2])} = ${trap(...EX1.trap, 'cm')[1]}`,
       `A = ½xy = ½ × ${num(EX1.rh[0])} × ${num(EX1.rh[1])} = ${rhombus(...EX1.rh, 'm')[1]}`,
@@ -176,21 +179,21 @@ module.exports = {
     hint: 'Parallelogram A = bh · Trapezium A = ½(a + b)h · Rhombus or kite A = ½xy (x and y are the diagonals)',
     rounds: [
       { text: 'parallelogram or trapezium? Write the formula, then find the area.', ...formFig([
-        para(11, 6, 3, 'cm', { size: 28, maxH: 19 }), trap(10, 4, 5, 3, 'm', { size: 26, maxH: 15 }), para(10, 4.5, -3, 'm', { size: 28, maxH: 19 })], true) },
+        para(11, 6, 2, 'cm', { size: 31.5, maxH: 20 }), trap(10, 4, 5, 3, 'm', { size: 26, maxH: 15 }), para(8, 4.5, -2, 'm', { size: 31.5, maxH: 20 })], true) },
       { text: 'find the area of each rhombus.', ...formFig([
         rhombus(8, 6, 'cm', { size: 23, maxH: 18 }), rhombus(12, 9, 'm', { size: 26, maxH: 18 }), rhombus(5, 10, 'cm', { size: 24, maxH: 18 })], 'A = ½xy') },
       { text: 'find the area of each kite.', ...formFig([
         kite(6, 10, 6.5, 'cm', { maxH: 18 }), kite(8, 11, 7.5, 'm', { maxH: 18 }), kite(4.5, 8, 5.5, 'm', { maxH: 18 })], 'A = ½xy') },
       { text: 'which shape is it? Write the formula, then find the area.', ...formFig([
-        kite(9, 14, 10, 'cm', { maxH: 18 }), trap(8, 5, 6, 0, 'm', { size: 22, maxH: 16 }), para(6.5, 4, 2, 'cm', { size: 24, maxH: 16 })], true) },
+        kite(9, 14, 10, 'cm', { maxH: 18 }), trap(8, 5, 6, 0, 'm', { size: 22, maxH: 16 }), para(6.5, 4, 1.5, 'cm', { size: 31.5, maxH: 20 })], true) },
     ],
   },
   medium: {
     ex: { stem: 'Choose the right formula. Some lengths are not needed.', parts: [
       { t: 'Area', fig: para(EX2.para.b, EX2.para.h, off(EX2.para.sl, EX2.para.h), 'cm', { slant: EX2.para.sl, size: 24, maxH: 11, noAsk: true })[0] },
       { t: 'Area', fig: trap(EX2.trap.bot, EX2.trap.top, EX2.trap.h, off(EX2.trap.sl, EX2.trap.h), 'm', { slant: EX2.trap.sl, size: 24, maxH: 8, noAsk: true })[0] },
-      { t: 'Height', fig: para(EX2.ht.b, EX2.ht.A / EX2.ht.b, EX2.ht.s, 'cm', { askH: true, size: 21, maxH: 10 })[0] },
-      { t: 'Area', fig: compFig(EX2.comp, 'm', { size: 22, maxH: 10.5 }) }] },
+      { t: 'Height', fig: para(EX2.ht.b, EX2.ht.A / EX2.ht.b, EX2.ht.s, 'cm', { askH: true, size: 20, maxH: 10 })[0] },
+      { t: 'Area', fig: compFig(EX2.comp, 'm', { size: 22, maxH: 8.8 }) }] },
     exAns: [`the ${num(EX2.para.sl)} cm side is not needed: A = bh = ${num(EX2.para.b)} × ${num(EX2.para.h)} = ${u(EX2.para.b * EX2.para.h, 'cm²')}`,
       `the ${num(EX2.trap.sl)} m side is not needed: A = ½(a + b)h = ½ × (${num(EX2.trap.top)} + ${num(EX2.trap.bot)}) × ${num(EX2.trap.h)} = ${u(((EX2.trap.top + EX2.trap.bot) / 2) * EX2.trap.h, 'm²')}`,
       `A = bh, so ${num(EX2.ht.A)} = ${num(EX2.ht.b)} × h, h = ${num(EX2.ht.A)} ÷ ${num(EX2.ht.b)} = ${u(EX2.ht.A / EX2.ht.b, 'cm')}`,
@@ -212,7 +215,7 @@ module.exports = {
           split: [[[0, house.w], [house.l, house.w]]], dims: [[[0, house.w], [0, house.w + house.h], L(house.h, 'm'), 'left']], size: 11, maxH: 9 }),
         u(house.l * house.w + (house.l * house.h) / 2, 'm²')], 'Area', '10.4'),
         ff(trap(13, 7, 4, 3, 'cm', { slant: 5, size: 22, maxH: 6.5, ...no })),
-        ff(rhombus(16, 12, 'cm', { side: [1, '10 cm', true], size: 13, maxH: 8.8, ...no })),
+        ff(rhombus(16, 12, 'cm', { side: [1, '10 cm', true], size: 11, maxH: 6.8, ...no })),
         [{ t: 'Find the percentage error of 25 kg, measured to the nearest kg.', form: true, from: '10.3' }, `${num(pctErr(meas('25 kg').e, 25))}%`],
         ff(para(12, 6, 2, 'cm', { askH: true, size: 20, maxH: 9.5 }), 'Height'),
         ff(trap(14, 10, 4, 2, 'cm', { askH: true, size: 20, maxH: 6.5 }), 'Height'),
@@ -224,7 +227,7 @@ module.exports = {
     })()],
   },
   worded: [
-    { q: 'A courtyard is a parallelogram with a base of 8.5 m and a perpendicular height of 6 m. Pavers cost $42 per m². Find the cost to pave it.',
+    { q: 'A courtyard is a parallelogram with base 8.5 m and perpendicular height 6 m. Pavers cost $42 per m². Find the cost to pave it.',
       a: `A = 8.5 × 6 = ${u(8.5 * 6, 'm²')}; ${num(8.5 * 6)} × $42 = $${num(8.5 * 6 * 42)}` },
     { q: 'A kite is made from two rods, 80 cm and 50 cm long, that cross at right angles. Find the area of material needed to cover it.',
       a: `A = ½xy = ½ × 80 × 50 = ${u((80 * 50) / 2, 'cm²')}` },

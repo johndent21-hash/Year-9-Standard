@@ -25,7 +25,7 @@ const hits = (bx, a, c, pad = 0.4) => {
   for (let i = 0; i <= n; i++) { const p = lerp(a, c, i / n); if (p[0] > bx[0] - pad && p[0] < bx[2] + pad && p[1] > bx[1] - pad && p[1] < bx[3] + pad) return true; }
   return false;
 };
-const overlap = (b1, b2, pad = 0.8) => b1[0] < b2[2] + pad && b2[0] < b1[2] + pad && b1[1] < b2[3] + pad && b2[1] < b1[3] + pad;
+const overlap = (b1, b2, pad = 1.1) => b1[0] < b2[2] + pad && b2[0] < b1[2] + pad && b1[1] < b2[3] + pad && b2[1] < b1[3] + pad;
 let CROWDED = []; // labels that found no clear place (reported by the build, so they can be fixed)
 
 // A prism: its front face (corners x right, y up, in the question's units) pushed back by len.
@@ -36,11 +36,14 @@ let CROWDED = []; // labels that found no clear place (reported by the build, so
 //   lenLab: [corner, text, side] the length, beside the edge going back from that corner (side 1 below right, −1 above left)
 //   right: corners of the front face with a right-angle mark; hidden: dashed hidden edges (default true)
 //   dash: [[p, q, text]] a dashed height on the front face from p to q (a right-angle mark at q), labelled beside it
+//   vdim: [y0, y1, text] a measurement line up the left of the front face, from height y0 to y1, labelled on its left
+//         (a triangle's height, when there is no room for its label inside the triangle)
+//   ticks: front edges with an equal-length mark across their middle (the equal sides of an isosceles triangle)
 //   shade: 'front', 'top' or 'side' shades that face (the face whose area is asked for)
 //   open: the face behind the top edge of a rectangular front face is left off (a box with no lid)
 //   ask: the unknown, written beside the solid on its right ('SA = ?'); given: a value written above it ('SA = 54 m²')
 //   maxW, maxH: the most room the picture may take, labels and all, in mm; it is drawn as large as fits
-const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, dash = [], shade = '', open = false, ask = '', given = '', maxW, maxH }) => {
+const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, dash = [], vdim, ticks = [], shade = '', open = false, ask = '', given = '', maxW, maxH }) => {
   const n = face.length, signed = face.reduce((s, p, i) => { const q = face[(i + 1) % n]; return s + p[0] * q[1] - q[0] * p[1]; }, 0);
   const outN = (i) => { const a = face[i], b = face[(i + 1) % n], v = unit([b[0] - a[0], b[1] - a[1]]); return signed > 0 ? [v[1], -v[0]] : [-v[1], v[0]]; }; // y up
   const vis = (i) => { const o = outN(i); return o[0] * DEP[0] + o[1] * DEP[1] > 1e-6; };
@@ -90,15 +93,17 @@ const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, dash =
     right.forEach((i) => { b += mark(fr[i], fr[(i + n - 1) % n], fr[(i + 1) % n]); });
     dash.forEach(([p, q]) => { const a = F(p), c = F(q), e = fr.find((r) => Math.abs(r[1] - c[1]) < 1e-6 && Math.abs(r[0] - c[0]) > 0.5) || [c[0] + 1, c[1]];
       b += line(a, c, { stroke: C.grey, w: 0.32, dash: true }) + mark(c, a, e, 1.3); });
+    ticks.forEach((i) => { const a = fr[i], c = fr[(i + 1) % n], m = lerp(a, c, 0.5), v = unit([c[0] - a[0], c[1] - a[1]]), nv = [-v[1] * 1, v[0] * 1];
+      b += line([m[0] - nv[0], m[1] - nv[1]], [m[0] + nv[0], m[1] + nv[1]], { w: 0.35 }); });
     // a label: the first of the places (a point and the way to push the label off it) that is clear of every line
     // and every label so far (else the first place, and the label is reported)
-    const place = (s, places, o = LAB) => {
+    const place = (s, places, o = LAB, pad) => {
       const w = textW(s, o), h = (o.size || 2.8) * 0.75;
       const boxOf = ([p, nv]) => {
         const d = 0.9 + (w / 2) * Math.abs(nv[0]) + (h / 2) * Math.abs(nv[1]), cx = p[0] + nv[0] * d, cy = p[1] + nv[1] * d;
         return [cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2];
       };
-      const clear = (bx) => !lines.some(([a, c]) => hits(bx, a, c)) && !boxes.some((x) => overlap(bx, x));
+      const clear = (bx) => !lines.some(([a, c]) => hits(bx, a, c)) && !boxes.some((x) => overlap(bx, x, pad));
       const ok = places.find((x) => clear(boxOf(x)));
       if (!ok && report) CROWDED.push(s);
       const bx = boxOf(ok || places[0]);
@@ -106,6 +111,11 @@ const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, dash =
       return T((bx[0] + bx[2]) / 2, (bx[1] + bx[3]) / 2 + h * 0.48, s, o);
     };
     const TS = [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8];
+    if (vdim) {
+      const [y0, y1, s] = vdim, x = Math.min(...fr.map((p) => p[0])) - 2.2, a = [x, F([0, y0])[1]], c = [x, F([0, y1])[1]], g = { stroke: C.grey, w: 0.3 };
+      b += line(a, c, g) + line([x - 0.8, a[1]], [x + 0.8, a[1]], g) + line([x - 0.8, c[1]], [x + 0.8, c[1]], g);
+      b += place(s, [[[x - 0.3, (a[1] + c[1]) / 2], [-1, 0]]]);
+    }
     labs.forEach(([i, s, at, ts = TS, o = LAB]) => {
       const j = (i + 1) % n, nv = outN(i), sn = [nv[0], -nv[1]], inv = [-sn[0], -sn[1]]; // the outward normal on the page (y down)
       const out = [...ts, ...TS].map((t) => [lerp(fr[i], fr[j], t), sn]), back = vis(i) ? TS.map((t) => [lerp(bk[i], bk[j], t), sn]) : [], inside = TS.map((t) => [lerp(fr[i], fr[j], t), inv]);
@@ -114,7 +124,8 @@ const solid = ({ face, len, labs = [], lenLab, right = [], hidden = true, dash =
     if (lenLab) {
       const [c, s, side = 1] = lenLab, d = unit([DEP[0], -DEP[1]]), dn = [-d[1], d[0]], up = [d[1], -d[0]];
       const at = (nv) => TS.map((t) => [lerp(fr[c], bk[c], t), nv]);
-      b += place(s, side > 0 ? [...at(dn), ...at(up)] : [...at(up), ...at(dn)]);
+      // (kept well clear of the other labels, so it is not read with the bottom edge's label as one)
+      b += place(s, side > 0 ? [...at(dn), ...at(up)] : [...at(up), ...at(dn)], LAB, 2);
     }
     // a dashed height's label: beside the dashed line, inside the front face
     dash.forEach(([p, q, s]) => { if (!s) return; const a = F(p), c = F(q), v = unit([c[0] - a[0], c[1] - a[1]]), nr = [-v[1], v[0]], nl = [v[1], -v[0]];
@@ -142,8 +153,11 @@ const box = (l, w, h, x, o = {}) => solid({ face: [[0, 0], [l, 0], [l, h], [0, h
 const tri = (b, h, s, len, x, o = {}) => solid({ face: [[0, 0], [b, 0], [0, h]], len, labs: [[0, lab(b, x)], [1, lab(s, x)], [2, lab(h, x)]], lenLab: [1, lab(len, x)], right: [0], ...o });
 // A triangular prism lying on the long side c of its right-angled end: legs a (on the left) and b (on the right)
 const hypTri = (a, b, c, len, x, o = {}) => solid({ face: [[0, 0], [c, 0], [(a * a) / c, (a * b) / c]], len, labs: [[0, lab(c, x)], [1, lab(b, x)], [2, lab(a, x)]], lenLab: [1, lab(len, x)], right: [2], ...o });
-// A tent: an isosceles triangle end (base b, height h dashed, two equal sloping sides s), length len
-const tent = (b, h, len, x, o = {}) => solid({ face: [[0, 0], [b, 0], [b / 2, h]], len, labs: [[0, lab(b, x)], [2, lab(Math.hypot(b / 2, h), x)]], lenLab: [1, lab(len, x)], dash: [[[b / 2, h], [b / 2, 0], lab(h, x)]], ...o });
+// A tent: an isosceles triangle end (base b, height h dashed, two equal sloping sides s, marked equal), length len. The
+// height is on a measurement line up the left (no room for its label inside the triangle); the sloping side's label goes
+// beyond the back edge of the right-hand sloping face. No hidden edges: they would cross the marks on the small triangle.
+const tent = (b, h, len, x, o = {}) => solid({ face: [[0, 0], [b, 0], [b / 2, h]], len, labs: [[0, lab(b, x)], [1, lab(Math.hypot(b / 2, h), x), 'back']], lenLab: [1, lab(len, x)],
+  dash: [[[b / 2, h], [b / 2, 0]]], vdim: [0, h, lab(h, x)], ticks: [1, 2], hidden: false, ...o });
 
 // One face: a rectangle l by w (in the question's unit) drawn k mm per unit, l under it, w on its left, 'A = ?' on its right
 const vb = (pic) => { const x = /viewBox="[-\d.]+ [-\d.]+ ([\d.]+) ([\d.]+)"/.exec(pic); return [+x[1], +x[2]]; };
@@ -171,7 +185,9 @@ const tentSA = (b, h, len) => 2 * ((b * h) / 2) + (b + 2 * Math.hypot(b / 2, h))
 const boxWork = (l, w, h, x) => `2 × (${num(l)} × ${num(w)} + ${num(l)} × ${num(h)} + ${num(w)} × ${num(h)}) = 2 × ${num(l * w + l * h + w * h)} = ${u(boxSA(l, w, h), `${x}²`)}`;
 
 // The room a picture may take, in mm: page 1 (four or three to a row), page 2, the Medium set, the WE DO examples
-const P1 = [29, 19.6], P1W = [33.5, 19.6], P2 = [45, 25.6], MED = [27, 14.6], EX = [38, 20.5];
+// (a Medium heading is set on two lines, 'Surface<br>area', or 'Area<br>' with its lesson tag below, so the picture
+// beside it can be wider)
+const P1 = [29, 19.6], P1W = [33.5, 19.6], P2 = [44, 25.6], MED = [31, 14.6], EX = [34, 20.5], EX2B = [34, 17];
 // Formula questions (Formula / Substitute / Answer lines) from [picture, answer, text?, own formula?], with the round's
 // formula printed (a string) or left for students to write (true). (As 10.6's formFig.)
 const formFig = (list, form) => ({ items: list.map(([fig, , t = '', own]) => ({ t, fig, form: own || form })), ans: list.map((x) => x[1]) });
@@ -192,8 +208,11 @@ const edge = (pts, i) => { const p = pts[i], q = pts[(i + 1) % pts.length]; retu
 const perim = (pts) => pts.reduce((t, p, i) => t + edge(pts, i), 0);
 const areaOf = (pts) => Math.abs(pts.reduce((t, p, i) => { const q = pts[(i + 1) % pts.length]; return t + p[0] * q[1] - q[0] * p[1]; }, 0)) / 2;
 const lPrism = (pts, len, x, o) => solid({ face: pts, len, labs: [[0, lab(edge(pts, 0), x)], [5, lab(edge(pts, 5), x)], [1, lab(edge(pts, 1), x), 'back'], [4, lab(edge(pts, 4), x), 'back']], lenLab: [1, lab(len, x)], hidden: false, ...o });
-// Medium question 9: a smaller L (5 cm across, 4 cm up, both arms 2 cm thick), 6 cm long
+// Medium question 9: a smaller L (5 m across, 4 m up, both arms 2 m thick), 6 m long
 const L9 = [[0, 0], [5, 0], [5, 2], [2, 2], [2, 4], [0, 4]], L9LEN = 6;
+// Medium question 8 (Lesson 10.4): an L-shaped area, 9 m by 7 m with arms 3 m wide. The step (6 m) is labelled, not the
+// top edge, so no label sits above the shape and it can be drawn taller.
+const COMP = [[0, 0], [9, 0], [9, 3], [3, 3], [3, 7], [0, 7]];
 const EX2 = { open: [8, 5, 4], tent: [6, 4, 9], cubeSA: 96 };
 
 // The Notes diagram: a cuboid with its edges l, w and h and its faces named, each face's area in it, and the formula
@@ -201,14 +220,14 @@ const notesFig = () => {
   const l = 10, w = 8.5, h = 6, k = 2.05, o = { size: 2.8, weight: 600 }, s = { size: 2.4 }, a = { size: 2.5, weight: 700, fill: C.blue };
   const D = [w * DEP[0] * k, -w * DEP[1] * k], x0 = 3.4, y0 = 1 - D[1];
   const fr = [[x0, y0 + h * k], [x0 + l * k, y0 + h * k], [x0 + l * k, y0], [x0, y0]], bk = fr.map((p) => [p[0] + D[0], p[1] + D[1]]);
-  let b = seg(bk[0], bk[1], { stroke: C.grey, w: 0.3, dash: true }) + seg(bk[0], bk[3], { stroke: C.grey, w: 0.3, dash: true }) + seg(fr[0], bk[0], { stroke: C.grey, w: 0.3, dash: true });
-  b += poly([fr[3], fr[2], bk[2], bk[3]], TOP) + poly([fr[1], bk[1], bk[2], fr[2]], SIDE) + poly(fr, FILL);
+  // (the faces are solid, so no hidden edges: they would run through the face names)
+  let b = poly([fr[3], fr[2], bk[2], bk[3]], TOP) + poly([fr[1], bk[1], bk[2], fr[2]], SIDE) + poly(fr, FILL);
   const cx = x0 + (l * k) / 2, cy = y0 + (h * k) / 2;
-  b += T(cx, cy - 0.4, 'front', s) + T(cx, cy + 3, 'lh', a);
-  b += T(cx + D[0] / 2, y0 + D[1] / 2 + 1, 'top', s);
-  b += T(cx + D[0] / 2 + 7, y0 + D[1] / 2 + 1, 'lw', a);
+  b += T(cx, cy - 0.9, 'front', s) + T(cx, cy + 3.1, 'lh', a);
+  // the top face's name and area side by side in its middle, clear of its slanted ends
+  b += T(cx + D[0] / 2 - 0.8, y0 + D[1] / 2 + 0.9, 'top', { ...s, anchor: 'end' }) + T(cx + D[0] / 2 + 0.8, y0 + D[1] / 2 + 0.9, 'lw', { ...a, anchor: 'start' });
   const sx = x0 + l * k + D[0] / 2, sy = cy + D[1] / 2;
-  b += T(sx, sy - 0.4, 'side', s) + T(sx, sy + 3, 'wh', a);
+  b += T(sx, sy - 0.9, 'side', s) + T(sx, sy + 3.1, 'wh', a);
   b += T(cx, fr[0][1] + 3.6, 'l', o) + T(x0 - 1.2, cy + 1, 'h', { ...o, anchor: 'end' });
   b += T(fr[1][0] + D[0] / 2 + 1.3, fr[1][1] + D[1] / 2 + 2.2, 'w', { ...o, anchor: 'start' });
   b += T(x0 + (l * k + D[0]) / 2, fr[0][1] + 8.6, 'SA = 2(lw + lh + wh)', { size: 2.7, weight: 700, fill: C.blue });
@@ -218,7 +237,7 @@ const notesFig = () => {
 const lesson = {
   code: '10.8', title: 'Surface area of a prism',
   li: 'find the surface area of a prism by adding the areas of its faces.',
-  sc: ['find the area of each face of a prism', 'use SA = 6s² for a cube and SA = 2(lw + lh + wh) for a rectangular prism', 'find the surface area of triangular prisms and open boxes'],
+  sc: ['find the area of each face of a prism', 'use SA = 6s² and SA = 2(lw + lh + wh)', 'find the surface area of triangular prisms and open boxes'],
   notes: {
     terms: [['prism', 'the same cross-section all the way along'], ['face', 'a flat surface of a solid'], ['surface area (SA)', 'the total area of all the faces'],
       ['cube', '6 equal square faces'], ['rectangular prism', '3 pairs of equal rectangles'], ['triangular prism', '2 triangles and 3 rectangles'],
@@ -228,7 +247,7 @@ const lesson = {
     fig: notesFig(),
   },
   easy: {
-    ex: { stem: 'Surface area (SA) = the total area of all the faces of a solid.', parts: [
+    ex: { stem: 'Find each area. Surface area (SA) is the total area of all the faces.', parts: [
       { t: 'Shaded face', fig: box(7, 3, 4, 'cm', { shade: 'top', maxW: EX[0], maxH: EX[1] }) }, { t: 'Surface area', fig: box(5, 5, 5, 'm', { cube: true, maxW: EX[0], maxH: EX[1] }) },
       { t: 'Surface area', fig: box(8, 5, 4, 'cm', { maxW: EX[0], maxH: EX[1] }) }, { t: 'Surface area', fig: tri(8, 6, 10, 12, 'cm', { maxW: EX[0], maxH: EX[1] }) }] },
     exAns: [`the top is l by w: A = l × w = 7 × 3 = ${u(7 * 3, 'cm²')}`, `a cube has 6 equal squares: SA = 6s² = 6 × 5² = 6 × 25 = ${u(6 * 5 * 5, 'm²')}`,
@@ -239,14 +258,14 @@ const lesson = {
     // Small steps: the area of one face (a rectangle), then the face of a cuboid that is shaded (its formula printed on
     // the Formula line). Each question is its diagram: the given lengths on it, the unknown marked with a ?.
     rounds: [
-      { text: 'find the area of each face.', cols: 4, ...formFig([faceQ(6, 4, 'cm'), faceQ(9, 2, 'm'), faceQ(5, 5, 'cm'), faceQ(8, 3.5, 'm')], 'A = l × w') },
+      { text: 'find the area of each face.', cols: 4, ...formFig([faceQ(6, 4, 'cm'), faceQ(4.5, 3, 'm'), faceQ(5, 5, 'cm'), faceQ(7, 5, 'm')], 'A = l × w') },
       { text: 'find the area of the shaded face of each rectangular prism.', cols: 3, ...formFig([shadeQ(6, 3, 4, 'cm', 'front'), shadeQ(8, 5, 3, 'm', 'top'), shadeQ(5, 4, 6, 'cm', 'side')]) },
     ],
   },
   // Page 2: more drill. Cubes, then rectangular prisms (formula printed), then a round choosing the formula, then
   // triangular prisms (formula printed).
   drill: {
-    hint: 'Cube: SA = 6s² · Rectangular prism: SA = 2(lw + lh + wh) · Triangular prism: 2 triangles + 3 rectangles = bh + (b + h + s)l',
+    hint: 'Cube: SA = 6s² · Rectangular prism: SA = 2(lw + lh + wh) · Triangular prism: 2 triangles + 3 rectangles',
     rounds: [
       { text: 'find the surface area of each cube.', ...formFig([cubeQ(3, 'cm'), cubeQ(10, 'm'), cubeQ(2.5, 'cm')], 'SA = 6s²') },
       { text: 'find the surface area of each rectangular prism.', ...formFig([boxQ(6, 4, 3, 'cm'), boxQ(10, 5, 2, 'm'), boxQ(7, 3, 5, 'cm')], 'SA = 2(lw + lh + wh)') },
@@ -256,31 +275,32 @@ const lesson = {
   },
   medium: {
     ex: { stem: 'Find each surface area. List the faces first.', parts: [
-      { t: 'SA (no lid)', fig: box(...EX2.open, 'cm', { open: true, maxW: EX[0], maxH: EX[1] }) }, { t: 'Surface area', fig: tent(...EX2.tent, 'cm', { maxW: EX[0], maxH: EX[1] }) },
-      { t: 'Surface area', fig: lPrism(L, LLEN, 'cm', { maxW: EX[0], maxH: EX[1] }) },
-      { t: 'Side length', fig: box(4, 4, 4, 'cm', { cube: true, labs: [[0, 's = ?', undefined, undefined, Q]], given: `SA = ${num(EX2.cubeSA)} cm²`, maxW: EX[0], maxH: EX[1] }) }] },
+      { t: 'SA (no lid)', fig: box(...EX2.open, 'cm', { open: true, maxW: EX2B[0], maxH: EX2B[1] }) }, { t: 'Surface area', fig: tent(...EX2.tent, 'cm', { maxW: EX2B[0], maxH: EX2B[1] }) },
+      { t: 'Surface area', fig: lPrism(L, LLEN, 'cm', { maxW: EX2B[0], maxH: EX2B[1] }) },
+      { t: 'Side length', fig: box(4, 4, 4, 'cm', { cube: true, labs: [[0, 's = ?', undefined, undefined, Q]], given: `SA = ${num(EX2.cubeSA)} cm²`, maxW: EX2B[0], maxH: EX2B[1] }) }] },
     exAns: [`no top: SA = lw + 2lh + 2wh = 8 × 5 + 2 × 8 × 4 + 2 × 5 × 4 = 40 + 64 + 40 = ${u(openSA(...EX2.open), 'cm²')}`,
       `2 triangles + 3 rectangles: SA = 2 × ½ × 6 × 4 + (6 + 5 + 5) × 9 = 24 + 144 = ${u(tentSA(...EX2.tent), 'cm²')}`,
       `inside edges 6 − 2 = 4 and 5 − 2 = 3; end: area 6 × 2 + 2 × 3 = ${num(areaOf(L))}, perimeter 6 + 2 + 4 + 3 + 2 + 5 = ${num(perim(L))}; SA = 2 × ${num(areaOf(L))} + ${num(perim(L))} × ${num(LLEN)} = ${num(2 * areaOf(L))} + ${num(perim(L) * LLEN)} = ${u(2 * areaOf(L) + perim(L) * LLEN, 'cm²')}`,
       `${num(EX2.cubeSA)} = 6s², so s² = ${num(EX2.cubeSA)} ÷ 6 = ${num(EX2.cubeSA / 6)} and s = √${num(EX2.cubeSA / 6)} = ${u(Math.sqrt(EX2.cubeSA / 6), 'cm')}`],
-    hint: 'No lid: SA = lw + 2lh + 2wh · Any prism: SA = 2 × area of the end + perimeter of the end × length · Cube: s² = SA ÷ 6',
+    hint: 'No lid: SA = lw + 2lh + 2wh · Any prism: SA = 2 × end + perimeter of end × length · Cube: s² = SA ÷ 6',
     work: true, set: true,
     // One set: today's skill, building from rectangular prisms to open boxes, other prisms and finding a cube's side,
     // with a question from an earlier lesson (tagged) in each row. Every question is its diagram, with a word or two
     // saying what to find, and Formula / Substitute / Answer lines (form: true).
     rounds: [(() => {
-      const ff = ([fig, a], t = 'Surface area', from) => [{ t, fig, form: true, ...(from ? { from } : {}) }, a];
+      const ff = ([fig, a], t = 'Surface<br>area', from) => [{ t, fig, form: true, ...(from ? { from } : {}) }, a];
       const M = { maxW: MED[0], maxH: MED[1] };
       const Q9 = [
-        ff([box(10, 6, 2.5, 'cm', M), u(boxSA(10, 6, 2.5), 'cm²')]),
-        ff([S.trap(10, 6, 4, 2, { sides: ['10 cm', '', '6 cm', ''], hLabel: '4 cm', size: 15, maxH: 6 }), u(((10 + 6) / 2) * 4, 'cm²')], 'Area', '10.5'),
-        ff([box(6, 4, 3, 'cm', { open: true, ...M }), u(openSA(6, 4, 3), 'cm²')], 'SA (no lid)'),
-        ff([tent(8, 3, 12, 'm', M), u(tentSA(8, 3, 12), 'm²')]),
-        ff([disc(6.3, '12 cm'), u(area(6), 'cm²', 1)], 'Area', '10.7'),
-        ff([hypTri(9, 12, 15, 8, 'm', M), u(triSA(9, 12, 15, 8), 'm²')]),
-        ff([box(3, 3, 3, 'm', { cube: true, labs: [[0, 's = ?', undefined, undefined, Q]], given: 'SA = 54 m²', ...M }), u(Math.sqrt(54 / 6), 'm')], 'Side length'),
-        ff([S.shape({ pts: [[0, 0], [8, 0], [8, 3], [3, 3], [3, 7], [0, 7]], sides: ['8 m', '3 m', '', '', '3 m', '7 m'], right: [0, 1, 4, 5], size: 13, maxH: 11, m: 1 }), u(8 * 3 + 3 * 4, 'm²')], 'Area', '10.4'),
-        ff([lPrism(L9, L9LEN, 'cm', M), u(2 * areaOf(L9) + perim(L9) * L9LEN, 'cm²')]),
+        ff([box(8, 5, 3.5, 'm', M), u(boxSA(8, 5, 3.5), 'm²')]),
+        // the trapezium's height on a measurement line beside it (the dashed height inside is too short for its label)
+        ff([S.trap(10, 6, 4, 2, { sides: ['10 cm', '', '6 cm', ''], dims: [[[10, 0], [10, 4], '4 cm', -1]], size: 15, maxH: 5.2 }), u(((10 + 6) / 2) * 4, 'cm²')], 'Area<br>', '10.5'),
+        ff([box(6, 4, 3, 'cm', { open: true, ...M }), u(openSA(6, 4, 3), 'cm²')], 'SA<br>(no lid)'),
+        ff([tent(12, 8, 6, 'm', M), u(tentSA(12, 8, 6), 'm²')]),
+        ff([disc(5.8, '12 cm'), u(area(6), 'cm²', 1)], 'Area<br>', '10.7'),
+        ff([hypTri(6, 8, 10, 7, 'm', M), u(triSA(6, 8, 10, 7), 'm²')]),
+        ff([box(3, 3, 3, 'm', { cube: true, labs: [[0, 's = ?', undefined, undefined, Q]], given: 'SA = 54 m²', ...M }), u(Math.sqrt(54 / 6), 'm')], 'Side<br>length'),
+        ff([S.shape({ pts: COMP, sides: ['9 m', '3 m', '6 m', '', '', '7 m'], right: [0, 1, 4, 5], size: 14, maxH: 8, m: 1 }), u(areaOf(COMP), 'm²')], 'Area<br>', '10.4'),
+        ff([lPrism(L9, L9LEN, 'm', M), u(2 * areaOf(L9) + perim(L9) * L9LEN, 'm²')]),
       ];
       return { text: '', items: Q9.map((x) => x[0]), ans: Q9.map((x) => x[1]) };
     })()],
@@ -288,9 +308,9 @@ const lesson = {
   worded: [
     { q: 'A gift box is 30 cm long, 20 cm wide and 10 cm high. Find the area of paper needed to cover it exactly.',
       a: `SA = ${boxWork(30, 20, 10, 'cm')}` },
-    { q: 'A room is 5 m long, 4 m wide and 2.5 m high. One litre of paint covers 10 m². How many litres paint the four walls and the ceiling?',
+    { q: 'A room is 5 m long, 4 m wide and 2.5 m high. 1 L of paint covers 10 m². How many litres paint the four walls and the ceiling?',
       a: `walls 2 × (5 × 2.5 + 4 × 2.5) = ${num(2 * (5 * 2.5 + 4 * 2.5))} m², ceiling 5 × 4 = ${num(5 * 4)} m²; ${num(2 * (5 * 2.5 + 4 * 2.5))} + ${num(20)} = ${num(2 * (5 * 2.5 + 4 * 2.5) + 20)} m²; ${num(2 * (5 * 2.5 + 4 * 2.5) + 20)} ÷ 10 = ${u((2 * (5 * 2.5 + 4 * 2.5) + 20) / 10, 'L')}` },
-    { q: 'A tent is a triangular prism 4 m long. Each end is a triangle with a base of 3 m, a height of 2 m and sloping sides of 2.5 m. Find the area of canvas, including the floor.',
+    { q: 'A tent is a triangular prism 4 m long. Each end is a triangle: base 3 m, height 2 m, sloping sides 2.5 m. Find the area of canvas, including the floor.',
       a: `SA = 2 × ½ × 3 × 2 + (3 + 2.5 + 2.5) × 4 = 6 + 32 = ${u(tentSA(3, 2, 4), 'm²')}` },
   ],
 };

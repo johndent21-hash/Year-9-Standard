@@ -22,8 +22,9 @@ const arc = (cx, cy, r, a0, a1, n = 24) => Array.from({ length: n + 1 }, (_, i) 
 // The given length is drawn in blue. The question's unknown (ask) is marked with a ?: 'r' a dashed radius straight down
 // with a measurement line beside it labelled 'r = ?'; 'A' (or 'C', 'P') written beside the shape; 'arc' the arc drawn
 // in blue with 'arc = ?' by it. given: a value beside the shape that is not a length on it ('A = 78.5 cm²').
-const part = ({ angle = 360, R = 10, lab = '', show = 'r', angleLabel = '', ask = '', given = '' }) => {
-  const full = angle >= 360, m = 1, rad = (a) => (a * Math.PI) / 180;
+// m: the margin round the shape (a smaller one lets a small Medium sector be drawn larger in its 15 mm box).
+const part = ({ angle = 360, R = 10, lab = '', show = 'r', angleLabel = '', ask = '', given = '', m = 1 }) => {
+  const full = angle >= 360, rad = (a) => (a * Math.PI) / 180;
   const ends = full ? [0, 90, 180, 270] : [0, angle, ...[90, 180, 270].filter((a) => a < angle)];
   const xs = [...(full ? [] : [0]), ...ends.map((a) => R * Math.cos(rad(a)))], ys = [...(full ? [] : [0]), ...ends.map((a) => R * Math.sin(rad(a)))];
   const c = [m - Math.min(...xs), m + Math.max(...ys)], at = (a, r = R) => [c[0] + r * Math.cos(rad(a)), c[1] - r * Math.sin(rad(a))];
@@ -96,7 +97,7 @@ const circleQ = (v, unit, k, R) => [part({ R, lab: `${num(v)} ${unit}`, show: k,
 const semiD = (d, unit, R = 16) => [part({ angle: 180, R, lab: `${num(d)} ${unit}`, show: 'd', ask: 'A' }), A2(area(d / 2) / 2, unit)];
 const semiR = (r, unit, R = 16) => [part({ angle: 180, R, lab: `${num(r)} ${unit}`, show: 'up', ask: 'A' }), A2(area(r) / 2, unit)];
 const quad = (r, unit, R = 19) => [part({ angle: 90, R, lab: `${num(r)} ${unit}`, ask: 'A' }), A2(area(r) / 4, unit)];
-const sect = (angle, r, unit, R, ask = 'A') => [part({ angle, R, lab: `${num(r)} ${unit}`, angleLabel: `${angle}°`, ask }), A2(sectorA(angle, r), unit)];
+const sect = (angle, r, unit, R, ask = 'A', m) => [part({ angle, R, lab: `${num(r)} ${unit}`, angleLabel: `${angle}°`, ask, m }), A2(sectorA(angle, r), unit)];
 // Formula questions (Formula / Substitute / Answer lines) from [picture, answer, text?, formula?], with the round's formula
 // printed (a string) or left for students to write (true)
 const formFig = (list, form) => ({ items: list.map(([fig, , t = '', own]) => ({ t, fig, form: own || form })), ans: list.map((x) => x[1]) });
@@ -125,9 +126,9 @@ module.exports = {
   sc: ['use A = πr² to find the area of a circle', 'find the area of a sector: θ ÷ 360 × πr²', 'find composite and shaded areas'],
   notes: {
     terms: [['area (A)', 'the space inside a shape, in square units'], ['radius (r)', 'from the centre to the edge'], ['diameter (d)', 'across through the centre; r = d ÷ 2'],
-      ['semicircle', 'half a circle'], ['quadrant', 'a quarter of a circle'], ['sector', 'a slice between two radii; θ = the angle at the centre'],
+      ['semicircle', 'half a circle'], ['quadrant', 'a quarter of a circle'], ['sector', 'a slice between two radii, angle θ'],
       ['shaded area', 'the whole shape − the part cut out']],
-    formulas: ['Circle: A = πr²', 'Semicircle: A = ½πr²', 'Quadrant: A = ¼πr²', 'Sector: A = θ ÷ 360 × πr²', 'Ring: A = πR² − πr²'],
+    formulas: ['Circle: A = πr²', 'Semicircle: A = ½πr²', 'Quadrant: A = ¼πr²', 'Sector: A = θ ÷ 360 × πr²', 'Ring: A = πR² − πr² (R outer, r inner)'],
     steps: ['r = d ÷ 2', 'write the formula', 'substitute (π key)', 'round to 1 d.p. + unit²'],
     fig: notesFig(),
   },
@@ -175,14 +176,15 @@ module.exports = {
     rounds: [(() => {
       const ff = ([fig, a], t = 'Area', from) => [{ t, fig, form: true, ...(from ? { from } : {}) }, a];
       const Q = [
-        ff(sect(72, 10, 'cm', 8.8, '')),
-        ff([S.trap(9, 5, 4, 2, { sides: ['9 m', '', '5 m', ''], hLabel: '4 m', size: 15, maxH: 5.8 }), u(((9 + 5) / 2) * 4, 'm²')], 'Area', '10.5'),
+        ff(sect(72, 10, 'cm', 10, '', 0.4)),
+        // the height on a measurement line beside the trapezium (the dashed height inside is too short to hold its label)
+        ff([S.trap(9, 5, 4, 2, { sides: ['9 m', '', '5 m', ''], dims: [[[9, 0], [9, 4], '4 m', -1]], size: 15, maxH: 6.4 }), u(((9 + 5) / 2) * 4, 'm²')], 'Area', '10.5'),
         ff(sect(150, 6, 'm', 8, '')),
         ff([rectEnds(8, 4, 2, 'cm', { size: 20, maxH: 6 }), A2(8 * 4 + area(2), 'cm')]),
-        ff([part({ angle: 80, R: 8.7, lab: '9 m', angleLabel: '80°' }), d1(arcLen(80, 9) + 2 * 9, 'm')], 'Perimeter', '10.6'),
+        ff([part({ angle: 80, R: 9.8, m: 0.4, lab: '9 m', angleLabel: '80°' }), d1(arcLen(80, 9) + 2 * 9, 'm')], 'Perimeter', '10.6'),
         ff([S.shape({ pts: [[0, 0], [8, 0], [8, 8], [0, 8]], sides: ['8 cm', '8 cm'], shade: true, circles: [[4, 4, 4]], size: 8.5, maxH: 8.5, m: 1 }), A2(8 * 8 - area(4), 'cm')], 'Shaded area'),
         ff([biteQuad(9, 5, 'cm', { size: 16, maxH: 8 }), A2(9 * 5 - area(5) / 4, 'cm')]),
-        ff([part({ R: 6, lab: '7 m', show: 'd' }), d1(PI * 7, 'm')], 'Circumference', '10.6'),
+        ff([part({ angle: 180, R: 9, lab: '16 cm', show: 'd' }), d1((PI * 16) / 2 + 16, 'cm')], 'Perimeter', '10.6'),
         ff([part({ R: 5.5, ask: 'r', given: 'A = 28.3 m²' }), d1(Math.sqrt(+(28.3 / PI).toFixed(1)), 'm')], 'Radius'),
       ];
       return { text: '', items: Q.map((x) => x[0]), ans: Q.map((x) => x[1]) };
