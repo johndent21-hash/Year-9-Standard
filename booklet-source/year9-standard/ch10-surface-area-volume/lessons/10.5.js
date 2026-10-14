@@ -185,7 +185,7 @@ module.exports = {
       { text: 'find the area of each kite.', ...formFig([
         kite(6, 10, 6.5, 'cm', { maxH: 18 }), kite(8, 11, 7.5, 'm', { maxH: 18 }), kite(4.5, 8, 5.5, 'm', { maxH: 18 })], 'A = ½xy') },
       { text: 'which shape is it? Write the formula, then find the area.', ...formFig([
-        kite(9, 14, 10, 'cm', { maxH: 18 }), trap(8, 5, 6, 0, 'm', { size: 22, maxH: 16 }), para(6.5, 4, 1.5, 'cm', { size: 31.5, maxH: 20 })], true) },
+        kite(9, 14, 10, 'cm', { maxH: 18 }), trap(8, 5, 6, 0, 'm', { size: 22, maxH: 16 }), para(6.5, 4, 1, 'cm', { size: 31.5, maxH: 20 })], true) },
     ],
   },
   medium: {
@@ -227,7 +227,7 @@ module.exports = {
     })()],
   },
   worded: [
-    { q: 'A courtyard is a parallelogram with base 8.5 m and perpendicular height 6 m. Pavers cost $42 per m². Find the cost to pave it.',
+    { q: 'A courtyard is a parallelogram with base 8.5 m and perpendicular height 6 m. Pavers cost $42 per m². Find the cost of paving the courtyard.',
       a: `A = 8.5 × 6 = ${u(8.5 * 6, 'm²')}; ${num(8.5 * 6)} × $42 = $${num(8.5 * 6 * 42)}` },
     { q: 'A kite is made from two rods, 80 cm and 50 cm long, that cross at right angles. Find the area of material needed to cover it.',
       a: `A = ½xy = ½ × 80 × 50 = ${u((80 * 50) / 2, 'cm²')}` },

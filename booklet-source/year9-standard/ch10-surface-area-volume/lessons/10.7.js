@@ -105,17 +105,18 @@ const formFig = (list, form) => ({ items: list.map(([fig, , t = '', own]) => ({ 
 // The teacher's examples
 const EX2 = { l: 10, w: 6, R: 10, d: 16, A: 50 };
 
-// The Notes diagram: a circle with its centre, radius, diameter and a shaded sector (with the angle θ at its centre)
+// The Notes diagram: a circle with its centre, radius, diameter and a shaded sector (with the angle θ at its centre).
+// The sector points straight up (unlike 10.6's), so 'sector' sits high in it, well above θ and clear of the arc.
 const notesFig = () => {
-  const R = 13, a0 = 15, a1 = 85, c = [R + 3, R + 3];
+  const R = 13, a0 = 55, a1 = 125, c = [R + 3, R + 3];
   const at = (a, r = R) => [c[0] + r * Math.cos((a * Math.PI) / 180), c[1] - r * Math.sin((a * Math.PI) / 180)];
   const s = arcD(c, R, a0, a1), th = arcD(c, 3.4, a0, a1), mid = (a0 + a1) / 2;
   let b = `<circle cx="${f(c[0])}" cy="${f(c[1])}" r="${R}" fill="${FILL}" stroke="${C.charcoal}" stroke-width="0.45"/>`;
   b += `<path d="M${f(c[0])},${f(c[1])} L${f(s.p0[0])},${f(s.p0[1])} ${s.d} Z" fill="${SHADE}" stroke="${C.charcoal}" stroke-width="0.4"/>`;
   b += `<path d="M${f(th.p0[0])},${f(th.p0[1])} ${th.d}" fill="none" stroke="${C.charcoal}" stroke-width="0.3"/>`;
   b += seg(at(180), at(0), { stroke: C.charcoal, w: 0.45 }) + seg(c, at(a1), { stroke: C.blue, w: 0.6 }) + dot(c);
-  b += T(c[0], c[1] + 3.6, 'diameter d', { size: 2.5 }) + T(at(a1, R * 0.5)[0] - 1.2, at(a1, R * 0.5)[1] + 1, 'r', { size: 2.8, anchor: 'end', weight: 600, fill: C.blue });
-  b += T(at(mid, 5.6)[0], at(mid, 5.6)[1] + 1, 'θ', { size: 2.6 }) + T(at(mid, R * 0.62)[0], at(mid, R * 0.62)[1] + 1, 'sector', { size: 2.4 });
+  b += T(c[0], c[1] + 3.6, 'diameter d', { size: 2.5 }) + T(at(a1, R * 0.5)[0] - 2.4, at(a1, R * 0.5)[1] + 1, 'r', { size: 2.8, anchor: 'end', weight: 600, fill: C.blue });
+  b += T(at(mid, 5.2)[0], at(mid, 5.2)[1] + 1, 'θ', { size: 2.6 }) + T(at(mid, R * 0.77)[0], at(mid, R * 0.77)[1] + 1, 'sector', { size: 2.5 });
   b += T(c[0], c[1] + R + 3.8, 'circle: A = πr²', { size: 2.5 });
   return svg(f(2 * R + 6), f(2 * R + 8), b);
 };

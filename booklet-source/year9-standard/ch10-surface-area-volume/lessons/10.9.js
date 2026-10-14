@@ -21,7 +21,7 @@ const addUp = (parts, unit) => {
 
 const INK = C.charcoal, BLUE = { stroke: C.blue, w: 0.45 }, GREY = { stroke: C.grey, w: 0.3 };
 const LAB = { size: 3 }, Q = { size: 3, weight: 700 }; // a given length; the unknown (?)
-const INSIDE = '#c2cbe6'; // the inside wall seen through an open top
+const INSIDE = '#d5d8de'; // the inside wall seen through an open top: a neutral grey, never the blue that marks a surface asked for
 const tw = (s, size = 3) => String(s).length * size * 0.58; // a label's width, as shapes.js T measures it
 // A measurement line up the side, x from y0 to y1, with ticks; its label to the left (side −1) or right (side 1)
 const vDim = (x, y0, y1, t, side = -1, o = LAB) => seg([x, y0], [x, y1], GREY) + seg([x - 0.7, y0], [x + 0.7, y0], GREY) + seg([x - 0.7, y1], [x + 0.7, y1], GREY)
@@ -40,8 +40,9 @@ const cyl = ({ r, h, k, lab = '', show = 'r', hLab = '', shade = '', open = fals
   let b = `<path d="M${f(cx - R)},${f(top)} L${f(cx - R)},${f(bot)} A${f(R)},${f(E)} 0 0 0 ${f(cx + R)},${f(bot)} L${f(cx + R)},${f(top)}" fill="${shade === 'side' ? SHADE : SIDE}" stroke="${INK}" stroke-width="0.45"/>`;
   b += `<path d="M${f(cx - R)},${f(bot)} A${f(R)},${f(E)} 0 0 1 ${f(cx + R)},${f(bot)}" fill="none" stroke="${C.grey}" stroke-width="0.3" stroke-dasharray="1.2 0.9"/>`;
   b += `<ellipse cx="${f(cx)}" cy="${f(top)}" rx="${f(R)}" ry="${f(E)}" fill="${open ? '#fff' : shade === 'top' ? SHADE : FILL}" stroke="${INK}" stroke-width="0.45"/>`;
-  // no lid: the inside of the far wall shows in the back of the opening
-  if (open) b += `<path d="M${f(cx - R)},${f(top)} A${f(R)},${f(E)} 0 0 1 ${f(cx + R)},${f(top)} A${f(R)},${f(E * 0.45)} 0 0 1 ${f(cx - R)},${f(top)} Z" fill="${INSIDE}" stroke="${INK}" stroke-width="0.3"/>`;
+  // no lid: the inside of the far wall shows as a grey crescent at the back of the opening, down to where it meets the
+  // floor (an arc bulging up); the rest of the opening stays white, so the top reads as a hole and not a shaded end
+  if (open) b += `<path d="M${f(cx - R)},${f(top)} A${f(R)},${f(E)} 0 0 1 ${f(cx + R)},${f(top)} A${f(R)},${f(E * 0.55)} 0 0 0 ${f(cx - R)},${f(top)} Z" fill="${INSIDE}" stroke="${INK}" stroke-width="0.3"/>`;
   if (lab) {
     b += show === 'd' ? seg([cx - R, top], [cx + R, top], BLUE) : seg([cx, top], [cx + R, top], BLUE);
     b += dot([cx, top], 0.45) + T(show === 'd' ? cx : cx + R / 2, top - E - 1, lab, LAB);
@@ -96,15 +97,16 @@ const halfCyl = ({ r, l, k, lab, show = 'r', lLab }) => {
   b += T(e[0] + 1.4, e[1] + 2.4, lLab, { ...LAB, anchor: 'start' });
   return svg(f(B[0] + R + m), f(F[1] + m), b);
 };
-// A rectangular prism (Lesson 10.8): l across, w going back, h up, drawn k mm per unit. l under the front, h on its left,
-// w beside the bottom edge going back.
+// A rectangular prism (Lesson 10.8): l across, w going back, h up, drawn k mm per unit. l under the front; w beside the
+// bottom edge going back and h beside the right-hand back edge, both on the right, so the labels take one label's width
+// and the box itself can be drawn big enough.
 const box = (l, w, h, [ll, lw, lh], k) => {
   const D = [Math.cos(rad(35)) * 0.55 * w * k, -Math.sin(rad(35)) * 0.55 * w * k], m = 0.5, X = l * k, Y = h * k;
   const p = [m, m - D[1] + Y], fr = [p, [p[0] + X, p[1]], [p[0] + X, p[1] - Y], [p[0], p[1] - Y]], bk = fr.map((q) => [q[0] + D[0], q[1] + D[1]]);
   const hid = { stroke: C.grey, w: 0.3, dash: true };
   let b = seg(bk[0], bk[1], hid) + seg(bk[0], bk[3], hid) + seg(bk[0], fr[0], hid);
   b += poly([fr[3], fr[2], bk[2], bk[3]], TOP) + poly([fr[1], bk[1], bk[2], fr[2]], SIDE) + poly(fr, FILL);
-  b += T(p[0] + X / 2, p[1] + 3.8, ll, LAB) + T(p[0] - 1.2, p[1] - Y / 2 + 1, lh, { ...LAB, anchor: 'end' });
+  b += T(p[0] + X / 2, p[1] + 3.8, ll, LAB) + T(bk[1][0] + 1.2, bk[1][1] - Y / 2 + 1, lh, { ...LAB, anchor: 'start' });
   b += T(fr[1][0] + D[0] / 2 + 1.4, fr[1][1] + D[1] / 2 + 2.4, lw, { ...LAB, anchor: 'start' });
   return svg(f(bk[2][0] + m), f(p[1] + m), b);
 };
@@ -113,6 +115,12 @@ const disc = (R, lab) => {
   const c = [R + 1, R + 1];
   return svg(f(2 * R + 2), f(2 * R + 2), `<circle cx="${f(c[0])}" cy="${f(c[1])}" r="${f(R)}" fill="${FILL}" stroke="${INK}" stroke-width="0.45"/>`
     + seg([c[0] - R, c[1]], [c[0] + R, c[1]], BLUE) + dot(c) + T(c[0], c[1] - 1.4, lab, LAB));
+};
+// A semicircle (Lesson 10.6) of radius R mm, flat edge down: its diameter in blue, labelled under it (as 10.6's part())
+const semi = (R, lab) => {
+  const c = [R + 1, R + 1];
+  return svg(f(2 * R + 2), f(R + 2), `<path d="M${f(c[0] - R)},${f(c[1])} A${f(R)},${f(R)} 0 0 1 ${f(c[0] + R)},${f(c[1])} Z" fill="${FILL}" stroke="${INK}" stroke-width="0.45"/>`
+    + seg([c[0] - R, c[1]], [c[0] + R, c[1]], BLUE) + dot(c) + T(c[0], c[1] + 3.8, lab, LAB));
 };
 
 // A picture drawn at print size: the biggest k (mm per unit) at which draw(k) fits in maxW by maxH mm (labels and all),
@@ -158,10 +166,13 @@ const notesFig = () => {
   b += poly([[x1, y0], [x1 + W, y0], [x1 + W, y0 + H], [x1, y0 + H]], SIDE) + circle(y0 - R) + circle(y0 + H + R);
   b += seg([cn, y0 - R], [cn + R, y0 - R], BLUE) + dot([cn, y0 - R], 0.4) + T(cn + R + 1.1, y0 - R + 1, 'r', { ...o, anchor: 'start', fill: C.blue });
   b += T(x1 + W + 1.1, y0 + H / 2 + 1, 'h', { ...o, anchor: 'start' });
-  const yl = y0 + H * 0.66; // the rectangle's length, on a measurement line across it
-  b += seg([x1, yl], [x1 + W, yl], GREY) + T(cn, yl - 1.2, '2πr', o) + T(cn, y0 + 3.6, 'curved', { size: 2.4 });
-  b += T(cn + R + 1.1, y0 + H + R + 1, 'end', { size: 2.4, anchor: 'start' });
-  return svg(f(x1 + W + 1), f(y0 + H + 2 * R + 1), b);
+  b += T(cn, y0 + H / 2 + 1, 'curved', { size: 2.4 }) + T(cn + R + 1.1, y0 + H + R + 1, 'end', { size: 2.4, anchor: 'start' });
+  // the rectangle's length, 2πr: a ticked measurement line (as in Example 1b) under the net, clear of the bottom circle,
+  // with thin lines down to it from the rectangle's bottom corners
+  const yl = y0 + H + 2 * R + 1.6, ext = { stroke: C.grey, w: 0.2 };
+  b += seg([x1, y0 + H + 0.6], [x1, yl + 0.7], ext) + seg([x1 + W, y0 + H + 0.6], [x1 + W, yl + 0.7], ext);
+  b += hDim(yl, x1, x1 + W, '2πr', { ...o, fill: C.blue });
+  return svg(f(x1 + W + 1), f(yl + 1), b);
 };
 
 module.exports = {
@@ -170,7 +181,7 @@ module.exports = {
   sc: ['find the area of a circular end: A = πr²', 'find the curved surface area: A = 2πrh', 'find the surface area of closed and open cylinders'],
   notes: {
     terms: [['cylinder', 'a solid with two equal circular ends'], ['radius (r)', 'centre of an end to its edge; r = d ÷ 2'], ['height (h)', 'the distance between the two ends'],
-      ['curved surface', 'the side (a can’s label); unrolled, a rectangle 2πr by h'], ['net', 'the flat shape that folds up into the solid'],
+      ['curved surface', 'the side; flat, a 2πr by h rectangle'], ['net', 'the flat shape that folds up into the solid'],
       ['surface area (SA)', 'the total area of all the surfaces'], ['no lid', 'an open cylinder: one end only']],
     formulas: ['End: A = πr²', 'Curved surface: A = 2πrh', 'Closed: SA = 2πr² + 2πrh', 'No lid: SA = πr² + 2πrh', 'Half cylinder: SA = πr² + πrh + 2rh'],
     steps: ['r = d ÷ 2', 'list the surfaces', 'substitute (π key)', 'round to 1 d.p. + unit²'],
@@ -226,10 +237,11 @@ module.exports = {
       const ff = ([fig, a], t = 'Surface area', from) => [{ t, fig, form: true, ...(from ? { from } : {}) }, a];
       const Q = [
         ff([fit((k) => cyl({ r: 3, h: 2.5, k, lab: '6 m', show: 'd', hLab: '2.5 m' }), ...MED), A2(SA(3, 2.5), 'm')]),
-        ff([disc(5.8, '9 cm'), u(PI * 9, 'cm', 1)], 'Circumference', '10.6'),
+        // (a short heading, so the earlier lesson's tag sits on its line: 'Circumference' + tag would wrap)
+        ff([fit((k) => semi(5 * k, '10 cm'), 20, MED[1]), u((PI * 10) / 2 + 10, 'cm', 1)], 'Perimeter', '10.6'),
         ff([fit((k) => cyl({ r: 5, h: 8, k, lab: '5 cm', hLab: '8 cm', open: true }), ...MED), A2(SA(5, 8, 1), 'cm')], 'SA (no lid)'),
         ff([fit((k) => cyl({ r: 5, h: 7, k, lab: '10 cm', show: 'd', hLab: '7 cm', shade: 'side' }), ...MED), A2(curved(5, 7), 'cm')], 'Label area'),
-        ff([fit((k) => box(5, 4, 2, ['5 cm', '4 cm', '2 cm'], k), 27, MED[1]), u(2 * (5 * 4 + 5 * 2 + 4 * 2), 'cm²')], 'Surface area', '10.8'),
+        ff([fit((k) => box(5, 4, 3, ['5 cm', '4 cm', '3 cm'], k), ...MED), u(2 * (5 * 4 + 5 * 3 + 4 * 3), 'cm²')], 'SA', '10.8'),
         ff([fit((k) => lying({ r: 2, l: 9, k, dLab: '4 m', lLab: '9 m' }), ...MED), A2(SA(2, 9), 'm')]),
         ff([fit((k) => cyl({ r: 6, h: 9, k, lab: '12 cm', show: 'd', hLab: '9 cm', open: true }), ...MED), A2(SA(6, 9, 1), 'cm')], 'SA (no lid)'),
         ff([disc(5.8, '16 m'), A2(area(8), 'm')], 'Area', '10.7'),
@@ -239,10 +251,14 @@ module.exports = {
     })()],
   },
   worded: [
-    { q: 'A closed cylindrical tank has a diameter of 2 m and a height of 1.5 m. Paint costs $12 per m². Find the cost to paint the whole tank.',
-      a: `r = 2 ÷ 2 = 1 m; SA = 2 × π × 1² + 2 × π × 1 × 1.5 = ${A2(SA(1, 1.5), 'm')}; ${num(SA(1, 1.5), 1)} × $12 = $${(+SA(1, 1.5).toFixed(1) * 12).toFixed(2)}` },
+    // To the nearest dollar, so the cost is the same whether or not SA is rounded first ($219.80 or $219.91: $220)
+    { q: 'A closed cylindrical tank has a diameter of 2 m and a height of 1.5 m. Paint costs $14 per m². Find the cost to paint the whole tank, to the nearest dollar.',
+      a: (() => { const sa = +SA(1, 1.5).toFixed(1), cost = sa * 14;
+        if (Math.round(cost) !== Math.round(SA(1, 1.5) * 14)) throw new Error('10.9 worded 1: the cost depends on rounding SA first');
+        return `r = 2 ÷ 2 = 1 m; SA = 2 × π × 1² + 2 × π × 1 × 1.5 = ${A2(SA(1, 1.5), 'm')}; ${num(sa, 1)} × $14 = $${cost.toFixed(2)}, so $${num(Math.round(cost))}`; })() },
+    // 10 turns from the unrounded area of one turn, so the answer is correct to one decimal place
     { q: 'A paint roller is a cylinder 25 cm long with a diameter of 6 cm. Find the area it paints in 10 full turns.',
-      a: `r = 6 ÷ 2 = 3 cm; one turn = 2 × π × 3 × 25 = ${A2(curved(3, 25), 'cm')}; ${num(curved(3, 25), 1)} × 10 = ${u(+curved(3, 25).toFixed(1) * 10, 'cm²')}` },
+      a: `r = 6 ÷ 2 = 3 cm; one turn = 2 × π × 3 × 25 = ${A2(curved(3, 25), 'cm')}; 10 turns = 10 × 2 × π × 3 × 25 = ${A2(10 * curved(3, 25), 'cm')}` },
     { q: 'A bucket with no lid is a cylinder with a diameter of 30 cm and a height of 25 cm. Find the area of plastic needed to make it.',
       a: `r = 30 ÷ 2 = 15 cm; SA = π × 15² + 2 × π × 15 × 25 = ${addUp([area(15), curved(15, 25)], 'cm')}` },
   ],

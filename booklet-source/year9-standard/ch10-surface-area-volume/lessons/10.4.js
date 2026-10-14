@@ -87,7 +87,7 @@ const comp = (o) => {
 
 // ---------------------------------------------------------------- the shapes, each { pts, unit, … } (see comp)
 // Page 1: an L-shape with one missing side (ask: the side marked ?), and with two missing sides (P = ?)
-const P1 = { size: 22, maxH: 10.5 };
+const P1 = { size: 22, maxH: 9.6 };
 const missL = (pts, unit, show, ask, o = {}) => [comp({ pts, unit, show, ask, right: [0], ...P1, ...o }), u(side(pts, ask), unit)];
 const perL = (pts, unit, show, askY, o = {}) => [comp({ pts, unit, show, ask: 'P', askY, right: [0], ...P1, ...o }), u(perim(pts), unit)];
 // Area questions: the answer is the shaded area (the whole shape less any holes)
@@ -104,7 +104,7 @@ const holeS = (l, w, hl, hw, x, y, unit) => ({ pts: [[0, 0], [l, 0], [l, w], [0,
 // Example 1
 const EX1 = {
   per: { pts: [[0, 0], [10, 0], [10, 3], [4, 3], [4, 7], [0, 7]], unit: 'm', show: [0, 1, 4, 5], right: [0] },
-  tri: triS(8, 5, 2.5, 'cm'),
+  tri: triS(8, 4, 2, 'cm'),
   ell: { pts: [[0, 0], [8, 0], [8, 3], [3, 3], [3, 7], [0, 7]], unit: 'cm', show: [0, 1, 4, 5], right: [0], split: [[[0, 3], [3, 3]]] },
   hole: holeS(10, 6, 7, 4, 1.5, 1, 'm'),
 };
@@ -117,6 +117,11 @@ const EX2 = {
   corner: { pts: [[0, 0], [10, 0], [10, 5], [6, 8], [0, 8]], unit: 'm', show: [0, 1, 3, 4], right: [0, 1, 4], split: [[[6, 8], [10, 8]], [[10, 8], [10, 5]]] },
 };
 const tw = (pts, i) => n2(side(pts, i));
+// A door h m tall and 0.82 m wide (drawn in tenths of a metre, to scale), its height on a measurement line beside it
+const door = (h) => { const W = 8.2, H = h * 10, k = 11 / H, m = 1.5, x1 = m + W * k, y1 = m + H * k, g = { stroke: C.grey, w: 0.3 }, dx = x1 + 2;
+  let b = poly([[m, m], [x1, m], [x1, y1], [m, y1]], FILL) + `<circle cx="${f(x1 - 1.3)}" cy="${f(m + H * k * 0.52)}" r="0.55" fill="${C.charcoal}"/>`;
+  b += seg([dx, m], [dx, y1], g) + seg([dx - 0.8, m], [dx + 0.8, m], g) + seg([dx - 0.8, y1], [dx + 0.8, y1], g) + T(dx + 1.2, (m + y1) / 2 + 1, `${num(h)} m`, { anchor: 'start' });
+  return svg(f(x1 + m), f(y1 + m), b); };
 
 // The Notes diagram: a composite shape split by a dashed line into a rectangle and a triangle, with the area of each
 const notesFig = () => {
@@ -144,11 +149,11 @@ module.exports = {
   },
   easy: {
     ex: { stem: 'Find the perimeter or area. Find any missing sides first.', parts: [
-      { t: 'Perimeter', fig: comp({ ...EX1.per, size: 17, maxH: 11.4 }) }, { t: 'Area', fig: comp({ ...EX1.tri, size: 24, maxH: 14 }) },
-      { t: 'Area', fig: comp({ ...EX1.ell, size: 17, maxH: 11.4 }) }, { t: 'Shaded area', fig: comp({ ...EX1.hole, size: 24, maxH: 13.6 }) }] },
+      { t: 'Perimeter', fig: comp({ ...EX1.per, size: 17, maxH: 10.2 }) }, { t: 'Area', fig: comp({ ...EX1.tri, size: 24, maxH: 12.6 }) },
+      { t: 'Area', fig: comp({ ...EX1.ell, size: 17, maxH: 10.2 }) }, { t: 'Shaded area', fig: comp({ ...EX1.hole, size: 24, maxH: 12.4 }) }] },
     exAns: [
       `missing sides 10 − 4 = ${n2(10 - 4)} m and 7 − 3 = ${n2(7 - 3)} m; P = ${EX1.per.pts.map((p, i) => tw(EX1.per.pts, i)).join(' + ')} = ${u(perim(EX1.per.pts), 'm')}`,
-      `A = ½ × 8 × 5 = ${u(areaOf(EX1.tri.pts), 'cm²')}`,
+      `A = ½ × 8 × 4 = ${u(areaOf(EX1.tri.pts), 'cm²')}`,
       `top part 7 − 3 = ${n2(7 - 3)} cm high; A = 8 × 3 + 3 × 4 = ${n2(8 * 3)} + ${n2(3 * 4)} = ${u(areaOf(EX1.ell.pts), 'cm²')}`,
       `A = 10 × 6 − 7 × 4 = ${n2(10 * 6)} − ${n2(7 * 4)} = ${u(areaIn(EX1.hole), 'm²')}`],
     hint: 'Missing side = whole side − the other part · Perimeter: add every side, the missing ones too.',
@@ -161,9 +166,9 @@ module.exports = {
         missL([[0, 0], [9, 0], [9, 6], [6, 6], [6, 2], [0, 2]], 'm', [1, 5], 3),
         missL([[0, 0], [3, 0], [3, 3], [11, 3], [11, 6], [0, 6]], 'm', [0, 4], 2)], '? = whole − part') },
       { text: 'find the perimeter. Find the two missing sides first.', cols: 3, ...formFig([
-        perL([[0, 0], [7, 0], [7, 2], [2, 2], [2, 6], [0, 6]], 'cm', [0, 1, 2, 5], 1),
-        perL([[0, 0], [9, 0], [9, 7], [5, 7], [5, 3], [0, 3]], 'm', [0, 1, 4, 5], 1),
-        perL([[0, 0], [3, 0], [3, 4], [8, 4], [8, 7], [0, 7]], 'cm', [0, 2, 3, 5], 0)], 'P = add all sides') },
+        perL([[0, 0], [7, 0], [7, 2], [2, 2], [2, 6], [0, 6]], 'cm', [0, 1, 4, 5], 1),
+        perL([[0, 0], [9, 0], [9, 7], [5, 7], [5, 3], [0, 3]], 'm', [0, 1, 2, 5], 0),
+        perL([[0, 0], [3, 0], [3, 4], [8, 4], [8, 7], [0, 7]], 'cm', [0, 3, 4, 5], 0)], 'P = add all sides') },
     ],
   },
   // Page 2: rectangles and triangles (formula given), then choose the formula, then L-shapes split into two rectangles,
@@ -183,14 +188,14 @@ module.exports = {
         areaQ({ pts: [[0, 0], [12, 0], [12, 9], [7, 9], [7, 3], [0, 3]], unit: 'm', show: [0, 2, 3, 5], right: [0], split: [[[7, 3], [12, 3]]] }, { size: 20, maxH: 16.5 }),
         areaQ({ pts: [[0, 0], [4, 0], [4, 5], [10, 5], [10, 8], [0, 8]], unit: 'm', show: [0, 2, 3, 5], right: [0], split: [[[4, 5], [4, 8]]] }, { size: 20, maxH: 16.5 })], 'A = l × w + l × w') },
       { text: 'find each shaded area.', ...formFig([
-        areaQ(holeS(9, 7, 5, 4, 2, 1.5, 'cm'), { size: 22, maxH: 18 }), areaQ(holeS(12, 7, 6, 4, 3, 1.5, 'm'), { size: 22, maxH: 18 }),
+        areaQ(holeS(9, 7, 5, 4, 2, 1.5, 'cm'), { size: 22, maxH: 18 }), areaQ(holeS(11, 8, 6, 5, 2.5, 1.5, 'm'), { size: 22, maxH: 18 }),
         areaQ(holeS(10, 8, 5, 5, 2.5, 1.5, 'cm'), { size: 22, maxH: 18 })], 'A = whole − hole') },
     ],
   },
   medium: {
     ex: { stem: 'Find the perimeter or area. Split the shape, or subtract.', parts: [
-      { t: 'Perimeter', fig: comp({ ...EX2.stairs, size: 20, maxH: 13.8 }) }, { t: 'Area', fig: comp({ ...EX2.house, size: 18, maxH: 13.8 }) },
-      { t: 'Area', fig: comp({ ...EX2.ramp, size: 25, maxH: 11.4 }) }, { t: 'Area', fig: comp({ ...EX2.corner, size: 17, maxH: 11.4 }) }] },
+      { t: 'Perimeter', fig: comp({ ...EX2.stairs, size: 20, maxH: 11 }) }, { t: 'Area', fig: comp({ ...EX2.house, size: 18, maxH: 11 }) },
+      { t: 'Area', fig: comp({ ...EX2.ramp, size: 25, maxH: 11 }) }, { t: 'Area', fig: comp({ ...EX2.corner, size: 17, maxH: 9 }) }] },
     exAns: [
       `the steps add to 12 m across and 9 m up, so P = 12 + 9 + 12 + 9 = ${u(perim(EX2.stairs.pts), 'm')}`,
       `A = 8 × 5 + ½ × 8 × 3 = ${n2(8 * 5)} + ${n2(0.5 * 8 * 3)} = ${u(areaOf(EX2.house.pts), 'cm²')}`,
@@ -203,13 +208,13 @@ module.exports = {
     rounds: [(() => {
       const ff = ([fig, a], t = 'Area', from) => [{ t, fig, form: true, ...(from ? { from } : {}) }, a];
       const md = { size: 20, maxH: 8 };
-      const ell = [[0, 0], [12, 0], [12, 2], [5, 2], [5, 6], [0, 6]], stairs = [[0, 0], [10, 0], [10, 2], [7, 2], [7, 4], [4, 4], [4, 6], [0, 6]];
-      const plank = comp({ pts: [[0, 0], [24.5, 0], [24.5, 1.8], [0, 1.8]], unit: 'm', size: 24, maxH: 3, dims: [[[0, 0], [24.5, 0], -1, 2, '2.45 m']] });
+      const ell = [[0, 0], [9, 0], [9, 2], [2, 2], [2, 5], [0, 5]], stairs = [[0, 0], [10, 0], [10, 2], [7, 2], [7, 4], [4, 4], [4, 6], [0, 6]];
+      const ell3 = [[0, 0], [10, 0], [10, 5], [8, 5], [8, 2], [0, 2]], house = [[0, 0], [10, 0], [10, 4], [5, 6], [0, 4]];
       const Q = [
-        ff([comp({ pts: ell, unit: 'm', show: [0, 1, 2, 5], right: [0], ...md }), u(perim(ell), 'm')], 'Perimeter'),
-        [{ t: 'In cm', fig: plank, form: true, lines: ['Rule', 'Working', 'Answer'], from: '10.1' }, u(conv(2.45, 'm', 'cm'), 'cm')],
-        ff([comp({ pts: [[0, 0], [12, 0], [12, 3], [5, 3], [5, 7], [0, 7]], unit: 'cm', show: [0, 1, 2, 5], right: [0], ...md }), u(areaOf([[0, 0], [12, 0], [12, 3], [5, 3], [5, 7], [0, 7]]), 'cm²')]),
-        ff([comp({ pts: [[0, 0], [10, 0], [10, 3], [5, 6], [0, 3]], unit: 'm', show: [0, 4], right: [0, 1], dims: [[[10, 3], [10, 6], -1]], ...md }), u(areaOf([[0, 0], [10, 0], [10, 3], [5, 6], [0, 3]]), 'm²')]),
+        ff([comp({ pts: ell, unit: 'm', show: [0, 1, 2, 5], right: [0], ...md, size: 13.6 }), u(perim(ell), 'm')], 'Perimeter'),
+        [{ t: 'In cm', fig: door(2.04), form: true, lines: ['Rule', 'Working', 'Answer'], from: '10.1' }, u(conv(2.04, 'm', 'cm'), 'cm')],
+        ff([comp({ pts: ell3, unit: 'cm', show: [0, 1, 4, 5], right: [0], ...md }), u(areaOf(ell3), 'cm²')]),
+        ff([comp({ pts: house, unit: 'm', show: [0, 4], right: [0, 1], dims: [[[10, 4], [10, 6], -1]], ...md }), u(areaOf(house), 'm²')]),
         [{ t: 'Write the limits of accuracy of 6.4 m.', from: '10.2' }, limits('6.4 m')],
         ff([comp({ pts: [[0, 0], [11, 0], [7, 4], [0, 4]], unit: 'cm', show: [0, 2, 3], right: [0, 3], ...md, maxH: 6 }), u(areaOf([[0, 0], [11, 0], [7, 4], [0, 4]]), 'cm²')]),
         ff([comp({ pts: [[0, 0], [12, 0], [12, 7], [0, 7]], unit: 'm', show: [0, 1], holes: [[[0, 0], [12, 0], [6, 7]]], ...md }), u(areaIn({ pts: [[0, 0], [12, 0], [12, 7], [0, 7]], holes: [[[0, 0], [12, 0], [6, 7]]] }), 'm²')], 'Shaded area'),
@@ -222,7 +227,7 @@ module.exports = {
   worded: [
     { q: 'An L-shaped room is made of a 6 m by 4 m rectangle and a 3 m by 2 m rectangle. Carpet costs $45 per m². Find the cost to carpet the room.',
       a: `A = 6 × 4 + 3 × 2 = ${n2(6 * 4)} + ${n2(3 * 2)} = ${u(6 * 4 + 3 * 2, 'm²')}; ${n2(6 * 4 + 3 * 2)} × $45 = $${num((6 * 4 + 3 * 2) * 45)}` },
-    { q: 'An L-shaped garden bed is 8 m long and 6 m high on its outside edges, and 2 m wide all the way along. Edging costs $15 per metre. Find the cost to edge it.',
+    { q: 'An L-shaped garden bed has outside edges of 8 m and 6 m. Each arm of the L is 2 m wide. Edging costs $15 per metre. Find the cost to edge the whole bed.',
       a: (() => { const g = [[0, 0], [8, 0], [8, 2], [2, 2], [2, 6], [0, 6]];
         return `missing sides 8 − 2 = ${n2(8 - 2)} m and 6 − 2 = ${n2(6 - 2)} m; P = ${g.map((p, i) => tw(g, i)).join(' + ')} = ${u(perim(g), 'm')}; ${n2(perim(g))} × $15 = $${num(perim(g) * 15)}`; })() },
     { q: 'The end wall of a shed is a rectangle 4 m wide and 2.5 m high, with a triangle 1.5 m high on top. It has a door 0.9 m wide and 2 m high. Find the area of the wall to paint.',
