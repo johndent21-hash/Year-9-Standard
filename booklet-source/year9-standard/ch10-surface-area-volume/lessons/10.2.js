@@ -1,14 +1,15 @@
 // Lesson 10.2 Precision and absolute error (three pages: Easy with the Notes box, Easy drill, then Medium with earlier
 // lessons mixed in and three worded problems). See lib/lesson-two.js.
-// Textbook 10.02. Precision (p): the gap between two marks on a scale, or the place value of a measurement's last digit.
-// Absolute error = p ÷ 2. Limits of accuracy = m − absolute error to m + absolute error.
+// Textbook 10.02. Precision (p): the size of one small space on a scale (the jump: the difference between two numbers,
+// ÷ the spaces between them), or the place value of a measurement's last digit. Absolute error = p ÷ 2.
+// Limits of accuracy = m − absolute error to m + absolute error.
 const { num, u, conv, absErr, meas, prec, aerr, limits } = require('../helpers');
 const S = require('../shapes');
 const { C, f, T, svg, seg } = S.parts;
 
 // ---------------------------------------------------------------- the pictures (lesson-only helpers)
-// Every label is drawn at print size: given values 3 mm, the unknown 3 mm bold ('abs. error = ?'), numbers on a scale
-// 2.8 mm. Each picture is drawn no bigger than its box, so nothing is scaled down.
+// Every label is drawn at print size: given values 3 mm, the unknown 3 mm bold ('abs. error = ?'), numbers and units on
+// a scale 2.8 mm (plain). Each picture is drawn no bigger than its box, so nothing is scaled down.
 const tw = (s, size = 3) => String(s).length * size * 0.58; // a label's width, as T measures it
 const G = { size: 3 }, Q = { size: 3, weight: 700 }, N = { size: 2.8 };
 const BLUE = { stroke: C.blue, w: 0.45 }, GREY = { stroke: C.grey, w: 0.3 }, TICK = { w: 0.25 };
@@ -56,12 +57,13 @@ const hs = ({ min = 0, max, major, minor, unit, kind = 'ruler', len = 26, read, 
   return svg(f(right + 0.5), f(bottom + 0.5), b);
 };
 
-// A piece of a scale (k equal spaces, no numbers) with one space measured in blue: the precision is given.
-const piece = (gap, { k = 5, sp = 5, ask = 'abs. error = ?' } = {}) => {
-  const x0 = 2.2, y0 = 4.6, a = x0 + Math.floor(k / 2) * sp;
+// A piece of a scale (k equal spaces, no numbers) with one space measured in blue: the precision p is given. Its label
+// sits high enough over the measurement line to clear the end ticks (descenders included).
+const piece = (p, { k = 5, sp = 5, ask = 'abs. error = ?' } = {}) => {
+  const x0 = 2.2, y0 = 5.6, a = x0 + Math.floor(k / 2) * sp;
   let b = box(x0 - 1.7, y0, k * sp + 3.4, 5, CREAM, { rx: 0.8 });
   for (let i = 0; i <= k; i++) b += seg([x0 + i * sp, y0], [x0 + i * sp, y0 + 2.6], TICK);
-  b += dimH(a, a + sp, y0 - 1.3, BLUE) + T(a + sp / 2, y0 - 2.6, gap, G);
+  b += dimH(a, a + sp, y0 - 1.3, BLUE) + T(a + sp / 2, y0 - 3.7, p, G);
   if (ask) b += T(x0 + (k * sp) / 2, y0 + 5 + 4.2, ask, Q);
   return svg(f(k * sp + 4.4), f(y0 + 5.5), b);
 };
@@ -75,24 +77,25 @@ const jug = ({ min = 0, max, major, minor, unit = 'mL', len = 18, level, ask = '
   let wN = 0;
   for (let i = 0; i <= n; i++) { const v = min + i * minor, y = Y(v); b += seg([x0 + W - tickLen(v, min, major, minor, [3, 2.1, 1.3]), y], [x0 + W, y], TICK);
     if (tickLen(v, min, major, minor, [1, 0, 0])) { b += T(x0 + W + 1.2, y + 1, lab(v), { ...N, anchor: 'start' }); wN = Math.max(wN, tw(lab(v), 2.8)); } }
-  b += T(x0 + W + 1.2 + tw(lab(max), 2.8) + 0.9, top + 1, unit, { ...N, anchor: 'start', weight: 600 });
+  b += T(x0 + W + 1.2 + tw(lab(max), 2.8) + 1.2, top + 1, unit, { ...N, anchor: 'start' });
   if (ask) b += T(x0 + W + 1.2 + wN + 2.2, (top + bot) / 2 + 1, ask, { ...Q, anchor: 'start' });
   return svg(f(x0 + W + 1.2 + wN + 0.5), f(bot + 0.6), b);
 };
 
-// An upright thermometer: the scale on the right of the tube, red up to level, ask to the right.
-const vthermo = ({ min, max, major, minor, unit = '°C', len = 13, level, ask = '' }) => {
-  const x0 = 3.2, top = 6, bot = top + len, n = Math.round((max - min) / minor), Y = (v) => bot - ((v - min) / (max - min)) * len, xt = x0 + 3.4;
-  let b = box(x0, top - 2, 3.4, len + 3.5, '#fff', { rx: 1.7 });
+// An upright thermometer: the scale on the right of the tube with the unit after the top number (as on a jug), red up
+// to level, ask to the right.
+const vthermo = ({ min, max, major, minor, unit = '°C', len = 16, level, ask = '' }) => {
+  const x0 = 3.2, top = 2.2, bot = top + len, n = Math.round((max - min) / minor), Y = (v) => bot - ((v - min) / (max - min)) * len, xt = x0 + 3.4;
+  let b = box(x0, top - 1.6, 3.4, len + 3.1, '#fff', { rx: 1.7 });
   const lv = level !== undefined ? level : min + (max - min) * 0.6;
   b += box(x0 + 1, Y(lv), 1.4, bot + 2 - Y(lv), RED, { none: true });
   b += `<circle cx="${f(x0 + 1.7)}" cy="${f(bot + 3.6)}" r="2.6" fill="${RED}" stroke="${C.charcoal}" stroke-width="0.4"/>`;
   let wN = 0;
   for (let i = 0; i <= n; i++) { const v = min + i * minor, y = Y(v); b += seg([xt, y], [xt + tickLen(v, min, major, minor, [2.6, 2, 1.3]), y], TICK);
     if (tickLen(v, min, major, minor, [1, 0, 0])) { b += T(xt + 3.4, y + 1, lab(v), { ...N, anchor: 'start' }); wN = Math.max(wN, tw(lab(v), 2.8)); } }
-  b += T(xt + 3.4, top - 3.6, unit, { ...N, anchor: 'start', weight: 600 });
+  b += T(xt + 3.4 + tw(lab(max), 2.8) + 1.2, Y(max) + 1, unit, { ...N, anchor: 'start' });
   if (ask) b += T(xt + 3.4 + wN + 2.6, (top + bot) / 2 + 1, ask, { ...Q, anchor: 'start' });
-  return svg(f(xt + 3.4 + wN + 0.5), f(bot + 6.7), b);
+  return svg(f(xt + 3.4 + wN + 0.5), f(bot + 6.4), b);
 };
 
 // Measured things, each with its measurement on it. ask: the unknown (under a plank, beside the others).
@@ -101,18 +104,21 @@ const plank = (m, { w = 28, ask = '' } = {}) => {
   const x0 = 0.6, y0 = 0.6, h = 3.6, yd = y0 + h + 2, grain = { stroke: '#c9a46a', w: 0.25 };
   let b = box(x0, y0, w, h, WOOD) + seg([x0 + 3, y0 + 1.2], [x0 + w * 0.45, y0 + 1.2], grain) + seg([x0 + w * 0.32, y0 + 2.5], [x0 + w - 4, y0 + 2.5], grain);
   b += dimH(x0, x0 + w, yd, BLUE) + T(x0 + w / 2, yd + 4, m, G);
-  if (ask) b += T(x0 + w / 2, yd + 8.4, ask, Q);
+  if (ask) b += T(x0 + w / 2, yd + 8.6, ask, Q);
   return svg(f(w + 1.2), f(yd + 5), b);
+};
+// A pencil from (x0, y0), w long and h thick: a pink eraser, then a yellow body sharpened to a dark point
+const pencilShape = (x0, y0, w, h) => {
+  const t = 0.175 * h; // the dark point's half-thickness where it meets the sharpened wood, 1.4 mm from the tip
+  return box(x0, y0, 2.4, h, '#f2b8c6') + `<polygon points="${f(x0 + 2.4)},${f(y0)} ${f(x0 + w - 4)},${f(y0)} ${f(x0 + w)},${f(y0 + h / 2)} ${f(x0 + w - 4)},${f(y0 + h)} ${f(x0 + 2.4)},${f(y0 + h)}" fill="#f6d77a" stroke="${C.charcoal}" stroke-width="0.4"/>`
+    + `<polygon points="${f(x0 + w - 1.4)},${f(y0 + h / 2 - t)} ${f(x0 + w)},${f(y0 + h / 2)} ${f(x0 + w - 1.4)},${f(y0 + h / 2 + t)}" fill="${C.charcoal}"/>`;
 };
 // A pencil, its length on a blue measurement line under it, then the unit to change to under that ('15 cm', '= ? mm')
 const pencil = (m, ask, { w = 20 } = {}) => {
-  const x0 = 0.6, y0 = 0.6, h = 3, yd = y0 + h + 1.6;
-  let b = box(x0, y0, 2.4, h, '#f2b8c6') + `<polygon points="${f(x0 + 2.4)},${f(y0)} ${f(x0 + w - 4)},${f(y0)} ${f(x0 + w)},${f(y0 + h / 2)} ${f(x0 + w - 4)},${f(y0 + h)} ${f(x0 + 2.4)},${f(y0 + h)}" fill="#f6d77a" stroke="${C.charcoal}" stroke-width="0.4"/>`;
-  b += `<polygon points="${f(x0 + w - 1.4)},${f(y0 + h / 2 - 0.55)} ${f(x0 + w)},${f(y0 + h / 2)} ${f(x0 + w - 1.4)},${f(y0 + h / 2 + 0.55)}" fill="${C.charcoal}"/>`;
-  b += dimH(x0, x0 + w, yd, BLUE) + T(x0 + w / 2, yd + 3.9, m, G) + T(x0 + w / 2, yd + 7.9, ask, Q);
-  return svg(f(w + 1.2), f(yd + 5), b);
+  const x0 = 0.6, y0 = 0.6, h = 2.6, yd = y0 + h + 1.4;
+  return svg(f(w + 1.2), f(yd + 5), pencilShape(x0, y0, w, h) + dimH(x0, x0 + w, yd, BLUE) + T(x0 + w / 2, yd + 3.7, m, G) + T(x0 + w / 2, yd + 8.4, ask, Q));
 };
-// A juice carton with its capacity on it, then the unit to change to under it ('750 mL', '= ? L')
+// A juice carton with its capacity on it, then the unit to change to under it ('1250 mL', '= ? L')
 const carton = (m, ask) => {
   const W = tw(m) + 2.6, x0 = 0.6, x1 = x0 + W, cx = x0 + W / 2, top = 1.2, sh = top + 2, H = sh + 6;
   // the sealed ridge along the top, then the sloping top, then the body
@@ -140,12 +146,14 @@ const bottle = (m, { ask = '', H = 16 } = {}) => {
   if (ask) b += T(x1 + 2.2, py + 1, ask, { ...Q, anchor: 'start' });
   return svg(f(x1 + 0.6), f(H + 0.6), b);
 };
-// A stopwatch: the time on its display
-const timer = (m, { ask = '' } = {}) => {
-  const W = tw(m) + 5, x0 = 0.6, top = 2.4, H = 9, cx = x0 + W / 2;
-  let b = box(cx - 1.4, 0.6, 2.8, 1.8, '#9aa6c8') + box(x0 + W - 4.2, 1.2, 2.2, 1.2, '#9aa6c8');
-  b += box(x0, top, W, H, '#e1e6f3', { rx: 2 }) + box(x0 + 1.3, top + 1.7, W - 2.6, 5.6, '#fff', { w: 0.3 }) + T(cx, top + 1.7 + 2.8 + 1.05, m, G);
+// A stopwatch: the time on its display. ask: the unknown beside it. below: the unit to change to, under it ('= ? min');
+// with below the stopwatch is shorter (H = 7), so the picture stays within a Medium box's 15 mm.
+const timer = (m, { ask = '', below = '', H = 9 } = {}) => {
+  const W = tw(m) + 5, x0 = 0.6, top = H < 9 ? 1.8 : 2.4, cx = x0 + W / 2, dh = Math.min(5.6, H - 2.4), dy = top + (H - dh) / 2;
+  let b = box(cx - 1.4, top - 1.8, 2.8, 1.8, '#9aa6c8') + box(x0 + W - 4.2, top - 1.2, 2.2, 1.2, '#9aa6c8');
+  b += box(x0, top, W, H, '#e1e6f3', { rx: 2 }) + box(x0 + 1.3, dy, W - 2.6, dh, '#fff', { w: 0.3 }) + T(cx, dy + dh / 2 + 1.05, m, G);
   if (ask) b += T(x0 + W + 2.2, top + H / 2 + 1, ask, { ...Q, anchor: 'start' });
+  if (below) b += T(cx, top + H + 3.6, below, Q);
   return svg(f(x0 + W + 0.6), f(top + H + 0.6), b);
 };
 // The limits of a length on a number line: a blue band from lo to hi, the length (unknown) marked over its middle
@@ -157,36 +165,41 @@ const band = (lo, hi, unit) => {
   return svg(f(xh + tw(H2) / 2 + 0.6), f(y + 5.4), b);
 };
 
-// The Notes diagram: a pencil measured with a ruler marked in whole cm. Its end is between 4 and 5, nearer 4: it reads
-// 4 cm. The precision is the gap between marks (1 cm); the true length lies between the half-way points 3.5 and 4.5.
+// The Notes diagram: a pencil laid along a ruler marked in whole cm, from 0. Its tip is between 4 and 5, nearer 4: it
+// reads 4 cm. One space on the ruler is the precision (p = 1 cm), measured directly under the ruler between 1 and 2
+// (clear of the limits). The true length lies between the half-way points 3.5 and 4.5 (the limits of accuracy), dashed
+// down from the ruler to a blue band with 'limits' beside it. 5 mm per cm, so it fits the Notes column (36 mm) at full
+// size.
 const notesFig = () => {
-  const k = 8.6, X = (v) => 0.6 + (v - 2.35) * k, top = 5, H = 7.6;
-  let b = box(X(2.35), 1.2, X(4.3) - X(2.35), 2.6, LIQ, { stroke: C.blue, w: 0.4 });
-  b += T(X(4.3) + 1.2, 3.6, 'reads 4 cm', { size: 2.6, anchor: 'start', weight: 600 });
-  b += box(X(2.35), top, X(5.75) - X(2.35), H, CREAM, { rx: 0.8 });
-  [3, 4, 5].forEach((v) => { b += seg([X(v), top], [X(v), top + 3.2], TICK) + T(X(v), top + 6.2, String(v), N); });
-  b += T(X(5.75) - 0.6, top + 6.2, 'cm', { size: 2.4, anchor: 'end' });
-  // the limits: the half-way points, dashed down from the ruler to a blue band
-  const yb = top + H + 2.2;
+  const k = 5, X = (v) => 2 + v * k, yp = 3.4, hp = 2.6, top = yp + hp + 0.9, H = 7.6, bot = top + H, S2 = { size: 2.6 };
+  // the pencil from 0 to 4.3, what it reads over its tip
+  let b = pencilShape(X(0), yp, X(4.3) - X(0), hp) + T(X(4.3), yp - 1.1, 'reads 4 cm', { ...S2, weight: 600 });
+  // the ruler: a mark and a number every cm
+  b += box(X(0) - 1.8, top, X(5) - X(0) + 7.8, H, CREAM, { rx: 0.8 });
+  [0, 1, 2, 3, 4, 5].forEach((v) => { b += seg([X(v), top], [X(v), top + 3.2], TICK) + T(X(v), top + 6.2, String(v), N); });
+  b += T(X(5) + 5.4, top + 6.2, 'cm', { size: 2.4, anchor: 'end' });
+  // the precision: one space (1 to 2), measured directly under the ruler
+  const yd = bot + 1.6;
+  b += dimH(X(1), X(2), yd) + T(X(1.5), yd + 3.6, 'p = 1 cm', S2);
+  // the limits: the half-way points 3.5 and 4.5, dashed down to a blue band, 'limits' beside the band
+  const yb = yd + 5.4, BL = { ...S2, fill: C.blue, weight: 600 };
   [3.5, 4.5].forEach((v) => { b += seg([X(v), top], [X(v), yb], { stroke: C.blue, w: 0.3, dash: true }); });
-  b += box(X(3.5), yb, X(4.5) - X(3.5), 2.2, LIQ, { stroke: C.blue, w: 0.4 });
-  b += T(X(3.5), yb + 5.4, '3.5', { size: 2.6, fill: C.blue, weight: 600 }) + T(X(4.5), yb + 5.4, '4.5', { size: 2.6, fill: C.blue, weight: 600 });
-  b += T(X(4), yb + 8.8, 'limits', { size: 2.6 });
-  // the precision: the gap between two marks
-  const yp = yb + 12;
-  b += dimH(X(4), X(5), yp) + T(X(4.5), yp + 3.6, 'precision 1 cm', { size: 2.6 });
-  return svg(f(X(5.75) + 0.6), f(yp + 4.4), b);
+  b += box(X(3.5), yb, X(4.5) - X(3.5), 2.2, LIQ, { stroke: C.blue, w: 0.4 }) + T(X(4.5) + 1.2, yb + 1.8, 'limits', { ...S2, anchor: 'start' });
+  b += T(X(3.5), yb + 5.8, '3.5', BL) + T(X(4.5), yb + 5.8, '4.5', BL);
+  return svg(f(X(5) + 6.6), f(yb + 6.4), b);
 };
 
 // ---------------------------------------------------------------- the questions
 // A round of formula questions from [picture, answer, text?, own formula?]: the formula printed (a string) or left for
 // students to write (true); lines relabels the three lines.
 const formFig = (list, form, lines) => ({ items: list.map(([fig, , t = '', own]) => ({ t, fig, form: own || form, ...(lines ? { lines } : {}) })), ans: list.map((x) => x[1]) });
-// A scale question: its picture, and its precision ('p') or absolute error ('e')
+// A scale question: its picture, and its precision ('p'), absolute error ('e') or limits of accuracy ('l': the scale
+// has a pointer or a level to read)
 const draw = (o) => (o.kind === 'jug' ? jug(o) : o.kind === 'vthermo' ? vthermo(o) : hs(o));
-const scaleQ = (o, what) => [draw({ ...o, ask: what === 'p' ? 'precision = ?' : 'abs. error = ?' }), u(what === 'p' ? o.minor : absErr(o.minor), o.unit)];
+const ASK = { p: 'precision = ?', e: 'abs. error = ?', l: 'limits = ?' };
+const scaleQ = (o, what) => [draw({ ...o, ask: ASK[what] }), what === 'p' ? u(o.minor, o.unit) : what === 'e' ? u(absErr(o.minor), o.unit) : scaleLimits(o)];
 // The worked lines, all calculated: 'p = 200 ÷ 4 = 50 g', 'abs. error = 0.1 ÷ 2 = 0.05 kg',
-// 'abs. error = 1 ÷ 2 = 0.5 m; limits = 24 − 0.5 to 24 + 0.5 = 23.5 m to 24.5 m'
+// 'abs. error = 1 ÷ 2 = 0.5 m; limits = 3 − 0.5 to 3 + 0.5 = 2.5 m to 3.5 m'
 const precWork = (o) => `p = ${num(o.major)} ÷ ${num(Math.round(o.major / o.minor))} = ${u(o.minor, o.unit)}`;
 const aeWork = (p, unit) => `abs. error = ${num(p)} ÷ 2 = ${u(absErr(p), unit)}`;
 // s: the measurement as written ('2.45 m'); p: the precision when it is not the last digit's place (a scale)
@@ -209,58 +222,60 @@ const scaleLimits = (o) => limits(reading(o), absErr(o.minor));
 // Medium 8: the limits given, the length and its absolute error to find
 const M8 = { lo: 4.15, hi: 4.25, unit: 'm' };
 const m8 = { v: +((M8.lo + M8.hi) / 2).toPrecision(12), e: +((M8.hi - M8.lo) / 2).toPrecision(12) };
-// Worded problems
-const W1 = lim('37.6 °C', 0.2), W2 = lim('1.5 m'), W3 = lim('13.4 s');
+// Medium 9: a plank measured as 1.25 m; could it really be 1.256 m long?
+const M9 = { s: '1.25 m', v: 1.256 }, m9 = lim(M9.s), m9In = M9.v >= m9.lo && M9.v <= m9.hi;
+// Worded problems. 1: the thermometer reads below a fever, but its upper limit reaches one.
+const W1 = lim('37.4 °C', 0.2), FEVER = 37.5, W2 = lim('1.5 m'), W3 = lim('13.4 s');
 
 module.exports = {
   code: '10.2', title: 'Precision and absolute error',
-  li: 'find the precision and absolute error of a measurement, and its limits of accuracy.',
+  li: 'find the precision, absolute error and limits of accuracy.',
   sc: ['find the precision of a scale or a measurement', 'find the absolute error: precision ÷ 2', 'write the limits of accuracy: m ± absolute error'],
   notes: {
-    terms: [['precision (p)', 'the gap between two marks on a scale'], ['p of a measurement', 'the place value of its last digit'],
+    terms: [['precision (p)', 'one small space on a scale'], ['jump', 'the difference between two numbers'], ['p of a measurement', 'the place value of its last digit'],
       ['absolute error', 'half the precision'], ['m', 'the measurement'], ['true value', 'the exact size, which we never know'],
-      ['limits of accuracy', 'the smallest and largest the true value can be']],
-    formulas: ['p = gap ÷ spaces', 'p of 3.45 m = 0.01 m', 'Abs. error = p ÷ 2', 'Limits = m ± abs. error', 'Lower m − abs. error, upper m + abs. error'],
+      ['limits of accuracy', 'the true value is between them']],
+    formulas: ['p = jump ÷ spaces', 'p of 3.45 m = 0.01 m', 'Abs. error = p ÷ 2', 'Limits = m ± abs. error'],
     steps: ['find p', 'abs. error = p ÷ 2', 'lower = m − abs. error', 'upper = m + abs. error'],
     fig: notesFig(),
   },
   easy: {
     ex: { stem: 'Find the precision, the absolute error or the limits of accuracy.', parts: [
-      { t: 'Precision', fig: hs(EX1a) }, { t: 'Abs. error', fig: hs(EX1b) }, { t: 'Abs. error', fig: bag('3.6 kg') }, { t: 'Limits', fig: plank('24 m', { w: 30 }) }] },
+      { t: 'Precision', fig: hs(EX1a) }, { t: 'Abs. error', fig: hs(EX1b) }, { t: 'Abs. error', fig: bag('3.6 kg') }, { t: 'Limits', fig: plank('3 m', { w: 30 }) }] },
     exAns: [precWork(EX1a), `${precWork(EX1b)} (${u(conv(EX1b.minor, 'cm', 'mm'), 'mm')}); ${aeWork(EX1b.minor, 'cm')} (${u(conv(absErr(EX1b.minor), 'cm', 'mm'), 'mm')})`,
-      `p = ${prec('3.6 kg')} (last digit); ${aeWork(meas('3.6 kg').p, 'kg')}`, cap(limWork('24 m'))],
-    hint: 'p = gap between two numbers ÷ number of spaces between them · Abs. error = p ÷ 2',
+      `p = ${prec('3.6 kg')} (last digit); ${aeWork(meas('3.6 kg').p, 'kg')}`, cap(limWork('3 m'))],
+    hint: 'p = jump between two numbers ÷ number of spaces between them · Abs. error = p ÷ 2',
     work: true,
     // Small steps: the precision of a scale (count the spaces), then the absolute error from a given precision. Each
     // question is its diagram: the unknown marked with a ?, the round heading says what to find.
     rounds: [
-      { text: 'find the precision of each scale: the gap between two marks.', cols: 3, ...formFig([
+      { text: 'find the precision of each scale: the size of one small space.', cols: 3, ...formFig([
         { min: 0, max: 6, major: 1, minor: 0.5, unit: 'cm', len: 24 },
         { min: 0, max: 40, major: 10, minor: 2, unit: 'kg', kind: 'dial', len: 24 },
-        { min: 0, max: 40, major: 10, minor: 5, unit: '°C', kind: 'thermo', len: 20, read: 25 }].map((o) => scaleQ(o, 'p')), 'p = gap ÷ spaces') },
-      { text: 'find the absolute error. The gap between two marks (the precision) is given.', cols: 3, ...formFig([
+        { min: 0, max: 40, major: 10, minor: 5, unit: '°C', kind: 'thermo', len: 20, read: 25 }].map((o) => scaleQ(o, 'p')), 'p = jump ÷ spaces') },
+      { text: 'find the absolute error. The precision (one small space) is given.', cols: 3, ...formFig([
         ['2 cm', 2, 'cm'], ['10 mL', 10, 'mL'], ['0.2 kg', 0.2, 'kg']].map(([g, p, x]) => [piece(g), u(absErr(p), x)]), 'Abs. error = p ÷ 2') },
     ],
   },
-  // Page 2: the absolute error of a scale (formula printed, then written by students), then of a measurement from its
-  // last digit, then the limits of accuracy.
+  // Page 2: the absolute error of a scale (formula printed), then of a measurement from its last digit (students write
+  // the formula), then the limits of accuracy of a measurement, then of a reading on a scale (formula printed).
   drill: {
-    hint: 'Abs. error = p ÷ 2 · p of 3.45 m = 0.01 m (its last digit) · Limits = m − abs. error to m + abs. error',
+    hint: 'p = jump ÷ spaces · Abs. error = p ÷ 2 · p of 3.45 m = 0.01 m (its last digit) · Limits = m ± abs. error',
     rounds: [
       { text: 'find the absolute error of each scale.', ...formFig([
         { min: 0, max: 4, major: 1, minor: 0.2, unit: 'cm', len: 34 },
         { min: 0, max: 300, major: 100, minor: 25, unit: 'mL', kind: 'jug', len: 18, level: 175 },
         { min: 0, max: 40, major: 10, minor: 2, unit: '°C', kind: 'thermo', len: 30, read: 24 }].map((o) => scaleQ(o, 'e')), 'Abs. error = p ÷ 2') },
-      { text: 'write the formula, then find the absolute error of each scale.', ...formFig([
-        { min: 0, max: 2, major: 0.5, minor: 0.1, unit: 'kg', kind: 'dial', len: 34 },
-        { min: 0, max: 600, major: 200, minor: 50, unit: 'mL', kind: 'jug', len: 18, level: 450 },
-        { min: -20, max: 40, major: 20, minor: 5, unit: '°C', kind: 'vthermo', len: 12.5, level: 15 }].map((o) => scaleQ(o, 'e')), true) },
-      { text: 'find the absolute error of each measurement. Its last digit gives the precision.', ...formFig([
+      { text: 'write the formula, then find the absolute error. The last digit gives p.', ...formFig([
         [plank('3.45 m', { w: 32, ask: 'abs. error = ?' }), aerr('3.45 m')], [bag('6.2 kg', { ask: 'abs. error = ?', H: 15 }), aerr('6.2 kg')],
-        [timer('15 s', { ask: 'abs. error = ?' }), aerr('15 s')]], 'Abs. error = p ÷ 2') },
+        [timer('15 s', { ask: 'abs. error = ?' }), aerr('15 s')]], true) },
       { text: 'find the limits of accuracy of each measurement.', ...formFig([
-        [plank('8 m', { w: 32, ask: 'limits = ?' }), limits('8 m')], [bottle('1.5 L', { ask: 'limits = ?' }), limits('1.5 L')],
+        [plank('6 m', { w: 32, ask: 'limits = ?' }), limits('6 m')], [bottle('1.5 L', { ask: 'limits = ?' }), limits('1.5 L')],
         [bag('2.25 kg', { ask: 'limits = ?', H: 15 }), limits('2.25 kg')]], 'Limits = m ± abs. error') },
+      { text: 'read each scale, then find the limits of accuracy.', ...formFig([
+        { min: 0, max: 2, major: 0.5, minor: 0.1, unit: 'kg', kind: 'dial', len: 34, read: 1.2 },
+        { min: 0, max: 600, major: 200, minor: 50, unit: 'mL', kind: 'jug', len: 18, level: 450 },
+        { min: -20, max: 40, major: 20, minor: 5, unit: '°C', kind: 'vthermo', len: 16.4, level: 15 }].map((o) => scaleQ(o, 'l')), 'Limits = m ± abs. error') },
     ],
   },
   medium: {
@@ -272,8 +287,9 @@ module.exports = {
       `${cap(limWork('3.4 kg'))}. 3.46 kg is above ${u(lim('3.4 kg').hi, 'kg')}, so no.`],
     hint: 'Lower limit = m − abs. error · Upper limit = m + abs. error · The true value is between the limits',
     work: true, set: true,
-    // One set: today's skill, building from absolute error to limits and reasoning, with a question from an earlier
-    // lesson (tagged) in each row. Every question that can be drawn is its diagram, with a word saying what to find.
+    // One set: today's skill, building from absolute error to limits and reasoning, with a question from the earlier
+    // lesson 10.1 (tagged) in each row: a length, a time and a capacity to convert. Every question that can be drawn is
+    // its diagram, with a word saying what to find.
     rounds: [(() => {
       const ff = (t, fig, a, o = {}) => [{ t, fig, form: true, ...o }, a];
       const conv1 = { from: '10.1', lines: ['Rule', 'Working', 'Answer'] };
@@ -282,20 +298,20 @@ module.exports = {
         ff('Convert', pencil('15 cm', '= ? mm'), u(conv(15, 'cm', 'mm'), 'mm'), conv1),
         ff('Limits', timer('12.45 s'), limits('12.45 s')),
         ff('Limits', hs(M4), scaleLimits(M4)),
-        ff('Area', S.rect(8, 5, { sides: ['8 m', '5 m'], right: [0], size: 12, maxH: 7.5 }), u(8 * 5, 'm²'), { from: 'Year 8' }),
+        ff('Convert', timer('1.5 h', { below: '= ? min', H: 7 }), u(conv(1.5, 'h', 'min'), 'min'), conv1),
         ff('Limits', hs(M6), scaleLimits(M6)),
-        ff('Convert', carton('750 mL', '= ? L'), u(conv(750, 'mL', 'L'), 'L'), conv1),
+        ff('Convert', carton('1250 mL', '= ? L'), u(conv(1250, 'mL', 'L'), 'L'), conv1),
         [{ t: 'These are the limits of accuracy of a length. Find the length and its absolute error.', fig: band(M8.lo, M8.hi, M8.unit) },
           `(${num(M8.lo)} + ${num(M8.hi)}) ÷ 2 = ${u(m8.v, M8.unit)}; abs. error = ${num(M8.hi)} − ${num(m8.v)} = ${u(m8.e, M8.unit)}`],
-        [{ t: 'Could this plank really be 12.56 m long? Explain.', fig: plank('12.5 m', { w: 24 }) },
-          `No: the limits are ${limits('12.5 m')}, and 12.56 m is more than ${u(lim('12.5 m').hi, 'm')}`],
+        [{ t: `Could this plank really be ${u(M9.v, 'm')} long? Explain.`, fig: plank(M9.s, { w: 24 }) },
+          `${m9In ? 'Yes' : 'No'}: the limits are ${limits(M9.s)}, and ${u(M9.v, 'm')} is ${m9In ? 'between them' : M9.v > m9.hi ? `more than ${u(m9.hi, 'm')}` : `less than ${u(m9.lo, 'm')}`}`],
       ];
       return { text: '', items: Q9.map((x) => x[0]), ans: Q9.map((x) => x[1]) };
     })()],
   },
   worded: [
-    { q: 'A nurse’s thermometer is marked every 0.2 °C. It shows 37.6 °C. A fever is above 38 °C. Could the patient have a fever? Explain.',
-      a: `${cap(limWork('37.6 °C', W1.P))}. The most it can be is ${u(W1.hi, '°C')}, below 38 °C: no fever.` },
+    { q: 'A nurse’s thermometer is marked every 0.2 °C. It shows 37.4 °C. A fever is 37.5 °C or above. Could the patient have a fever? Explain.',
+      a: `${cap(limWork('37.4 °C', W1.P))}. The true value could be as high as ${u(W1.hi, '°C')}, ${W1.hi >= FEVER ? `so yes: the patient could have a fever` : `below ${u(FEVER, '°C')}, so no fever`}.` },
     { q: 'Two planks are each 1.5 m long, to the nearest 0.1 m. They are laid end to end. Find the smallest and the largest possible total length.',
       a: `${cap(aeWork(W2.p, 'm'))}; each plank ${limits('1.5 m')}; smallest ${num(W2.lo)} + ${num(W2.lo)} = ${u(2 * W2.lo, 'm')}; largest ${num(W2.hi)} + ${num(W2.hi)} = ${u(2 * W2.hi, 'm')}` },
     { q: 'Sam ran 100 m in 13.4 s, timed to the nearest 0.1 s. Ali ran it in 13.36 s. Can we be sure that Ali was faster? Explain.',

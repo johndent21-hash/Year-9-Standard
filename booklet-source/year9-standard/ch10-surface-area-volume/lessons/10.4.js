@@ -50,11 +50,13 @@ const comp = (o) => {
   const normal = (a, c, sd) => { const dx = c[0] - a[0], dy = c[1] - a[1], l = Math.hypot(dx, dy); return [(dy / l) * sd, (-dx / l) * sd]; };
   const grey = { stroke: C.grey, w: 0.3 };
   // a measurement line beside a → c, off mm out along nn, with end ticks and its label. The label starts 1.2 mm out
-  // and moves further out until it is 1 mm clear of both tick ends (on a short line the ticks reach the label's height).
+  // and moves further out until its digits are 1 mm clear of both tick ends (on a short line the ticks reach the
+  // label's height). The digits' own box is used here (cap height 0.73 of the size, nothing below the baseline).
   const dimLine = (a, c, nn, off, s, q = {}) => {
-    const A2 = [a[0] + nn[0] * off, a[1] + nn[1] * off], C2 = [c[0] + nn[0] * off, c[1] + nn[1] * off];
+    const A2 = [a[0] + nn[0] * off, a[1] + nn[1] * off], C2 = [c[0] + nn[0] * off, c[1] + nn[1] * off], sz = q.size || 2.8;
     const tk = (P) => [[P[0] - nn[0] * 0.8, P[1] - nn[1] * 0.8], [P[0] + nn[0] * 0.8, P[1] + nn[1] * 0.8]], ticks = [tk(A2), tk(C2)];
-    const clear = (g) => { const [x, y, anchor] = at(A2, C2, nn, g), bx = boxOf(x, y, s, { ...q, anchor }); return ticks.every(([u, v]) => clearOf(bx, u, v, 1)); };
+    const clear = (g) => { const [x, y, anchor] = at(A2, C2, nn, g), bx = boxOf(x, y, s, { ...q, anchor });
+      return ticks.every(([u, v]) => clearOf([bx[0], y - sz * 0.73, bx[2], y + 0.05], u, v, 1.1)); };
     let g = 1.2; while (g < 3 && !clear(g)) g += 0.1;
     const xs = ticks.flat().map((p) => p[0]), ys = ticks.flat().map((p) => p[1]);
     boxes.push([Math.min(...xs), Math.min(...ys) - 0.7, Math.max(...xs), Math.max(...ys) + 0.3]); // the line, for 'A = ?'
@@ -96,7 +98,9 @@ const comp = (o) => {
 };
 
 // ---------------------------------------------------------------- the shapes, each { pts, unit, … } (see comp)
-// Page 1: an L-shape with one missing side (ask: the side marked ?), and with two missing sides (P = ?)
+// Page 1: an L-shape with one missing side (ask: the side marked ?), and with two missing sides (P = ?). In the P = ?
+// shapes the missing sides are the short right edge and the notch's floor or ceiling, so nothing is labelled on the
+// right and 'P = ?' sits alone halfway up; the notch is wide, so its wall's label is well clear of the '?'.
 const P1 = { size: 22, maxH: 9.6 };
 const missL = (pts, unit, show, ask, o = {}) => [comp({ pts, unit, show, ask, right: [0], ...P1, ...o }), u(side(pts, ask), unit)];
 const perL = (pts, unit, show, o = {}) => [comp({ pts, unit, show, ask: 'P', right: [0], ...P1, ...o }), u(perim(pts), unit)];
@@ -108,7 +112,8 @@ const rectS = (l, w, unit) => ({ pts: [[0, 0], [l, 0], [l, w], [0, w]], unit, sh
 const triS = (b, h, a, unit) => (a === 0 ? { pts: [[0, 0], [b, 0], [0, h]], unit, show: [0, 2], right: [0] }
   : { pts: [[0, 0], [b, 0], [a, h]], unit, show: [0], hts: [[[a, h], [a, 0], a > b / 2 ? -1 : 1]] });
 // A rectangle with a rectangular hole (x, y its bottom-left corner): the hole's width labelled inside it under its top
-// edge, its height inside it beside its right edge. The holes are tall enough (about 12 mm) for the two to sit apart.
+// edge, its height inside it beside its right edge. The holes are big (the shaded part a thin frame), so the two
+// labels sit well apart.
 const holeS = (l, w, hl, hw, x, y, unit) => ({ pts: [[0, 0], [l, 0], [l, w], [0, w]], unit, show: [0, 3],
   holes: [[[x, y], [x + hl, y], [x + hl, y + hw], [x, y + hw]]], holeShow: [[2, 1]] });
 
@@ -117,7 +122,7 @@ const EX1 = {
   per: { pts: [[0, 0], [10, 0], [10, 3], [4, 3], [4, 7], [0, 7]], unit: 'm', show: [0, 1, 4, 5], right: [0] },
   tri: triS(8, 4, 2, 'cm'),
   ell: { pts: [[0, 0], [8, 0], [8, 3], [3, 3], [3, 7], [0, 7]], unit: 'cm', show: [0, 1, 4, 5], right: [0], split: [[[0, 3], [3, 3]]] },
-  hole: holeS(10, 7, 6, 5, 2, 1, 'm'),
+  hole: holeS(13, 7, 11, 5, 1, 1, 'm'),
 };
 // Example 2: a staircase (its steps add to the whole width and height), a house (rectangle + triangle, the roof's height
 // on a measurement line), a ramp (rectangle + triangle) and a rectangle with a corner cut off (the cut-off corner dashed,
@@ -126,8 +131,8 @@ const EX2 = {
   stairs: { pts: [[0, 0], [12, 0], [12, 3], [8, 3], [8, 6], [4, 6], [4, 9], [0, 9]], unit: 'm', show: [0, 7], right: [0] },
   house: { pts: [[0, 0], [8, 0], [8, 5], [4, 8], [0, 5]], unit: 'cm', show: [0, 4], right: [0, 1], split: [[[0, 5], [8, 5]]], dims: [[[8, 5], [8, 8], -1]] },
   ramp: { pts: [[0, 0], [14, 0], [8, 5], [0, 5]], unit: 'm', show: [0, 2, 3], right: [0, 3], split: [[[8, 5], [8, 0]]] },
-  corner: { pts: [[0, 0], [10, 0], [10, 5], [6, 8], [0, 8]], unit: 'm', show: [0, 4], right: [0, 1, 4], split: [[[6, 8], [10, 8]], [[10, 8], [10, 5]]],
-    dims: [[[0, 8], [6, 8], 1], [[10, 0], [10, 5], -1]] },
+  corner: { pts: [[0, 0], [12, 0], [12, 4], [8, 7], [0, 7]], unit: 'm', show: [0, 4], right: [0, 1, 4], split: [[[8, 7], [12, 7]], [[12, 7], [12, 4]]],
+    dims: [[[0, 7], [8, 7], 1, 1.6], [[12, 0], [12, 4], -1]] },
 };
 const tw = (pts, i) => n2(side(pts, i));
 // A door h m tall and 0.82 m wide (drawn in tenths of a metre, to scale), its height on a measurement line beside it
@@ -163,12 +168,12 @@ module.exports = {
   easy: {
     ex: { stem: 'Find the perimeter or area. Find any missing sides first.', parts: [
       { t: 'Perimeter', fig: comp({ ...EX1.per, size: 17, maxH: 10.2 }) }, { t: 'Area', fig: comp({ ...EX1.tri, size: 24, maxH: 12.6 }) },
-      { t: 'Area', fig: comp({ ...EX1.ell, size: 17, maxH: 10.2 }) }, { t: 'Shaded area', fig: comp({ ...EX1.hole, size: 24, maxH: 14.5 }) }] },
+      { t: 'Area', fig: comp({ ...EX1.ell, size: 17, maxH: 10.2 }) }, { t: 'Shaded area', fig: comp({ ...EX1.hole, size: 27, maxH: 14.4 }) }] },
     exAns: [
       `missing sides 10 − 4 = ${n2(10 - 4)} m and 7 − 3 = ${n2(7 - 3)} m; P = ${EX1.per.pts.map((p, i) => tw(EX1.per.pts, i)).join(' + ')} = ${u(perim(EX1.per.pts), 'm')}`,
       `A = ½ × 8 × 4 = ${u(areaOf(EX1.tri.pts), 'cm²')}`,
       `top part 7 − 3 = ${n2(7 - 3)} cm high; A = 8 × 3 + 3 × 4 = ${n2(8 * 3)} + ${n2(3 * 4)} = ${u(areaOf(EX1.ell.pts), 'cm²')}`,
-      `A = 10 × 7 − 6 × 5 = ${n2(10 * 7)} − ${n2(6 * 5)} = ${u(areaIn(EX1.hole), 'm²')}`],
+      `A = 13 × 7 − 11 × 5 = ${n2(13 * 7)} − ${n2(11 * 5)} = ${u(areaIn(EX1.hole), 'm²')}`],
     hint: 'Missing side = whole side − the other part · Perimeter: add every side, the missing ones too.',
     work: true,
     // Small steps: one missing side of an L-shape (marked ?), then the perimeter of an L-shape with two missing sides.
@@ -179,9 +184,9 @@ module.exports = {
         missL([[0, 0], [9, 0], [9, 6], [6, 6], [6, 2], [0, 2]], 'm', [1, 5], 3),
         missL([[0, 0], [3, 0], [3, 3], [11, 3], [11, 6], [0, 6]], 'm', [0, 4], 2)], '? = whole − part') },
       { text: 'find the perimeter. Find the two missing sides first.', cols: 3, ...formFig([
-        perL([[0, 0], [7, 0], [7, 2], [2, 2], [2, 6], [0, 6]], 'cm', [0, 1, 4, 5]),
-        perL([[0, 0], [9, 0], [9, 7], [5, 7], [5, 3], [0, 3]], 'm', [0, 1, 2, 5]),
-        perL([[0, 0], [3, 0], [3, 4], [8, 4], [8, 7], [0, 7]], 'cm', [0, 3, 4, 5])], 'P = add all sides') },
+        perL([[0, 0], [9, 0], [9, 2], [3, 2], [3, 6], [0, 6]], 'm', [0, 3, 4, 5]),
+        perL([[0, 0], [2, 0], [2, 5], [10, 5], [10, 7], [0, 7]], 'cm', [0, 1, 4, 5]),
+        perL([[0, 0], [11, 0], [11, 3], [3, 3], [3, 7], [0, 7]], 'm', [0, 3, 4, 5])], 'P = add all sides') },
     ],
   },
   // Page 2: rectangles and triangles (formula given), then choose the formula, then shapes split into two parts (two
@@ -197,23 +202,23 @@ module.exports = {
         areaQ(triS(12, 5, 0, 'm'), { size: 24, maxH: 16 }), areaQ(rectS(6.5, 4, 'cm'), { size: 22, maxH: 16 }),
         areaQ(triS(9, 8, 6, 'cm'), { size: 22, maxH: 18 })], true) },
       { text: 'find the area. Split the shape, then add the parts.', ...formFig([
-        areaQ({ pts: [[0, 0], [9, 0], [9, 3], [4, 3], [4, 8], [0, 8]], unit: 'cm', show: [0, 1, 3, 4], right: [0], split: [[[0, 3], [4, 3]]] }, { size: 20, maxH: 16.5 }),
+        areaQ({ pts: [[4, 0], [9, 0], [9, 8], [0, 8], [0, 5], [4, 5]], unit: 'cm', show: [0, 2, 3, 5], right: [0], split: [[[4, 5], [9, 5]]] }, { size: 20, maxH: 16.5 }),
         areaQ({ pts: [[0, 0], [12, 0], [12, 9], [7, 9], [7, 3], [0, 3]], unit: 'm', show: [0, 2, 3, 5], right: [0], split: [[[7, 3], [12, 3]]] }, { size: 20, maxH: 16.5 }),
-        [...areaQ({ pts: [[0, 0], [8, 0], [8, 6], [4, 9], [0, 6]], unit: 'm', show: [0, 4], right: [0, 1], split: [[[0, 6], [8, 6]]], dims: [[[8, 6], [8, 9], -1]] }, { size: 20, maxH: 16.5 }), '', 'A = l × w + ½ × b × h']], 'A = l × w + l × w') },
+        [...areaQ({ pts: [[0, 0], [8, 0], [8, 7], [4, 10], [0, 7]], unit: 'm', show: [0, 4], right: [0, 1], split: [[[0, 7], [8, 7]]], dims: [[[8, 7], [8, 10], -1]] }, { size: 20, maxH: 16.5 }), '', 'A = l × w + ½ × b × h']], 'A = l × w + l × w') },
       { text: 'find each shaded area.', ...formFig([
-        areaQ(holeS(9, 7, 6, 5, 1.5, 1, 'cm'), { size: 22, maxH: 18 }), areaQ(holeS(11, 9, 7, 6, 2, 1.5, 'm'), { size: 22, maxH: 18 }),
-        areaQ(holeS(10, 8, 6, 6, 2, 1, 'cm'), { size: 22, maxH: 18 })], 'A = whole − hole') },
+        areaQ(holeS(10, 9, 8, 7, 1, 1, 'cm'), { size: 22, maxH: 19 }), areaQ(holeS(12, 10, 10, 8, 1, 1, 'm'), { size: 22, maxH: 19 }),
+        areaQ(holeS(11, 10, 8, 8, 1.5, 1, 'cm'), { size: 22, maxH: 19 })], 'A = whole − hole') },
     ],
   },
   medium: {
     ex: { stem: 'Find the perimeter or area. Split the shape, or subtract.', parts: [
       { t: 'Perimeter', fig: comp({ ...EX2.stairs, size: 20, maxH: 11 }) }, { t: 'Area', fig: comp({ ...EX2.house, size: 18, maxH: 11 }) },
-      { t: 'Area', fig: comp({ ...EX2.ramp, size: 25, maxH: 11 }) }, { t: 'Area', fig: comp({ ...EX2.corner, size: 17, maxH: 9 }) }] },
+      { t: 'Area', fig: comp({ ...EX2.ramp, size: 25, maxH: 11 }) }, { t: 'Area', fig: comp({ ...EX2.corner, size: 22, maxH: 8 }) }] },
     exAns: [
       `the steps add to 12 m across and 9 m up, so P = 12 + 9 + 12 + 9 = ${u(perim(EX2.stairs.pts), 'm')}`,
       `A = 8 × 5 + ½ × 8 × 3 = ${n2(8 * 5)} + ${n2(0.5 * 8 * 3)} = ${u(areaOf(EX2.house.pts), 'cm²')}`,
       `triangle base 14 − 8 = ${n2(14 - 8)} m; A = 8 × 5 + ½ × 6 × 5 = ${n2(8 * 5)} + ${n2(0.5 * 6 * 5)} = ${u(areaOf(EX2.ramp.pts), 'm²')}`,
-      `cut-off corner 10 − 6 = ${n2(10 - 6)} m by 8 − 5 = ${n2(8 - 5)} m; A = 10 × 8 − ½ × 4 × 3 = ${n2(80)} − ${n2(0.5 * 4 * 3)} = ${u(areaOf(EX2.corner.pts), 'm²')}`],
+      `cut-off corner 12 − 8 = ${n2(12 - 8)} m by 7 − 4 = ${n2(7 - 4)} m; A = 12 × 7 − ½ × 4 × 3 = ${n2(12 * 7)} − ${n2(0.5 * 4 * 3)} = ${u(areaOf(EX2.corner.pts), 'm²')}`],
     hint: 'Find missing sides first · Split into rectangles and triangles, or subtract the part cut out',
     work: true, set: true,
     // One set: today's skill building from perimeters to split and shaded areas, with a question from an earlier lesson
