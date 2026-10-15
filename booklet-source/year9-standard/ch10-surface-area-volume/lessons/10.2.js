@@ -83,19 +83,20 @@ const jug = ({ min = 0, max, major, minor, unit = 'mL', len = 18, level, ask = '
 };
 
 // An upright thermometer: the scale on the right of the tube with the unit after the top number (as on a jug), red up
-// to level, ask to the right.
+// to level, ask to the right. Little room above the top mark and the bulb tucked up under the tube, so most of the
+// picture's height is scale (the marks as far apart as the drill box's 26 mm allows).
 const vthermo = ({ min, max, major, minor, unit = '°C', len = 16, level, ask = '' }) => {
-  const x0 = 3.2, top = 2.2, bot = top + len, n = Math.round((max - min) / minor), Y = (v) => bot - ((v - min) / (max - min)) * len, xt = x0 + 3.4;
+  const x0 = 3.2, top = 1.6, bot = top + len, n = Math.round((max - min) / minor), Y = (v) => bot - ((v - min) / (max - min)) * len, xt = x0 + 3.4;
   let b = box(x0, top - 1.6, 3.4, len + 3.1, '#fff', { rx: 1.7 });
   const lv = level !== undefined ? level : min + (max - min) * 0.6;
   b += box(x0 + 1, Y(lv), 1.4, bot + 2 - Y(lv), RED, { none: true });
-  b += `<circle cx="${f(x0 + 1.7)}" cy="${f(bot + 3.6)}" r="2.6" fill="${RED}" stroke="${C.charcoal}" stroke-width="0.4"/>`;
+  b += `<circle cx="${f(x0 + 1.7)}" cy="${f(bot + 3.2)}" r="2.6" fill="${RED}" stroke="${C.charcoal}" stroke-width="0.4"/>`;
   let wN = 0;
   for (let i = 0; i <= n; i++) { const v = min + i * minor, y = Y(v); b += seg([xt, y], [xt + tickLen(v, min, major, minor, [2.6, 2, 1.3]), y], TICK);
     if (tickLen(v, min, major, minor, [1, 0, 0])) { b += T(xt + 3.4, y + 1, lab(v), { ...N, anchor: 'start' }); wN = Math.max(wN, tw(lab(v), 2.8)); } }
   b += T(xt + 3.4 + tw(lab(max), 2.8) + 1.2, Y(max) + 1, unit, { ...N, anchor: 'start' });
   if (ask) b += T(xt + 3.4 + wN + 2.6, (top + bot) / 2 + 1, ask, { ...Q, anchor: 'start' });
-  return svg(f(xt + 3.4 + wN + 0.5), f(bot + 6.4), b);
+  return svg(f(xt + 3.4 + wN + 0.5), f(bot + 6), b);
 };
 
 // Measured things, each with its measurement on it. ask: the unknown (under a plank, beside the others).
@@ -117,16 +118,6 @@ const pencilShape = (x0, y0, w, h) => {
 const pencil = (m, ask, { w = 20 } = {}) => {
   const x0 = 0.6, y0 = 0.6, h = 2.6, yd = y0 + h + 1.4;
   return svg(f(w + 1.2), f(yd + 5), pencilShape(x0, y0, w, h) + dimH(x0, x0 + w, yd, BLUE) + T(x0 + w / 2, yd + 3.7, m, G) + T(x0 + w / 2, yd + 8.4, ask, Q));
-};
-// A juice carton with its capacity on it, then the unit to change to under it ('1250 mL', '= ? L')
-const carton = (m, ask) => {
-  const W = tw(m) + 2.6, x0 = 0.6, x1 = x0 + W, cx = x0 + W / 2, top = 1.2, sh = top + 2, H = sh + 6;
-  // the sealed ridge along the top, then the sloping top, then the body
-  let b = box(x0 + 1.6, top - 1, W - 3.2, 1, '#c9d6f2', { w: 0.3 });
-  b += `<polygon points="${f(x0)},${f(sh)} ${f(x0 + 1.6)},${f(top)} ${f(x1 - 1.6)},${f(top)} ${f(x1)},${f(sh)}" fill="#dfe5f2" stroke="${C.charcoal}" stroke-width="0.4"/>`;
-  b += box(cx - 1.1, top + 0.4, 2.2, 1, '#9fb3e0', { w: 0.3, rx: 0.3 });
-  b += box(x0, sh, W, H - sh, '#f7f9fd') + T(cx, (sh + H) / 2 + 1.05, m, G) + T(cx, H + 4, ask, Q);
-  return svg(f(x1 + 0.6), f(H + 0.6), b);
 };
 // A bag (of flour, rice ...) with its mass on a white label
 const bag = (m, { ask = '', H = 14 } = {}) => {
@@ -163,6 +154,14 @@ const band = (lo, hi, unit) => {
   b += [xl, xh].map((x) => seg([x, y - 1.3], [x, y + 1.3], BLUE)).join('') + seg([xm, y - 0.9], [xm, y + 0.9], TICK);
   b += T(xm, 3.2, 'length = ?', Q) + T(xl, y + 4.6, L, G) + T(xh, y + 4.6, H2, G);
   return svg(f(xh + tw(H2) / 2 + 0.6), f(y + 5.4), b);
+};
+// A right-angled triangle (a Year 8 area), base b and height h in unit, its slant side labelled too. The slant label
+// sits d mm out from the middle of the slant side, along its normal, so the label's corner nearest the line stays clear
+// of it (shapes.js puts a slanted side's label too close).
+const rightTriQ = (b, h, unit, { size = 14, maxH = 8.5, m = 0.8, d = 1.8 } = {}) => {
+  const s = Math.hypot(b, h), k = Math.min(size / b, maxH / h); // k: mm per unit, as S.shape fits it
+  return S.rightTri(b, h, { sides: [`${num(b)} ${unit}`, '', `${num(h)} ${unit}`], size, maxH, m,
+    labels: [[`${num(s)} ${unit}`, b / 2 + (d * h) / s / k, h / 2 + ((d * b) / s + 1.1) / k, { anchor: 'start' }]] });
 };
 
 // The Notes diagram: a pencil laid along a ruler marked in whole cm, from 0. Its tip is between 4 and 5, nearer 4: it
@@ -217,6 +216,9 @@ const EX2c = { min: 200, max: 400, major: 100, minor: 20, unit: 'g', kind: 'dial
 // Medium: limits from a scale reading
 const M4 = { min: 20, max: 40, major: 5, minor: 1, unit: '°C', kind: 'thermo', len: 20, read: 37 };
 const M6 = { min: 40, max: 80, major: 10, minor: 5, unit: 'kg', kind: 'dial', len: 22.5, read: 65 };
+// Medium 5 (Year 8): the area of a right-angled triangle, base 8 m and height 6 m, its slant side (10 m, calculated
+// from them) labelled too: A = ½bh uses the base and the height, not the slant side.
+const M5 = { b: 8, h: 6, unit: 'm' };
 const reading = (o) => `${o.read !== undefined ? o.read : o.level} ${o.unit}`;
 const scaleLimits = (o) => limits(reading(o), absErr(o.minor));
 // Medium 8: the limits given, the length and its absolute error to find
@@ -232,7 +234,7 @@ module.exports = {
   li: 'find the precision, absolute error and limits of accuracy.',
   sc: ['find the precision of a scale or a measurement', 'find the absolute error: precision ÷ 2', 'write the limits of accuracy: m ± absolute error'],
   notes: {
-    terms: [['precision (p)', 'one small space on a scale'], ['jump', 'the difference between two numbers'], ['p of a measurement', 'the place value of its last digit'],
+    terms: [['precision (p)', 'the size of one small space on a scale'], ['jump', 'the difference between two numbers'], ['p of a measurement', 'the place value of its last digit'],
       ['absolute error', 'half the precision'], ['m', 'the measurement'], ['true value', 'the exact size, which we never know'],
       ['limits of accuracy', 'the true value is between them']],
     formulas: ['p = jump ÷ spaces', 'p of 3.45 m = 0.01 m', 'Abs. error = p ÷ 2', 'Limits = m ± abs. error'],
@@ -275,7 +277,7 @@ module.exports = {
       { text: 'read each scale, then find the limits of accuracy.', ...formFig([
         { min: 0, max: 2, major: 0.5, minor: 0.1, unit: 'kg', kind: 'dial', len: 34, read: 1.2 },
         { min: 0, max: 600, major: 200, minor: 50, unit: 'mL', kind: 'jug', len: 18, level: 450 },
-        { min: -20, max: 40, major: 20, minor: 5, unit: '°C', kind: 'vthermo', len: 16.4, level: 15 }].map((o) => scaleQ(o, 'l')), 'Limits = m ± abs. error') },
+        { min: -20, max: 40, major: 20, minor: 5, unit: '°C', kind: 'vthermo', len: 17.4, level: 15 }].map((o) => scaleQ(o, 'l')), 'Limits = m ± abs. error') },
     ],
   },
   medium: {
@@ -287,9 +289,9 @@ module.exports = {
       `${cap(limWork('3.4 kg'))}. 3.46 kg is above ${u(lim('3.4 kg').hi, 'kg')}, so no.`],
     hint: 'Lower limit = m − abs. error · Upper limit = m + abs. error · The true value is between the limits',
     work: true, set: true,
-    // One set: today's skill, building from absolute error to limits and reasoning, with a question from the earlier
-    // lesson 10.1 (tagged) in each row: a length, a time and a capacity to convert. Every question that can be drawn is
-    // its diagram, with a word saying what to find.
+    // One set: today's skill, building from absolute error to limits and reasoning, with a tagged earlier question in
+    // each row: a length to convert (10.1), a Year 8 area, then a time to convert (10.1). Every question that can be
+    // drawn is its diagram, with a word saying what to find.
     rounds: [(() => {
       const ff = (t, fig, a, o = {}) => [{ t, fig, form: true, ...o }, a];
       const conv1 = { from: '10.1', lines: ['Rule', 'Working', 'Answer'] };
@@ -298,9 +300,9 @@ module.exports = {
         ff('Convert', pencil('15 cm', '= ? mm'), u(conv(15, 'cm', 'mm'), 'mm'), conv1),
         ff('Limits', timer('12.45 s'), limits('12.45 s')),
         ff('Limits', hs(M4), scaleLimits(M4)),
-        ff('Convert', timer('1.5 h', { below: '= ? min', H: 7 }), u(conv(1.5, 'h', 'min'), 'min'), conv1),
+        ff('Area', rightTriQ(M5.b, M5.h, M5.unit), u((M5.b * M5.h) / 2, `${M5.unit}²`), { from: 'Year 8' }),
         ff('Limits', hs(M6), scaleLimits(M6)),
-        ff('Convert', carton('1250 mL', '= ? L'), u(conv(1250, 'mL', 'L'), 'L'), conv1),
+        ff('Convert', timer('1.5 h', { below: '= ? min', H: 7 }), u(conv(1.5, 'h', 'min'), 'min'), conv1),
         [{ t: 'These are the limits of accuracy of a length. Find the length and its absolute error.', fig: band(M8.lo, M8.hi, M8.unit) },
           `(${num(M8.lo)} + ${num(M8.hi)}) ÷ 2 = ${u(m8.v, M8.unit)}; abs. error = ${num(M8.hi)} − ${num(m8.v)} = ${u(m8.e, M8.unit)}`],
         [{ t: `Could this plank really be ${u(M9.v, 'm')} long? Explain.`, fig: plank(M9.s, { w: 24 }) },
