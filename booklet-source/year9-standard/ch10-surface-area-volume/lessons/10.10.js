@@ -14,16 +14,33 @@ const Q = { size: 3, weight: 700 }; // the unknown: 'V = ?', 'h = ?'
 const DEP = [Math.cos(rad(35)) * 0.55, Math.sin(rad(35)) * 0.55]; // the depth, drawn 35° up to the right at 0.55 scale (y up)
 const textW = (s, size = 2.8) => String(s).length * size * 0.58; // as shapes.js T measures a label
 const unit = (v) => { const L = Math.hypot(v[0], v[1]); return [v[0] / L, v[1] / L]; };
+const lerp = (a, c, t) => [a[0] + (c[0] - a[0]) * t, a[1] + (c[1] - a[1]) * t];
+// The gap (mm) between the segment a-c and the box [x0, y0, x1, y1] (checked at points 0.1 mm apart), and between two boxes
+const segGap = (a, c, bx) => { const n = Math.max(1, Math.ceil(Math.hypot(c[0] - a[0], c[1] - a[1]) / 0.1)); let m = 1e9;
+  for (let i = 0; i <= n; i++) { const p = lerp(a, c, i / n); m = Math.min(m, Math.hypot(Math.max(bx[0] - p[0], 0, p[0] - bx[2]), Math.max(bx[1] - p[1], 0, p[1] - bx[3]))); }
+  return m; };
+const boxGap = (p, q) => Math.hypot(Math.max(0, p[0] - q[2], q[0] - p[2]), Math.max(0, p[1] - q[3], q[1] - p[3]));
+// Round corner joins: a sharp (mitred) join where a slanted face meets the front pokes out past its corner
+const round = (body) => `<g stroke-linejoin="round">${body}</g>`;
 // The room a picture may take (mm): page 1 (three to a row), page 2 (the drill), WE DO examples, the Medium set
 const P1 = { maxW: 34, maxH: 20 }, P2 = { maxW: 44, maxH: 25 }, EX1 = { maxW: 35, maxH: 18 }, EX2 = { maxW: 35, maxH: 16 }, MED = { maxW: 33, maxH: 15 };
 
 // Labels are placed through a recorder that keeps each label's box, so a later label (V = ?) can keep clear of them.
 const labels = () => {
   const boxes = [];
+  const boxAt = (x, y, s, o = {}) => { const size = o.size || 2.8, w = textW(s, size), a = o.anchor || 'middle', x0 = a === 'start' ? x : a === 'end' ? x - w : x - w / 2;
+    return [x0, y - 1.1, x0 + w, y + 1.1]; };
   const put = (x, y, s, o = {}) => { // centred on (x, y) unless anchored
-    const size = o.size || 2.8, w = textW(s, size), a = o.anchor || 'middle', x0 = a === 'start' ? x : a === 'end' ? x - w : x - w / 2;
-    boxes.push([x0, y - 1.1, x0 + w, y + 1.1]);
+    boxes.push(boxAt(x, y, s, o));
     return T(x, y + 1, s, o);
+  };
+  // a label centred on the first of the places [x, y] whose box clears every line in segs by lg mm and every label
+  // placed so far by bg mm (if none does, the place with the most room)
+  const first = (places, s, segs, lg, bg, o = {}) => {
+    const room = ([x, y]) => { const bx = boxAt(x, y, s, o);
+      return Math.min(...segs.map(([a, c]) => segGap(a, c, bx) / lg), ...boxes.map((q) => boxGap(bx, q) / bg)); };
+    const p = places.find((q) => room(q) >= 1) || places.reduce((m, q) => (room(q) > room(m) ? q : m));
+    return put(p[0], p[1], s, o);
   };
   // a label beside point p, pushed out along the unit normal n so its box clears p by gap, and further out if it would
   // touch a label already placed
@@ -33,7 +50,7 @@ const labels = () => {
     for (let t = 0; t < 40 && hits(p[0] + n[0] * d, p[1] + n[1] * d); t++) d += 0.25;
     return put(p[0] + n[0] * d, p[1] + n[1] * d, s, o);
   };
-  return { boxes, put, beside };
+  return { boxes, put, beside, first };
 };
 // A measurement line beside the segment a→b (screen points), offset along the unit normal n, with end ticks and its label
 const dimLine = (L, a, b, n, s, o = {}) => {

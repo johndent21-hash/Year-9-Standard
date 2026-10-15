@@ -69,15 +69,19 @@ const comp = (o) => {
   show.forEach((i) => { b += edge(Q[i], Q[(i + 1) % n], L(side(pts, i)), outN(Q, i), {}, 1.6, along[i] ?? 0.5); });
   if (typeof ask === 'number') b += dimLine(Q[ask], Q[(ask + 1) % n], outN(Q, ask), 2, '?', { size: 3, weight: 700 });
   // a hole's labels go inside it: its width under its top edge, its height beside its right edge (on opposite sides
-  // of the hole, not stacked), level with the middle of the hole, or lower when that would crowd the width label
+  // of the hole, not stacked), level with the middle of the hole, or the nearest spot to it (lower first) where the two
+  // labels' full boxes (the font's ascent and descent included, as the printed text measures) are 1.5 mm apart
   holes.forEach((hp, j) => {
     const H = hp.map(map), list = holeShow[j] || [], inN = (i) => outN(H, i).map((v) => -v), ys = H.map((p) => p[1]);
-    const top = Math.min(...ys), bot = Math.max(...ys); let lo = top, hi = bot;
-    list.filter((i) => Math.abs(inN(i)[0]) <= 0.75).forEach((i) => { const [x, y, anchor] = at(H[i], H[(i + 1) % H.length], inN(i)), s = L(side(hp, i)), bx = boxOf(x, y, s, { anchor });
-      if (inN(i)[1] > 0) lo = Math.max(lo, bx[3] + 0.6); else hi = Math.min(hi, bx[1] - 0.6);
+    const top = Math.min(...ys), bot = Math.max(...ys), wide = [];
+    const full = (x, y, s, q) => { const bx = boxOf(x, y, s, q); return [bx[0], y - 2.9, bx[2], y + 0.75]; };
+    list.filter((i) => Math.abs(inN(i)[0]) <= 0.75).forEach((i) => { const [x, y, anchor] = at(H[i], H[(i + 1) % H.length], inN(i)), s = L(side(hp, i));
+      wide.push(full(x, y, s, { anchor })); b += put(x, y, s, { anchor }); });
+    list.filter((i) => Math.abs(inN(i)[0]) > 0.75).forEach((i) => { const [x, , anchor] = at(H[i], H[(i + 1) % H.length], inN(i)), s = L(side(hp, i));
+      const gap = (y) => { const bx = full(x, y, s, { anchor }); return Math.min(99, ...wide.map((w) => Math.hypot(Math.max(w[0] - bx[2], 0, bx[0] - w[2]), Math.max(w[1] - bx[3], 0, bx[1] - w[3])))); };
+      const mid = (top + bot) / 2 + 0.77, spots = Array.from({ length: 80 }, (_, k) => mid + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 0.1);
+      const y = spots.find((v) => v - 2.24 >= top + 0.6 && v <= bot - 1 && gap(v) >= 1.55) ?? Math.min(mid, bot - 1);
       b += put(x, y, s, { anchor }); });
-    list.filter((i) => Math.abs(inN(i)[0]) > 0.75).forEach((i) => { const [x, , anchor] = at(H[i], H[(i + 1) % H.length], inN(i));
-      b += put(x, Math.min(Math.max((top + bot) / 2 + 0.77, lo + 2.24), hi - 1), L(side(hp, i)), { anchor }); });
   });
   hts.forEach(([p, q, sd = 1]) => { const a = map(p), c = map(q);
     b += seg(a, c, { stroke: C.grey, w: 0.32, dash: true }) + rightMark(c, a, [c[0] - normal(a, c, sd)[0], c[1] - normal(a, c, sd)[1]], 1.5);
@@ -146,11 +150,13 @@ const notesFig = () => {
   const P = { bl: [3, 22], br: [33, 22], top: [19, 6], tl: [3, 6], foot: [19, 22] }, B = { size: 2.8, weight: 600 };
   let b = poly([P.bl, P.br, P.top, P.tl], FILL) + seg(P.top, P.foot, { stroke: C.grey, w: 0.35, dash: true });
   b += rightMark(P.bl, P.tl, P.br, 1.6) + rightMark(P.foot, P.top, P.br, 1.6);
-  b += T(11, 12.6, 'rectangle', { size: 2.5 }) + T(11, 16.8, 'l × w', B);
+  b += T(11, 12.2, 'rectangle', { size: 2.5 }) + T(11, 17.1, 'l × w', B);
   b += T(11, 25.6, 'l', B) + T(1.6, 15, 'w', { ...B, anchor: 'end' }) + T(26, 25.6, 'b', B) + T(20.4, 15.4, 'h', { ...B, anchor: 'start' });
-  b += T(25, 8.8, 'triangle', { size: 2.5, anchor: 'start' });
+  // 'triangle' sits in the corner beside the triangle part, 2.4 mm clear of its slope. It is anchored at its end (it prints
+  // from x = 25 to 34.4) so the figure's box ends where the word does.
+  b += T(34.4, 8.8, 'triangle', { size: 2.5, anchor: 'end' });
   b += T(18, 31.2, 'A = l × w + ½ × b × h', { size: 2.6, weight: 600, fill: C.blue });
-  return svg(36, 32, b);
+  return svg(35, 32, b);
 };
 
 module.exports = {
