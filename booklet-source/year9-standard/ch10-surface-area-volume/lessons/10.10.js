@@ -34,11 +34,11 @@ const labels = () => {
     boxes.push(boxAt(x, y, s, o));
     return T(x, y + 1, s, o);
   };
-  // a label centred on the first of the places [x, y] whose box clears every line in segs by lg mm and every label
-  // placed so far by bg mm (if none does, the place with the most room)
-  const first = (places, s, segs, lg, bg, o = {}) => {
+  // a label centred on the first of the places [x, y] whose box clears every line in segs by lg mm, every label placed
+  // so far by bg mm, and the labels in far (boxes) by farG mm (if no place does, the place with the most room)
+  const first = (places, s, segs, lg, bg, far = [], farG = bg, o = {}) => {
     const room = ([x, y]) => { const bx = boxAt(x, y, s, o);
-      return Math.min(...segs.map(([a, c]) => segGap(a, c, bx) / lg), ...boxes.map((q) => boxGap(bx, q) / bg)); };
+      return Math.min(...segs.map(([a, c]) => segGap(a, c, bx) / lg), ...boxes.map((q) => boxGap(bx, q) / (far.includes(q) ? farG : bg))); };
     const p = places.find((q) => room(q) >= 1) || places.reduce((m, q) => (room(q) > room(m) ? q : m));
     return put(p[0], p[1], s, o);
   };
@@ -65,18 +65,28 @@ const fitSvg = (draw, maxW, maxH) => {
   for (let t = 0; t < 32; t++) { const mid = (lo + hi) / 2, [W, H] = size(draw(mid)); if (W <= maxW && H <= maxH) lo = mid; else hi = mid; }
   return draw(lo);
 };
-// The unknown (V = ?) or a given value (V = 140 cm³) to the right of a picture, halfway up it: just clear of every
-// line and label in its band. segs: the picture's edges [[a, b]], boxes: its labels so far.
-const rightOf = (L, segs, y, s, o) => {
-  let x = -1e9;
-  segs.forEach(([a, b]) => { for (let i = 0; i <= 40; i++) { const p = [a[0] + ((b[0] - a[0]) * i) / 40, a[1] + ((b[1] - a[1]) * i) / 40]; if (p[1] > y - 2.2 && p[1] < y + 2.2) x = Math.max(x, p[0]); } });
-  L.boxes.forEach(([x0, y0, x1, y1]) => { if (y1 > y - 2 && y0 < y + 2) x = Math.max(x, x1); });
-  return L.put(x + 1.6, y, s, { ...o, anchor: 'start' });
+// The unknown (V = ?) or a given value (V = 140 cm³) to the right of a picture, halfway up it: just clear of every line
+// in its band, and of every label within 4.5 mm above or below it (a label's whole line of type, not just its letters,
+// so the two never touch). If a label (the length, beside the edge going back) would push it further right, it moves up
+// or down instead, by the least that clears the label (at most dy mm). segs: the picture's edges [[a, b]].
+const rightOf = (L, segs, y, s, o, dy = 0) => {
+  const edgeX = (yy) => { let x = -1e9;
+    segs.forEach(([a, b]) => { for (let i = 0; i <= 40; i++) { const p = lerp(a, b, i / 40); if (p[1] > yy - 2.2 && p[1] < yy + 2.2) x = Math.max(x, p[0]); } });
+    return x; };
+  const xAt = (yy) => Math.max(edgeX(yy), ...L.boxes.filter(([, y0, , y1]) => y1 > yy - 3.4 && y0 < yy + 3.4).map((bx) => bx[2]));
+  const x0 = edgeX(y);
+  let yy = y;
+  for (let d = 0.25; xAt(y) > x0 + 1e-9 && d <= dy + 1e-9; d += 0.25) {
+    const ok = [y - d, y + d].find((t) => xAt(t) <= x0 + 1e-9);
+    if (ok !== undefined) { yy = ok; break; }
+  }
+  return L.put(xAt(yy) + 1.6, yy, s, { ...o, anchor: 'start' });
 };
 
 // A prism: its cross-section face (corners x right, y up, in the question's units) pushed back by len.
-//   labs: [[i, text, at]] a label for face edge i (corner i to corner i + 1): outside the face ('out', the default),
-//         or beyond the back edge ('back', for an edge whose side face shows)
+//   labs: [[i, text, at, style, t]] a label for face edge i (corner i to corner i + 1): outside the face ('out', the
+//         default), or beyond the back edge ('back', for an edge whose side face shows); beside the point t of the way
+//         along the edge (default 0.5: its middle)
 //   lenLab: [corner, text] the length, beside the edge going back from that corner (below it, to the right)
 //   right: corners of the face with a right-angle mark; faceLab: [text, x, y] on the shaded face at (x, y) (units)
 //   dash: [[p, q, text]] a dashed height on the face (p at the top), its label beside it on the face, to the right
@@ -98,27 +108,37 @@ const solid = ({ face, len, labs = [], lenLab, right = [], faceLab, dash = [], d
       const m = (t) => { const a = face[t], c = face[(t + 1) % n]; return (a[0] + c[0]) * DEP[0] + (a[1] + c[1]) * DEP[1]; };
       return m(i) - m(j);
     });
-    sides.forEach((i) => { const j = (i + 1) % n; b += poly([fr[i], fr[j], bk[j], bk[i]], outN(i)[1] > 0.5 ? TOP : SIDE); });
+    // every line drawn (the shaded end, the side faces that show, measurement and dashed lines), for placing the length
+    const drawn = fr.map((p, i) => [p, fr[(i + 1) % n]]);
+    sides.forEach((i) => { const j = (i + 1) % n; b += poly([fr[i], fr[j], bk[j], bk[i]], outN(i)[1] > 0.5 ? TOP : SIDE); drawn.push([fr[i], bk[i]], [fr[j], bk[j]], [bk[i], bk[j]]); });
     b += poly(fr, SHADE);
     right.forEach((i) => { b += rightMark(fr[i], fr[(i + n - 1) % n], fr[(i + 1) % n], 1.5); });
-    dash.forEach(([p, q, s]) => { const a = F(p), c = F(q); b += seg(a, c, { stroke: INK, w: 0.3, dash: true }) + rightMark(c, a, [c[0] + 1, c[1]], 1.2);
+    dash.forEach(([p, q, s]) => { const a = F(p), c = F(q); b += seg(a, c, { stroke: INK, w: 0.3, dash: true }) + rightMark(c, a, [c[0] + 1, c[1]], 1.2); drawn.push([a, c]);
       if (s) b += L.put(a[0] + 0.9, (a[1] + c[1]) / 2, s, { anchor: 'start' }); });
-    labs.forEach(([i, s, at = 'out', o2 = {}]) => {
+    const under = []; // the labels under the solid's bottom edge (the length must not run on from them)
+    labs.forEach(([i, s, at = 'out', o2 = {}, t = 0.5]) => {
       const j = (i + 1) % n, o = outN(i), sn = [o[0], -o[1]]; // the outward normal on the page (y down)
-      const mid = at === 'back' ? [(bk[i][0] + bk[j][0]) / 2, (bk[i][1] + bk[j][1]) / 2] : [(fr[i][0] + fr[j][0]) / 2, (fr[i][1] + fr[j][1]) / 2];
-      b += L.beside(mid, sn, s, 0.9, o2);
+      const mid = at === 'back' ? lerp(bk[i], bk[j], t) : lerp(fr[i], fr[j], t);
+      b += L.beside(mid, sn, s, 1.1, o2);
+      if (sn[1] > 0.5) under.push(L.boxes[L.boxes.length - 1]);
     });
-    dims.forEach(([p, q, s, side = 1]) => { const a = F(p), c = F(q), v = unit([c[0] - a[0], c[1] - a[1]]); b += dimLine(L, a, c, [v[1] * side, -v[0] * side], s); });
+    dims.forEach(([p, q, s, side = 1]) => { const a = F(p), c = F(q), v = unit([c[0] - a[0], c[1] - a[1]]), nv = [v[1] * side, -v[0] * side];
+      b += dimLine(L, a, c, nv, s); drawn.push([[a[0] + nv[0] * 2, a[1] + nv[1] * 2], [c[0] + nv[0] * 2, c[1] + nv[1] * 2]]); });
     if (lenLab) {
-      const [c, s] = lenLab, mid = [(fr[c][0] + bk[c][0]) / 2, (fr[c][1] + bk[c][1]) / 2], d = unit([DEP[0], -DEP[1]]);
-      b += L.beside(mid, [-d[1], d[0]], s, 0.7);
+      // the length: beside the far part of the edge going back, out to its right, so it sits higher than the bottom edge's
+      // label and well to its right (the two are not read as one measurement). Its box (the letters) clears every line by
+      // 1 mm, the bottom edge's label by 2.5 mm and any other label (a step's height beside it) by 2.3 mm, so that their
+      // lines of type stay 0.8 mm apart.
+      const [c, s] = lenLab, nv = unit([0.9, 0.4]), places = [];
+      [0.65, 0.7, 0.6, 0.75, 0.55, 0.8, 0.5, 0.85, 0.9].forEach((t) => { const p = lerp(fr[c], bk[c], t); for (let d = 0; d <= 12; d += 0.1) places.push([p[0] + nv[0] * d, p[1] + nv[1] * d]); });
+      b += L.first(places, s, drawn, 1, 2.3, under, 2.5);
     }
     if (faceLab) { const p = F([faceLab[1], faceLab[2]]); b += L.put(p[0], p[1], faceLab[0], { weight: 600 }); }
     const all = [...fr, ...bk], top = Math.min(...all.map((p) => p[1])), bot = Math.max(...all.map((p) => p[1]));
-    if (ask) b += rightOf(L, [...fr.map((p, i) => [p, fr[(i + 1) % n]]), ...bk.map((p, i) => [p, bk[(i + 1) % n]]), ...fr.map((p, i) => [p, bk[i]])], (top + bot) / 2, `${ask} = ?`, Q);
+    if (ask) b += rightOf(L, [...fr.map((p, i) => [p, fr[(i + 1) % n]]), ...bk.map((p, i) => [p, bk[(i + 1) % n]]), ...fr.map((p, i) => [p, bk[i]])], (top + bot) / 2, `${ask} = ?`, Q, Math.max(0, (bot - top) / 2 - 1.2));
     // a given value above the solid, starting over its front face, clear of any label already above it
     if (given) b += L.put(fr[0][0], Math.min(top, ...L.boxes.map((x) => x[1])) - 2, given, { anchor: 'start' });
-    return svg(f((Math.max(...xs) - Math.min(...xs)) * k), f((Math.max(...ys) - Math.min(...ys)) * k), b);
+    return svg(f((Math.max(...xs) - Math.min(...xs)) * k), f((Math.max(...ys) - Math.min(...ys)) * k), roundJoins(b));
   }, maxW, maxH);
 };
 
@@ -149,7 +169,7 @@ const halfCyl = ({ d, len, labD, labL, maxW, maxH }) => fitSvg((k) => {
   b += seg(at(c, 180), at(c, 0), BLUE) + dot(c, 0.45) + L.put(c[0], c[1] + 2.4, labD);
   const mid = [(at(c, 0)[0] + at(cb, 0)[0]) / 2, (at(c, 0)[1] + at(cb, 0)[1]) / 2], dd = unit([DEP[0], -DEP[1]]);
   b += L.beside(mid, [-dd[1], dd[0]], labL, 0.7);
-  return svg(f(2 * R + dx), f(R + dy), b);
+  return svg(f(2 * R + dx), f(R + dy), roundJoins(b));
 }, maxW, maxH);
 
 // A circle with its diameter (blue) labelled above it, as lessons 10.6 and 10.7 draw it (lesson 10.7), R in mm
@@ -183,12 +203,14 @@ const triQ = (b, h, len, x, box) => [triPrism(b, h, len, x, box, { ask: 'V' }), 
 const cylQ = (r, h, x, box, d) => [cylinder(r, h, x, box, { ask: 'V', d }), V(cylV(r, h), x, 1)];
 
 // Cross-sections (corners, in the question's units)
-const TRAP24 = [[0, 0], [7, 0], [6, 4], [1, 4]]; // Example 1a: (7 + 5) ÷ 2 × 4 = 24 cm²
+const TRAP1 = [[0, 0], [8, 0], [7, 4], [1, 4]]; // Example 1a: (8 + 6) ÷ 2 × 4 = 28 cm² (wide enough for its A = label)
 const LFACE = [[0, 0], [7, 0], [7, 2], [3, 2], [3, 4], [0, 4]]; // Example 2a: 7 × 2 + 3 × 2 = 20 cm²
 const R1 = [ // Round 1: the area of the end is given (written at the point after the corners)
   [[[0, 0], [8, 0], [7, 3], [1, 3]], [4, 1.3], 3, 'cm'], // (8 + 6) ÷ 2 × 3 = 21 cm²
   [[[0, 0], [7, 0], [7, 2.5], [3, 2.5], [3, 5], [0, 5]], [3.5, 1.25], 3, 'm'], // 7 × 2.5 + 3 × 2.5 = 25 m²
-  [[[0, 0], [7, 0], [7, 3], [3.5, 5], [0, 3]], [3.5, 1.5], 3, 'cm'], // 7 × 3 + ½ × 7 × 2 = 28 cm²
+  // 8 × 2 + ½ × 8 × 3.5 = 30 cm². The roof is steeper than the depth's 35°, so its left face is hidden (a roof just
+  // under 35° would show that face as a thin dark sliver).
+  [[[0, 0], [8, 0], [8, 2], [4, 5.5], [0, 2]], [4, 1], 3, 'cm'],
 ];
 const TRAP = [[0, 0], [10, 0], [7.5, 4], [2.5, 4]]; // Medium 1: (10 + 5) ÷ 2 × 4 = 30 cm²
 const LQ = [[0, 0], [8, 0], [8, 2], [3, 2], [3, 4], [0, 4]]; // Medium 3: 8 × 2 + 3 × 2 = 22 m²
@@ -198,24 +220,24 @@ const RAIN = { d: 3, h: 2 }, rainV = cylV(RAIN.d / 2, RAIN.h); // worded problem
 // The Notes diagram: a prism with its cross-section A shaded and its height h (the length between the ends) marked,
 // V = Ah beside it; under it a cylinder with r and h, V = πr²h beside it.
 const notesFig = () => {
-  const L = labels(), k = 2.4, face = [[0, 0], [5, 0], [5, 3], [2.5, 5], [0, 3]], len = 5;
+  const L = labels(), k = 2.3, face = [[0, 0], [5, 0], [5, 3], [2.5, 5], [0, 3]], len = 5;
   const F = (p) => [p[0] * k, (5 + len * DEP[1] - p[1]) * k], Bk = (p) => { const q = F(p); return [q[0] + len * DEP[0] * k, q[1] - len * DEP[1] * k]; };
   const fr = face.map(F), bk = face.map(Bk);
   let b = poly([fr[1], fr[2], bk[2], bk[1]], SIDE) + poly([fr[2], fr[3], bk[3], bk[2]], TOP) + poly(fr, SHADE);
   const a = F([2.5, 1.6]);
   b += L.put(a[0], a[1], 'A', { size: 3, weight: 700 });
-  // h: a measurement line below the bottom edge going back
+  // h: a measurement line below the bottom edge going back (every letter on the figure bold, at size 3)
   const d = unit([DEP[0], -DEP[1]]);
-  b += dimLine(L, fr[1], bk[1], [-d[1], d[0]], 'h', { off: 1.4 });
+  b += dimLine(L, fr[1], bk[1], [-d[1], d[0]], 'h', { off: 1.4, q: true });
   b += L.put(bk[2][0] + 2, (bk[2][1] + bk[1][1]) / 2, 'V = Ah', { size: 3, weight: 700, anchor: 'start' });
-  // the cylinder, below: its top (the cross-section) shaded, r on the top, h on the left
-  const R = 5.5, E = 1.8, cx = 4.4 + R, top = 25, bot = top + 9;
+  // the cylinder, below: its top (the cross-section) shaded, r on the top, h on the left (the figure at most 34 mm tall)
+  const R = 5.5, E = 1.8, cx = 4.4 + R, top = 23.5, bot = top + 7.5;
   b += `<path d="M${f(cx - R)},${f(top)} L${f(cx - R)},${f(bot)} A${R},${E} 0 0 0 ${f(cx + R)},${f(bot)} L${f(cx + R)},${f(top)}" fill="${SIDE}" stroke="${INK}" stroke-width="0.45"/>`;
   b += `<ellipse cx="${f(cx)}" cy="${f(top)}" rx="${R}" ry="${E}" fill="${SHADE}" stroke="${INK}" stroke-width="0.45"/>`;
   b += seg([cx, top], [cx + R, top], BLUE) + dot([cx, top], 0.45) + L.put(cx + R / 2, top - E - 1.4, 'r', { size: 3, weight: 700 });
-  b += dimLine(L, [cx - R, top], [cx - R, bot], [-1, 0], 'h', { off: 1.4 });
+  b += dimLine(L, [cx - R, top], [cx - R, bot], [-1, 0], 'h', { off: 1.4, q: true });
   b += L.put(cx + R + 2, (top + bot) / 2, 'V = πr²h', { size: 3, weight: 700, anchor: 'start' });
-  return svg(34, f(bot + E), b);
+  return svg(34, f(bot + E), roundJoins(b));
 };
 
 module.exports = {
@@ -224,19 +246,20 @@ module.exports = {
   sc: ['use V = Ah to find the volume of any prism', 'use V = πr²h to find the volume of a cylinder', 'change between cm³, mL, L and m³'],
   notes: {
     terms: [['volume (V)', 'the space inside a solid, in cubic units'], ['prism', 'the same cross-section all along'],
-      ['cross-section (A)', 'the end of the prism (shaded)'], ['height (h)', 'the length between the two ends'],
+      ['cross-section (A)', 'the end of the prism (shaded)'], ['height of the prism (h)', 'the distance between the two ends'],
       ['cylinder', 'a solid whose cross-section is a circle'], ['capacity', 'how much a container holds (mL, L)']],
-    formulas: ['V = Ah', 'Cuboid: V = lwh', 'Triangular prism: V = ½bh × l', 'Cylinder: V = πr²h', '1 cm³ = 1 mL · 1 m³ = 1000 L'],
+    // h in V = Ah is the prism's height; in the triangular prism's formula b and h belong to the triangle, so say so
+    formulas: ['V = Ah', 'Cuboid: V = lwh', 'Triangular prism: V = ½bh × l <span style="font-weight:400">(b, h: the triangle; l: the length)</span>', 'Cylinder: V = πr²h', '1 cm³ = 1 mL · 1 m³ = 1000 L'],
     steps: ['find A, the end', 'write the formula', 'substitute (π key)', 'answer in cm³ or m³'],
     fig: notesFig(),
   },
   easy: {
     ex: { stem: 'Find the volume of each solid. Give the cylinder correct to one decimal place.', parts: [
-      { t: 'Prism', fig: endPrism(TRAP24, [3.5, 1.5], 4, 'cm', EX1) }, { t: 'Cuboid', fig: cuboid(8, 5, 4, 'cm', EX1) },
+      { t: 'Prism', fig: endPrism(TRAP1, [4, 1.5], 4, 'cm', EX1) }, { t: 'Cuboid', fig: cuboid(8, 5, 4, 'cm', EX1) },
       { t: 'Triangular prism', fig: triPrism(6, 4, 7, 'm', EX1) }, { t: 'Cylinder', fig: cylinder(3, 8, 'cm', EX1) }] },
-    exAns: [`V = Ah = ${num(areaOf(TRAP24))} × 4 = ${V(areaOf(TRAP24) * 4, 'cm')}`, `V = lwh = 8 × 5 × 4 = ${V(8 * 5 * 4, 'cm')}`,
+    exAns: [`V = Ah = ${num(areaOf(TRAP1))} × 4 = ${V(areaOf(TRAP1) * 4, 'cm')}`, `V = lwh = 8 × 5 × 4 = ${V(8 * 5 * 4, 'cm')}`,
       `V = ½bh × l = ½ × 6 × 4 × 7 = ${V(0.5 * 6 * 4 * 7, 'm')}`, `V = πr²h = π × 3² × 8 = ${V(cylV(3, 8), 'cm', 1)}`],
-    hint: 'V = Ah: A is the area of the shaded end, h the length between the ends · Cuboid: V = lwh · Units: cm³, m³',
+    hint: 'V = Ah: A is the area of the shaded end, h the distance between the ends · Cuboid: V = lwh · Units: cm³, m³',
     work: true,
     // Small steps: V = Ah with A given, then cuboids (the formula printed on the Formula line). Each question is its
     // diagram: the given lengths on it, V = ? beside it. The round heading says what to find.
@@ -247,7 +270,7 @@ module.exports = {
   },
   // Page 2: more drill. Triangular prisms, then choose the formula, then cylinders (the radius given, then the diameter).
   drill: {
-    hint: 'Triangular prism: V = ½bh × l · Cylinder: V = πr²h · r = d ÷ 2 · Use the π key, then round to one decimal place.',
+    hint: 'Triangular prism: V = ½bh × l (b, h: the triangle; l: the length) · Cylinder: V = πr²h · r = d ÷ 2 · Use the π key, then round to one decimal place.',
     rounds: [
       { text: 'find the volume of each triangular prism.', ...formFig([triQ(6, 4, 5, 'cm', P2), triQ(8, 3, 10, 'm', P2), triQ(5, 4, 9, 'cm', P2)], 'V = ½bh × l') },
       { text: 'which solid is it? Write its formula, then find the volume.', ...formFig([cubQ(7, 3, 2, 'cm', P2), triQ(10, 6, 4, 'm', P2),
@@ -257,16 +280,18 @@ module.exports = {
     ],
   },
   medium: {
-    ex: { stem: 'Find the area of the end first. 1 cm³ = 1 mL, 1000 cm³ = 1 L and 1 m³ = 1000 L.', parts: [
-      { t: 'Volume', fig: solid({ face: LFACE, len: 4, labs: [[0, '7 cm'], [1, '2 cm', 'back'], [4, '3 cm', 'back'], [5, '4 cm']], lenLab: [1, '4 cm'], ...EX2 }) },
+    // The rounding for the whole page: every π answer (and only those) is correct to one decimal place, as in the key
+    ex: { stem: 'Round π answers to one decimal place. 1 cm³ = 1 mL, 1000 cm³ = 1 L, 1 m³ = 1000 L.', parts: [
+      { t: 'Volume', fig: solid({ face: LFACE, len: 4, labs: [[0, '7 cm'], [1, '2 cm', 'back', {}, 0.8], [4, '3 cm', 'back'], [5, '4 cm']], lenLab: [1, '4 cm'], ...EX2 }) },
       { t: 'Capacity in L', fig: cuboid(50, 30, 40, 'cm', EX2) },
       { t: 'Height', fig: cuboid(8, 3, 4, 'cm', EX2, { hAsk: true, given: `V = ${V(96, 'cm')}` }) },
       { t: 'Capacity in L', fig: cylinder(TANK.d / 2, TANK.h, 'm', EX2, { d: true }) }] },
     exAns: [`A = 7 × 2 + 3 × 2 = ${num(areaOf(LFACE))} cm²; V = Ah = ${num(areaOf(LFACE))} × 4 = ${V(areaOf(LFACE) * 4, 'cm')}`,
-      `V = lwh = 50 × 30 × 40 = ${V(50 * 30 * 40, 'cm')} = ${u(50 * 30 * 40, 'mL')} = ${u(50 * 30 * 40 / 1000, 'L')}`,
+      `V = lwh = 50 × 30 × 40 = ${V(50 * 30 * 40, 'cm')} = ${u(50 * 30 * 40 / 1000, 'L')}`,
       `V = lwh: 96 = 8 × 3 × h = 24h, so h = 96 ÷ 24 = ${u(96 / 24, 'cm')}`,
-      `r = 2 ÷ 2 = 1 m; V = πr²h = π × 1² × 1.5 = ${num(tankV, 3)}… m³ = ${u(Math.round(tankV * 1000), 'L')} (nearest litre)`],
-    hint: 'L-shape: split it into rectangles · Trapezium: A = ½(a + b)h · 1000 cm³ = 1 L · 1 m³ = 1000 L · Height: h = V ÷ A',
+      `r = 1 m; V = π × 1² × 1.5 = ${num(tankV, 3)}… m³ = ${u(tankV * 1000, 'L', 1)}`],
+    // (a cuboid's height: l × w, not the shaded front face, which has h in it)
+    hint: 'Find A, the end, first · L-shape: two rectangles · Trapezium: A = ½(a + b)h · Height: h = V ÷ (l × w)',
     work: true, set: true,
     // One set: today's skill, building from composite prisms to capacity and a missing height, with a question from an
     // earlier lesson (tagged) in each row. Every question is its diagram, with a word or two saying what to find.
@@ -276,9 +301,9 @@ module.exports = {
         ff(solid({ face: TRAP, len: 4, labs: [[0, '10 cm'], [2, '5 cm', 'back']], dash: [[[2.5, 4], [2.5, 0]]], dims: [[[0, 0], [0, 4], '4 cm', 1]], lenLab: [1, '4 cm'], ...MED }),
           `A = ½ × (10 + 5) × 4 = ${num(areaOf(TRAP))} cm²; V = ${num(areaOf(TRAP))} × 4 = ${V(areaOf(TRAP) * 4, 'cm')}`, 'Volume'),
         ff(circleD('10 m', 6.5), `r = 5 m; A = π × 5² = ${u(area(5), 'm²', 1)}`, 'Area', '10.7'),
-        ff(solid({ face: LQ, len: 3, labs: [[0, '8 m'], [1, '2 m', 'back'], [4, '3 m', 'back'], [5, '4 m']], lenLab: [1, '3 m'], ...MED }),
+        ff(solid({ face: LQ, len: 3, labs: [[0, '8 m'], [1, '2 m', 'back', {}, 0.8], [4, '3 m', 'back'], [5, '4 m']], lenLab: [1, '3 m'], ...MED }),
           `A = 8 × 2 + 3 × 2 = ${num(areaOf(LQ))} m²; V = ${num(areaOf(LQ))} × 3 = ${V(areaOf(LQ) * 3, 'm')}`, 'Volume'),
-        ff(cuboid(40, 25, 30, 'cm', MED), `V = 40 × 25 × 30 = ${V(40 * 25 * 30, 'cm')} = ${u(40 * 25 * 30 / 1000, 'L')}`, 'Capacity<br>in L'),
+        ff(cuboid(40, 25, 30, 'cm', { ...MED, maxW: 31.5 }), `V = 40 × 25 × 30 = ${V(40 * 25 * 30, 'cm')} = ${u(40 * 25 * 30 / 1000, 'L')}`, 'Capacity<br>in L'),
         ff(cuboid(5, 4, 3, 'm', MED), `SA = 2 × (5 × 4 + 5 × 3 + 4 × 3) = ${u(2 * (5 * 4 + 5 * 3 + 4 * 3), 'm²')}`, 'Surface<br>area', '10.8'),
         ff(cuboid(9, 4, 3, 'cm', MED, { hAsk: true, given: `V = ${V(108, 'cm')}` }), `108 = 9 × 4 × h = 36h, so h = 108 ÷ 36 = ${u(108 / 36, 'cm')}`, 'Height'),
         ff(cylinder(5, 8, 'cm', MED, { d: true }), `r = 5 cm; V = π × 5² × 8 = ${V(cylV(5, 8), 'cm', 1)} = ${u(cylV(5, 8), 'mL', 1)}`, 'Capacity<br>in mL'),
@@ -292,8 +317,8 @@ module.exports = {
     { q: 'A tent is a triangular prism. Its triangular end has a base of 2.4 m and a height of 1.5 m, and the tent is 3 m long. Find the volume of air inside the tent.',
       a: `V = ½bh × l = ½ × 2.4 × 1.5 × 3 = ${V(0.5 * 2.4 * 1.5 * 3, 'm')}` },
     { q: `A cylindrical rainwater tank has a diameter of ${RAIN.d} m and a height of ${RAIN.h} m. How many litres does it hold, to the nearest litre?`,
-      a: `r = 1.5 m; V = πr²h = π × 1.5² × 2 = ${num(rainV, 3)}… m³; × 1000 = ${u(Math.round(rainV * 1000), 'L')}` },
+      a: `r = 1.5 m; V = π × 1.5² × 2 = ${num(rainV, 3)}… m³ = ${u(Math.round(rainV * 1000), 'L')}` },
     { q: 'A pool is 25 m long and 10 m wide. It holds 375 000 L of water. How deep is the water?',
-      a: `375 000 L = ${V(375000 / 1000, 'm')}; V = lwh: 375 = 25 × 10 × h, so h = 375 ÷ 250 = ${u(375 / 250, 'm')}` },
+      a: `375 000 L = ${V(375000 / 1000, 'm')}; h = 375 ÷ (25 × 10) = ${u(375 / (25 * 10), 'm')}` },
   ],
 };
