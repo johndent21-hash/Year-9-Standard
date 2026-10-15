@@ -130,16 +130,30 @@ const card = (p, { note = '', given = '', ask = '', below = false, gap = 2, minH
   }
   return pic([0, 0, p.w, H], b, minH);
 };
-// Two measurements to compare, A over B: a small picture of each (drawn at (x, y)) with its value after it
-const pair = (a, c) => {
+// Measurements to compare, one under the other (A over B, or a, b and c): a small picture of each (drawn at (x, y))
+// with its value after it. Narrow, so it fits beside a two-word heading.
+const stack = (rows, minH) => {
   let s = '', y = 0;
-  [['A', a], ['B', c]].forEach(([k, d]) => { const p = d(4, y); s += L(0, y + p.h / 2 + 1.1, k, { ...Q, anchor: 'start' }) + p.b; y += p.h + 3; });
-  return pic([0, 0, 4, y - 3], s);
+  rows.forEach(([k, d]) => { const p = d(3.2, y); s += L(0, y + p.h / 2 + 1.1, k, { ...Q, anchor: 'start' }) + p.b; y += p.h + 2.6; });
+  return pic([0, 0, 3.2, y - 2.6], s, minH);
 };
-// The small pictures in a pair: a plank len mm long (drawn to scale), a parcel; each with its value after it
-const bar = (lab, len) => (x, y) => ({ b: box(x, y + 0.5, len, 3, WOOD, { w: 0.35, rx: 0.2 }) + L(x + len + 1.4, y + 3.1, lab, { anchor: 'start' }), h: 4 });
-const mini = (lab) => (x, y) => { const s = { stroke: STRING, w: 0.4 };
-  return { b: box(x, y, 6.4, 4.6, KRAFT, { rx: 0.4, w: 0.35 }) + seg([x + 3.2, y], [x + 3.2, y + 4.6], s) + seg([x, y + 2.3], [x + 6.4, y + 2.3], s) + L(x + 7.8, y + 3.4, lab, { anchor: 'start' }), h: 4.6 }; };
+// The small pictures: a thin plank len mm long (to its page's scale, see plankK), a parcel, a jug; each with its value
+const bar = (lab, len) => (x, y) => ({ b: box(x, y + 0.8, len, 1.6, WOOD, { w: 0.3, rx: 0.2 }) + L(x + len + 1.2, y + 2.7, lab, { anchor: 'start' }), h: 3.2 });
+const mini = (lab) => (x, y) => { const s = { stroke: STRING, w: 0.35 }, w = 5, h = 4;
+  return { b: box(x, y, w, h, KRAFT, { rx: 0.4, w: 0.35 }) + seg([x + w / 2, y], [x + w / 2, y + h], s) + seg([x, y + h / 2], [x + w, y + h / 2], s) + L(x + w + 1.2, y + h / 2 + 1.1, lab, { anchor: 'start' }), h }; };
+const miniJug = (lab, full = 0.8) => (x, y) => { const w = 4, h = 5, t = y + h - (h - 0.3) * full;
+  return { b: `<rect x="${f(x + 0.2)}" y="${f(t)}" width="${f(w - 0.4)}" height="${f(y + h - 0.2 - t)}" fill="${LIQ}"/><path d="M${f(x)},${f(y)} L${f(x)},${f(y + h)} L${f(x + w)},${f(y + h)} L${f(x + w)},${f(y)}" fill="none" stroke="${C.charcoal}" stroke-width="0.35"/>`
+    + L(x + w + 1.2, y + h / 2 + 1.1, lab, { anchor: 'start' }), h }; };
+// Planks are drawn to one scale on each page (mm per metre: K1 page 1, K2 page 2, K3 page 3), so on a page a longer
+// measurement is always a longer plank. barK: page 3's thin planks, to compare.
+const K1 = 0.55, K2 = 2.2, K3 = 0.7;
+const plankK = (k) => (s) => plank(s, meas(s).v * k);
+const plank1 = plankK(K1), plank2 = plankK(K2), plank3 = plankK(K3);
+const barK = (s) => bar(s, meas(s).v * K3);
+// Pictures side by side drawn the same height (the tallest one's), each centred in it, so the working boxes under
+// them start level. Each maker draws its picture at least minH tall.
+const tall = (s) => +s.match(/viewBox="[^ ]+ [^ ]+ [^ ]+ ([^"]+)"/)[1];
+const level = (makers) => { const h = Math.max(...makers.map((m) => tall(m()))); return makers.map((m) => m(h - 1)); };
 
 // ---------------------------------------------------------------- questions
 // Each question: [picture, answer]. kind: the object (parcel, plank, bottle or watch), s: the measurement on it, size:
@@ -151,12 +165,19 @@ const Pq = (kind, s, size, note) => [card(kind(s, size), { note, ask: '% error =
 const Sjug = (o) => [card(jug(o), { ask: '% error = ?' }), pe(`${o.level} ${o.unit || 'mL'}`, 1, o.minor)];
 const Sstrip = (o) => [card(strip(o), { ask: '% error = ?', below: true }), pe(`${o.at} ${o.unit}`, 1, o.minor)];
 // Formula questions (Formula / Substitute / Answer lines) from [picture, answer, text?, own formula?], with the round's
-// formula printed (a string) or left for students to write (true)
-const formFig = (list, form) => ({ items: list.map(([fig, , t = '', own]) => ({ t, fig, form: own || form })), ans: list.map((x) => x[1]) });
+// formula printed (a string) or left for students to write (true). lines: other labels for the three lines.
+const formFig = (list, form, lines) => ({ items: list.map(([fig, , t = '', own]) => ({ t, fig, form: own || form, ...(lines ? { lines } : {}) })), ans: list.map((x) => x[1]) });
+// A percentage error found from the measurement alone takes two steps, so each step has its own line: the % error
+// formula (printed or written), then E = p ÷ 2 worked out, then the substitution and the answer.
+const TWO = ['Formula', 'E = p ÷ 2', 'Answer'];
 
 const PE = '% error = E ÷ M × 100';
 const EX1 = { jug: { max: 400, minor: 50, major: 200, level: 300, len: 14 } };
-const EX2 = { jug: { max: 400, minor: 25, major: 200, level: 375, len: 14 } };
+// Example 2b: a jug marked every 25 mL (eight marks, 1.5 mm apart)
+const EX2 = { jug: { max: 200, minor: 25, major: 100, level: 175, len: 12 } };
+// Example 2: a, b and c, and which of them is the most accurate (the smallest percentage error)
+const EX2M = [['a', '24 m', 1], ['b', `${EX2.jug.level} mL`, EX2.jug.minor], ['c', '3.25 kg']];
+const EX2best = EX2M.map(([k, s, p]) => [k, pctErr(M(s, p).e, M(s, p).v), pe(s, 2, p)]).reduce((a, b) => (b[1] < a[1] ? b : a));
 
 // The Notes diagram: 24 m measured to the nearest metre on a number line. The true length lies in the shaded band,
 // up to E = 0.5 m either side; then the percentage error.
@@ -174,7 +195,7 @@ const notesFig = () => {
 
 module.exports = {
   code: '10.3', title: 'Percentage error',
-  li: 'calculate the percentage error of a measurement, and use it to compare accuracy.',
+  li: 'find percentage errors and use them to compare accuracy.',
   sc: ['find the absolute error: half the precision', 'calculate percentage error = E ÷ M × 100%', 'decide which measurement is more accurate'],
   notes: {
     terms: [['precision (p)', 'the place value of the last digit, or one mark on a scale'], ['absolute error (E)', 'half the precision: the most the measurement can be out by'],
@@ -184,9 +205,11 @@ module.exports = {
     fig: notesFig(),
   },
   easy: {
-    ex: { stem: 'Find each absolute error or percentage error, to one decimal place where needed.', parts: [
-      { t: 'Absolute error', fig: card(parcel('3.6 kg', 11), { ask: 'E = ?' }) }, { t: '% error', fig: card(plank('20 m', 12), { given: 'E = 0.5 m', ask: '% error = ?' }) },
-      { t: '% error', fig: card(bottle('2.5 L', 15), { ask: '% error = ?' }) }, { t: '% error', fig: card(jug(EX1.jug), { ask: '% error = ?' }) }] },
+    ex: { stem: 'Find each absolute error or percentage error, to one decimal place where needed.', parts: (() => {
+      const figs = level([(h) => card(parcel('3.6 kg', 11), { ask: 'E = ?', minH: h }), (h) => card(plank1('20 m'), { given: 'E = 0.5 m', ask: '% error = ?', minH: h }),
+        (h) => card(bottle('2.5 L', 15), { ask: '% error = ?', minH: h }), (h) => card(jug(EX1.jug), { ask: '% error = ?', minH: h })]);
+      return ['Absolute error', '% error', '% error', '% error'].map((t, i) => ({ t, fig: figs[i] }));
+    })() },
     exAns: [`p = 0.1 kg, so E = 0.1 ÷ 2 = ${eOf('3.6 kg')}`, `% error = 0.5 ÷ 20 × 100 = ${pc(pctErr(0.5, 20))}`, `E = 0.1 ÷ 2 = ${eOf('2.5 L')}; % error = ${work('2.5 L')}`,
       `p = ${EX1.jug.minor} mL, so E = ${eOf('300 mL', EX1.jug.minor)}; % error = ${work('300 mL', 1, EX1.jug.minor)}`],
     hint: 'p: the place value of the last digit (3.6 kg → 0.1 kg) · E = p ÷ 2 · % error = E ÷ M × 100',
@@ -194,8 +217,8 @@ module.exports = {
     // Small steps: the absolute error E of a measurement (the formula printed), then the percentage error with E given.
     // Each question is its diagram: the measurement on the object, the unknown marked with a ?.
     rounds: [
-      { text: 'find the absolute error E of each measurement.', cols: 3, ...formFig([Eq(plank, '12 m', 16, 'nearest m'), Eq(parcel, '4.2 kg', 11), Eq(bottle, '1.25 L', 15)], 'E = p ÷ 2') },
-      { text: 'find the percentage error. The absolute error E is given.', cols: 3, ...formFig([Gq(plank, '25 m', 12, '0.5 m'), Gq(parcel, '4 kg', 11, '0.5 kg'), Gq(bottle, '0.5 L', 15, '0.05 L')], PE) },
+      { text: 'find the absolute error E of each measurement.', cols: 3, ...formFig([Eq(plank1, '18 m', 0, 'nearest m'), Eq(parcel, '4.2 kg', 11), Eq(bottle, '1.25 L', 15)], 'E = p ÷ 2') },
+      { text: 'find the percentage error. The absolute error E is given.', cols: 3, ...formFig([Gq(plank1, '25 m', 0, '0.5 m'), Gq(parcel, '4 kg', 11, '0.5 kg'), Gq(bottle, '0.5 L', 15, '0.05 L')], PE) },
     ],
   },
   // Page 2: the percentage error from the measurement alone (find E first), then from a scale reading picture; each
@@ -203,40 +226,46 @@ module.exports = {
   drill: {
     hint: 'E = p ÷ 2 · % error = E ÷ M × 100 · On a scale, p = the gap between two marks · Round to one decimal place.',
     rounds: [
-      { text: 'find the percentage error. Find E first.', ...formFig([Pq(plank, '10 m', 22, 'nearest m'), Pq(parcel, '2.5 kg', 16), Pq(watch, '12.5 s', 10)], PE) },
-      { text: 'write the formula, then find the percentage error.', ...formFig([Pq(plank, '7 m', 22, 'nearest m'), Pq(parcel, '3.7 kg', 16), Pq(bottle, '0.6 L', 22)], true) },
+      { text: 'find the percentage error. Find E first.', ...formFig([Pq(plank2, '10 m', 0, 'nearest m'), Pq(parcel, '2.5 kg', 16), Pq(watch, '12.5 s', 10)], PE, TWO) },
+      { text: 'write the formula, then find the percentage error.', ...formFig([Pq(plank2, '7 m', 0, 'nearest m'), Pq(parcel, '3.7 kg', 16), Pq(bottle, '0.6 L', 22)], true, TWO) },
+      // the scales have at most 20 marks, at least 1.5 mm apart, so they can be counted
       { text: 'read the scale, then find the percentage error. p is one mark.', ...formFig([
-        Sjug({ max: 400, minor: 20, major: 100, level: 300, len: 19 }), Sstrip({ max: 3, minor: 0.1, major: 1, at: 2.5, unit: 'kg', len: 30 }),
-        Sstrip({ max: 6, minor: 0.5, major: 1, at: 4.5, unit: 'cm', kind: 'rod', len: 30 })], PE) },
+        Sjug({ max: 200, minor: 20, major: 100, level: 160, len: 15 }), Sstrip({ max: 2, minor: 0.1, major: 1, at: 1.4, unit: 'kg', len: 30 }),
+        Sstrip({ max: 6, minor: 0.5, major: 1, at: 4.5, unit: 'cm', kind: 'rod', len: 30 })], PE, TWO) },
       { text: 'write the formula, then find the percentage error.', ...formFig([
-        Sjug({ max: 200, minor: 10, major: 50, level: 140, len: 19 }), Sstrip({ min: 200, max: 300, minor: 10, major: 50, at: 260, unit: 'g', len: 30 }),
-        Sstrip({ max: 3, minor: 0.1, major: 1, at: 1.8, unit: 'm', kind: 'rod', len: 30 })], true) },
+        Sjug({ max: 100, minor: 10, major: 50, level: 40, len: 15 }), Sstrip({ min: 200, max: 300, minor: 10, major: 50, at: 260, unit: 'g', len: 30 }),
+        Sstrip({ max: 2, minor: 0.1, major: 1, at: 1.8, unit: 'm', kind: 'rod', len: 30 })], true, TWO) },
     ],
   },
   medium: {
-    ex: { stem: 'Give each answer correct to two decimal places.', parts: [
-      { t: '% error', fig: card(plank('24 m', 22), { note: 'nearest m' }) }, { t: '% error', fig: card(jug(EX2.jug)) },
-      { t: '% error', fig: card(parcel('3.25 kg', 11)) }, 'Which of a, b and c is the most accurate? Why?'] },
-    exAns: [`E = 1 ÷ 2 = 0.5 m; % error = ${work('24 m', 2)}`, `p = ${EX2.jug.minor} mL, so E = ${eOf('375 mL', EX2.jug.minor)}; % error = ${work('375 mL', 2, EX2.jug.minor)}`,
-      `E = 0.01 ÷ 2 = ${eOf('3.25 kg')}; % error = ${work('3.25 kg', 2)}`, `c: it has the smallest percentage error (${pe('3.25 kg', 2)})`],
+    // d: the three measurements again, one under the other, to compare (the plank to the page's scale)
+    ex: { stem: 'Give each answer correct to two decimal places.', parts: (() => {
+      const figs = level([(h) => card(plank3('24 m'), { note: 'nearest m', minH: h }), (h) => card(jug(EX2.jug), { minH: h }), (h) => card(parcel('3.25 kg', 11), { minH: h }),
+        (h) => stack([['a', barK('24 m')], ['b', miniJug(EX2M[1][1], EX2.jug.level / EX2.jug.max)], ['c', mini('3.25 kg')]], h)]);
+      return ['% error', '% error', '% error', 'Most accurate?'].map((t, i) => ({ t, fig: figs[i] }));
+    })() },
+    exAns: [`E = 1 ÷ 2 = 0.5 m; % error = ${work('24 m', 2)}`, `p = ${EX2.jug.minor} mL, so E = ${eOf(EX2M[1][1], EX2.jug.minor)}; % error = ${work(EX2M[1][1], 2, EX2.jug.minor)}`,
+      `E = 0.01 ÷ 2 = ${eOf('3.25 kg')}; % error = ${work('3.25 kg', 2)}`, `${EX2best[0]}: it has the smallest percentage error (${EX2best[2]})`],
     hint: '% error = E ÷ M × 100, to two decimal places · On a scale, p = one mark · Smaller % error: more accurate',
     work: true, set: true,
     // One set: today's skill, building from measurements to scales and comparing accuracy, with a question from an
     // earlier lesson (tagged) in each row. Every question is drawn, with a word or two saying what to find.
     rounds: [(() => {
-      const ff = (p, a, t = '% error', o = {}) => [{ t, fig: card(p, o.card), form: true, ...o.q }, a];
+      // a percentage error (two steps: the TWO lines); o.card: the picture's labels, o.q: the question's own settings
+      const ff = (p, a, t = '% error', o = {}) => [{ t, fig: card(p, o.card), form: true, lines: TWO, ...o.q }, a];
       const more = (sa, sb) => { const [x, y] = [sa, sb].map((s) => pctErr(M(s).e, M(s).v)); return `${x < y ? 'A' : 'B'} (A ${pe(sa, 2)}, B ${pe(sb, 2)})`; };
-      const cmp = (fig, sa, sb) => [{ t: 'Which is more accurate?', fig, form: true }, more(sa, sb)];
+      // which of two measurements is more accurate: a line for each percentage error, then the answer
+      const cmp = (fig, sa, sb) => [{ t: 'More accurate?', fig, form: true, lines: ['% error A', '% error B', 'Answer'] }, more(sa, sb)];
       const Q9 = [
-        ff(plank('28 m', 18), pe('28 m', 2), '% error', { card: { note: 'nearest m' } }),
-        ff(parcel('4.5 kg'), u(conv(4.5, 'kg', 'g'), 'g'), 'Convert to grams', { card: { ask: '= ? g' }, q: { lines: ['Rule', 'Working', 'Answer'], from: '10.1' } }),
+        ff(plank3('28 m'), pe('28 m', 2), '% error', { card: { note: 'nearest m' } }),
+        ff(parcel('4.5 kg', 9), u(conv(4.5, 'kg', 'g'), 'g'), 'Convert', { card: { ask: '= ? g', below: true }, q: { lines: ['Rule', 'Working', 'Answer'], from: '10.1' } }),
         ff(strip({ min: 300, max: 400, minor: 10, major: 50, at: 370, unit: 'g', len: 20 }), pe('370 g', 2, 10)),
         ff(bottle('0.75 L', 12.5), pe('0.75 L', 2)),
         [{ t: 'Write the limits of accuracy.', fig: card(jug({ max: 100, minor: 10, major: 50, level: 60, len: 13 })), from: '10.2' }, limits('60 mL', 5)],
         ff(strip({ min: 1, max: 1.3, minor: 0.05, major: 0.1, at: 1.15, unit: 'm', len: 20, fmt: (v) => num(v, 1) }), pe('1.15 m', 2, 0.05)),
-        cmp(pair(bar('6 m', 1.75), bar('48 m', 14)), '6 m', '48 m'),
-        ff(strip({ max: 200, minor: 10, major: 100, at: 140, unit: 'g', len: 18 }), eOf('140 g', 10), 'Absolute error', { q: { from: '10.2' } }),
-        cmp(pair(mini('0.75 kg'), mini('2.5 kg')), '0.75 kg', '2.5 kg'),
+        cmp(stack([['A', barK('6 m')], ['B', barK('12 m')]]), '6 m', '12 m'),
+        ff(watch('8.6 s', 5.85), eOf('8.6 s'), 'Abs. error', { q: { from: '10.2', lines: undefined } }),
+        cmp(stack([['A', mini('0.75 kg')], ['B', mini('2.5 kg')]]), '0.75 kg', '2.5 kg'),
       ];
       return { text: '', items: Q9.map((x) => x[0]), ans: Q9.map((x) => x[1]) };
     })()],
