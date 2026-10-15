@@ -21,7 +21,7 @@ const segGap = (a, c, bx) => { const n = Math.max(1, Math.ceil(Math.hypot(c[0] -
   return m; };
 const boxGap = (p, q) => Math.hypot(Math.max(0, p[0] - q[2], q[0] - p[2]), Math.max(0, p[1] - q[3], q[1] - p[3]));
 // Round corner joins: a sharp (mitred) join where a slanted face meets the front pokes out past its corner
-const round = (body) => `<g stroke-linejoin="round">${body}</g>`;
+const roundJoins = (body) => `<g stroke-linejoin="round">${body}</g>`;
 // The room a picture may take (mm): page 1 (three to a row), page 2 (the drill), WE DO examples, the Medium set
 const P1 = { maxW: 34, maxH: 20 }, P2 = { maxW: 44, maxH: 25 }, EX1 = { maxW: 35, maxH: 18 }, EX2 = { maxW: 35, maxH: 16 }, MED = { maxW: 33, maxH: 15 };
 
