@@ -60,24 +60,15 @@ The full spec, with the teacher's own words and the diagram rules learned along 
 
 The full booklet builds cleanly: both copies pass every check, and the contents page numbers are right (lessons start on pages 3, 6, …, 30). The current PDFs are committed in the deliverables folder.
 
-A final recheck was started on the last-fixed lessons. It found two small things, and the rest of it was cut off by a usage limit.
+The final recheck is done (15 October 2026, second chat):
 
-### Still to do
+- **10.2 worded problem 1** now reads 37.2 °C on a thermometer marked every 0.4 °C. Its limits are 37.0–37.4 °C, clearly below the 37.5 °C fever line, so the answer is a clear no.
+- **10.3 Medium Q7** has a "nearest m" note under the two planks (a `note` option on `stack()`).
+- **10.4 and 10.10** were rechecked: every answer was recomputed from the rendered pages and matches the key.
+- **Whole booklet**: styling is consistent from lesson to lesson. 10.10's page-2 Remember line was shortened to one line, as in every other lesson.
+- The booklet was rebuilt: 32 + 32 + 5 pages, both copies PASS, and `booklet-check.js` is ok for all ten lessons. The PDFs are in the deliverables folder.
 
-1. **Fix 10.2, worded problem 1 (nurse's thermometer).**
-   - In `lessons/10.2.js` (search `FEVER`), the reading 37.4 °C marked every 0.2 °C gives limits of 37.3–37.5 °C. The fever threshold is exactly 37.5 °C, so the "yes" answer rests on a boundary case.
-   - Change the numbers so the threshold is clearly inside or outside the limits. Example: fever "above 37.4 °C", or marked every 0.4 °C showing 37.2 °C so the answer is a clear no.
-   - Update the question text, `FEVER` and the answer string together.
-2. **Fix 10.3, Medium Q7 ('More accurate?', planks A 6 m and B 12 m).**
-   - Every other whole-metre measurement in the lesson has a "nearest m" note under its picture. Q7 doesn't, but the key assumes p = 1 m.
-   - Add the note, e.g. via `card(..., { note: 'nearest m' })`, as on line ~260 for Q1, keeping inside the box.
-3. **Final recheck of 10.4 and 10.10, and one look across the whole booklet** for inconsistencies between lessons. This was cut off; both lessons already passed their own checks and fixes.
-   - For each lesson: recompute every answer from the rendered pages and compare with the answer key.
-   - For the booklet: open `/tmp/booklet-render/full/s-01.png … s-32.png` and look for styling that differs from lesson to lesson.
-4. **Rebuild and deliver:**
-   - Run `tools/build-full.sh` and `node tools/booklet-check.js`.
-   - Copy the three PDFs into `Chapter 10 Surface area and volume booklet/`, commit and push.
-   - Send the teacher the students' copy, the teacher's copy and the answer key.
+Nothing is left on the list. Next: the teacher's feedback.
 
 ### Judgement calls already made (keep them)
 

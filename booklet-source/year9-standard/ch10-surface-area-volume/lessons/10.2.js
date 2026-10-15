@@ -226,8 +226,8 @@ const M8 = { lo: 4.15, hi: 4.25, unit: 'm' };
 const m8 = { v: +((M8.lo + M8.hi) / 2).toPrecision(12), e: +((M8.hi - M8.lo) / 2).toPrecision(12) };
 // Medium 9: a plank measured as 1.25 m; could it really be 1.256 m long?
 const M9 = { s: '1.25 m', v: 1.256 }, m9 = lim(M9.s), m9In = M9.v >= m9.lo && M9.v <= m9.hi;
-// Worded problems. 1: the thermometer reads below a fever, but its upper limit reaches one.
-const W1 = lim('37.4 °C', 0.2), FEVER = 37.5, W2 = lim('1.5 m'), W3 = lim('13.4 s');
+// Worded problems. 1: the thermometer reads 0.3 °C under a fever, but even its upper limit is clearly below one.
+const W1 = lim('37.2 °C', 0.4), FEVER = 37.5, W2 = lim('1.5 m'), W3 = lim('13.4 s');
 
 module.exports = {
   code: '10.2', title: 'Precision and absolute error',
@@ -312,8 +312,8 @@ module.exports = {
     })()],
   },
   worded: [
-    { q: 'A nurse’s thermometer is marked every 0.2 °C. It shows 37.4 °C. A fever is 37.5 °C or above. Could the patient have a fever? Explain.',
-      a: `${cap(limWork('37.4 °C', W1.P))}. The true value could be as high as ${u(W1.hi, '°C')}, ${W1.hi >= FEVER ? `so yes: the patient could have a fever` : `below ${u(FEVER, '°C')}, so no fever`}.` },
+    { q: 'A nurse’s thermometer is marked every 0.4 °C. It shows 37.2 °C. A fever is 37.5 °C or above. Could the patient have a fever? Explain.',
+      a: `${cap(limWork('37.2 °C', W1.P))}. ${W1.hi >= FEVER ? `The true value could be as high as ${u(W1.hi, '°C')}, so yes: the patient could have a fever` : `The true value is at most ${u(W1.hi, '°C')}, which is below ${u(FEVER, '°C')}, so no: the patient does not have a fever`}.` },
     { q: 'Two planks are each 1.5 m long, to the nearest 0.1 m. They are laid end to end. Find the smallest and the largest possible total length.',
       a: `${cap(aeWork(W2.p, 'm'))}; each plank ${limits('1.5 m')}; smallest ${num(W2.lo)} + ${num(W2.lo)} = ${u(2 * W2.lo, 'm')}; largest ${num(W2.hi)} + ${num(W2.hi)} = ${u(2 * W2.hi, 'm')}` },
     { q: 'Sam ran 100 m in 13.4 s, timed to the nearest 0.1 s. Ali ran it in 13.36 s. Can we be sure that Ali was faster? Explain.',

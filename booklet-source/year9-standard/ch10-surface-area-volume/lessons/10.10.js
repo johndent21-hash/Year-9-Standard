@@ -270,7 +270,7 @@ module.exports = {
   },
   // Page 2: more drill. Triangular prisms, then choose the formula, then cylinders (the radius given, then the diameter).
   drill: {
-    hint: 'Triangular prism: V = ½bh × l (b, h: the triangle; l: the length) · Cylinder: V = πr²h · r = d ÷ 2 · Use the π key, then round to one decimal place.',
+    hint: 'Triangular prism: V = ½bh × l · Cylinder: V = πr²h · r = d ÷ 2 · Use the π key, then round to one decimal place.',
     rounds: [
       { text: 'find the volume of each triangular prism.', ...formFig([triQ(6, 4, 5, 'cm', P2), triQ(8, 3, 10, 'm', P2), triQ(5, 4, 9, 'cm', P2)], 'V = ½bh × l') },
       { text: 'which solid is it? Write its formula, then find the volume.', ...formFig([cubQ(7, 3, 2, 'cm', P2), triQ(10, 6, 4, 'm', P2),

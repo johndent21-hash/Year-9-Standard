@@ -131,10 +131,11 @@ const card = (p, { note = '', given = '', ask = '', below = false, gap = 2, minH
   return pic([0, 0, p.w, H], b, minH);
 };
 // Measurements to compare, one under the other (A over B, or a, b and c): a small picture of each (drawn at (x, y))
-// with its value after it. Narrow, so it fits beside a two-word heading.
-const stack = (rows, minH) => {
+// with its value after it. Narrow, so it fits beside a two-word heading. note: under them ('nearest m'), as on a card.
+const stack = (rows, minH, note = '') => {
   let s = '', y = 0;
   rows.forEach(([k, d]) => { const p = d(3.2, y); s += L(0, y + p.h / 2 + 1.1, k, { ...Q, anchor: 'start' }) + p.b; y += p.h + 2.6; });
+  if (note) { s += L(0, y + 0.8, note, { ...NOTE, anchor: 'start' }); y += 4; }
   return pic([0, 0, 3.2, y - 2.6], s, minH);
 };
 // The small pictures: a thin plank len mm long (to its page's scale, see plankK), a parcel, a jug; each with its value
@@ -263,7 +264,7 @@ module.exports = {
         ff(bottle('0.75 L', 12.5), pe('0.75 L', 2)),
         [{ t: 'Write the limits of accuracy.', fig: card(jug({ max: 100, minor: 10, major: 50, level: 60, len: 13 })), from: '10.2' }, limits('60 mL', 5)],
         ff(strip({ min: 1, max: 1.3, minor: 0.05, major: 0.1, at: 1.15, unit: 'm', len: 20, fmt: (v) => num(v, 1) }), pe('1.15 m', 2, 0.05)),
-        cmp(stack([['A', barK('6 m')], ['B', barK('12 m')]]), '6 m', '12 m'),
+        cmp(stack([['A', barK('6 m')], ['B', barK('12 m')]], undefined, 'nearest m'), '6 m', '12 m'),
         ff(watch('8.6 s', 5.85), eOf('8.6 s'), 'Abs. error', { q: { from: '10.2', lines: undefined } }),
         cmp(stack([['A', mini('0.75 kg')], ['B', mini('2.5 kg')]]), '0.75 kg', '2.5 kg'),
       ];
