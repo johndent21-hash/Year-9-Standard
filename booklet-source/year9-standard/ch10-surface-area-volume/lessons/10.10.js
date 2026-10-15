@@ -289,7 +289,7 @@ module.exports = {
     exAns: [`A = 7 × 2 + 3 × 2 = ${num(areaOf(LFACE))} cm²; V = Ah = ${num(areaOf(LFACE))} × 4 = ${V(areaOf(LFACE) * 4, 'cm')}`,
       `V = lwh = 50 × 30 × 40 = ${V(50 * 30 * 40, 'cm')} = ${u(50 * 30 * 40 / 1000, 'L')}`,
       `V = lwh: 96 = 8 × 3 × h = 24h, so h = 96 ÷ 24 = ${u(96 / 24, 'cm')}`,
-      `r = 1 m; V = π × 1² × 1.5 = ${num(tankV, 3)}… m³ = ${u(tankV * 1000, 'L', 1)}`],
+      `r = 1 m; V = πr²h = π × 1² × 1.5 = ${num(tankV, 3)}… m³ = ${u(tankV * 1000, 'L', 1)}`],
     // (a cuboid's height: l × w, not the shaded front face, which has h in it)
     hint: 'Find A, the end, first · L-shape: two rectangles · Trapezium: A = ½(a + b)h · Height: h = V ÷ (l × w)',
     work: true, set: true,
@@ -317,7 +317,7 @@ module.exports = {
     { q: 'A tent is a triangular prism. Its triangular end has a base of 2.4 m and a height of 1.5 m, and the tent is 3 m long. Find the volume of air inside the tent.',
       a: `V = ½bh × l = ½ × 2.4 × 1.5 × 3 = ${V(0.5 * 2.4 * 1.5 * 3, 'm')}` },
     { q: `A cylindrical rainwater tank has a diameter of ${RAIN.d} m and a height of ${RAIN.h} m. How many litres does it hold, to the nearest litre?`,
-      a: `r = 1.5 m; V = π × 1.5² × 2 = ${num(rainV, 3)}… m³ = ${u(Math.round(rainV * 1000), 'L')}` },
+      a: `r = 1.5 m; V = πr²h = π × 1.5² × 2 = ${num(rainV, 3)}… m³ = ${u(Math.round(rainV * 1000), 'L')}` },
     { q: 'A pool is 25 m long and 10 m wide. It holds 375 000 L of water. How deep is the water?',
       a: `375 000 L = ${V(375000 / 1000, 'm')}; h = 375 ÷ (25 × 10) = ${u(375 / (25 * 10), 'm')}` },
   ],
