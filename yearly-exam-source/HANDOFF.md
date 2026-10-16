@@ -97,3 +97,11 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
 - **Chapter 6 has no question.** Its networks questions are all PATH, and the teacher excluded its geometry.
 - The exam is 12 pages (14 before the October edit), because questions are kept whole on a page. The marking guide is 22 pages.
+
+## Revision booklets
+
+`node revision.js` builds two 4-page revision booklets (A and B) into `Yearly exam 2026/`
+(`Year9-5.2-Yearly-Exam-2026-Revision-Booklet-A.pdf`, `-B.pdf`). Textbook-style, no answer spaces (students use their
+workbooks), every exam question type in each booklet, diagrams from `lib/figs.js`. All questions are in `revision.js`
+(`pick(b, A, B)` holds each booklet's version). The build fails if a booklet is not exactly 4 pages; `--shots <dir>`
+saves page PNGs. There is no answer key yet.
