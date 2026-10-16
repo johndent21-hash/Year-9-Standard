@@ -19,6 +19,7 @@ const ART = {
   jellyfish: 'a jellyfish of spirals near the neck of the left bulb',
   'gold-spiral': 'gold spirals deep in Seahorse Valley, coloured in gold and green',
   'silver-spiral': 'a silver spiral on the western edge of Seahorse Valley, coloured in purple and silver',
+  'silver-seahorse': 'silver seahorse tails deep in Seahorse Valley, coloured in purple and silver',
 };
 
 // Worksheet booklet cover, in the style of the revision booklets: the charcoal band with the title and name box,

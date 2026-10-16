@@ -5,7 +5,7 @@
 code=$1; T=$(cd "$(dirname "$0")" && pwd); B=$(cd "$T/.." && pwd); R=${RENDER_DIR:-/tmp/booklet-render}/$code
 cd "$B" || exit 1
 for v in "$code" "$code-teacher"; do
-  [ -f year9-standard/preview/$v/chapter.js ] || { mkdir -p year9-standard/preview/$v; t=$([ "$v" != "$code" ] && echo ", { teacher: true }"); echo "module.exports = require('../../ch10-surface-area-volume/chapter.js').only('$code'$t);" > year9-standard/preview/$v/chapter.js; }
+  [ -f year9-standard/preview/$v/chapter.js ] || { mkdir -p year9-standard/preview/$v; t=$([ "$v" != "$code" ] && echo ", { teacher: true }"); echo "module.exports = require('../../${CH:-ch10-surface-area-volume}/chapter.js').only('$code'$t);" > year9-standard/preview/$v/chapter.js; }
 done
 mkdir -p "$R" && rm -f "$R"/*.png
 for v in "$code" "$code-teacher"; do echo "== build $v"; node build.js year9-standard/preview/$v 2>&1 | grep -v "written$" | tail -5; done

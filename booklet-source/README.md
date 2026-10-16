@@ -8,6 +8,7 @@ with each question tagged by the lesson it comes from.
 | Booklet | Folder |
 |---|---|
 | Chapter 10 Surface area and volume (New Century Maths 9) | `year9-standard/ch10-surface-area-volume` |
+| Chapter 11 Coordinate geometry and graphs (New Century Maths 9) | `year9-standard/ch11-coordinate-geometry` (slightly less scaffolding than Chapter 10: see its `chapter.js`) |
 
 ## Build
 
