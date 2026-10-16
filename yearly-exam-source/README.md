@@ -38,7 +38,7 @@ each one is modelled on (TY9 Q4 = Test yourself 9, question 4).
 
 > **2026 edit (October):** the per-section tables below describe the first version (70 marks). The current questions,
 > marks and levels are listed in the header comment of each section file and in `../yearly-exam-source/HANDOFF.md`.
-> Update these tables once the teacher approves the new version.
+> These tables still need updating to the approved 72-mark version.
 
 **Section 1: Data** (Chapter 9), 25 marks, 17 green + 8 blue
 

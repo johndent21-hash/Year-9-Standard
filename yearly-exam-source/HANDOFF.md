@@ -37,7 +37,7 @@ The teacher asked for these changes:
 - Add simple shapes (circles included) for perimeter and area, and remove the open 3D objects.
 - Give marks by steps.
 
-**Only the exam PDF has been sent for approval.** `Yearly exam 2026/` still holds the previous version (all four files). Once the teacher approves, run `node build.js` (the full build, which makes all 4 files) and commit `Yearly exam 2026`. The teacher wants the Word file and the marking guide only after approving the PDF.
+**Approved and rebuilt (October 2026):** the teacher approved the PDF; all four files in `Yearly exam 2026/` are the 72-mark version.
 
 ## Where each question is
 
