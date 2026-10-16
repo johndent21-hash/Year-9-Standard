@@ -1,21 +1,105 @@
 # Year 9 5.2 Yearly Exam 2026: builder
 
-Builds the Kingscliff High School **Year 9 5.2 (NSW Stage 5.2, New Century Maths 9) Yearly Exam 2026** and its
-**marking guide**, as PDF and Word, from question files written in JavaScript. Every answer is calculated from the
-numbers in its question, so the exam, the answer summary, the marking criteria and the red answers in the marking
+Builds the Kingscliff High School **Year 9 5.2 (NSW Stage 5.2, New Century Maths 9, 2024 edition) Yearly Exam 2026**
+and its **marking guide**, as PDF and Word, from question files written in JavaScript. Every answer is calculated from
+the numbers in its question, so the exam, the answer summary, the marking criteria and the red answers in the marking
 guide always agree.
 
 ```
 node build.js                      # everything, into ../Yearly exam 2026
-node build.js --only s2 --no-docx  # just Section 2, PDF only, into build/only (quick check while writing)
+node build.js --shots <dir>        # the same, plus a PNG of every PDF page (for checking)
+node build.js --only s2 --no-docx  # just Section 2, PDF only, into build/only-s2 (quick check while writing)
 node gallery.js                    # build/figure-gallery.pdf: every figure helper with its example
 ```
+
+## The exam
+
+| | |
+|---|---|
+| Course | Year 9 5.2 (Stage 5.2), New Century Maths 9 (2024 edition) |
+| Time | 5 minutes reading time, 90 minutes working time. Calculator permitted. No formula sheet: each question that needs a formula gives it as "Note: ..." (as the 2024 exam did) |
+| Marks | **70**: Section 1 Data **25**, Section 2 Surface area and volume **24**, Section 3 Mixed Topics (Chapters 1–8) **21** |
+| Chapters | 49 marks (70%) from Chapter 9 (Analysing data) and Chapter 10 (Surface area and volume); 21 marks (30%) from Chapters 1–8; nothing from Chapters 11–13 |
+| Levels | **49 green** (Foundation, 70%) and **21 blue** (Standard, 30%): Section 1 17 + 8, Section 2 17 + 7, Section 3 15 + 6 |
+| Structure | Every section: 5 multiple-choice questions (1 mark each) first; then short-answer calculation questions (12, 11 and 10 marks); then 2 worded (real-life, multi-step) problems (4 + 4, 4 + 4 and 3 + 3 marks) |
+| Source | The *Test yourself* pages of New Century Maths 9 (chapters 1–13). Every question is a NEW question in the style of a GREEN (Foundation, green square) or BLUE (Standard, blue circle) Test yourself question: the same question type with new numbers and contexts. Never RED (Complex); nothing from PATH or extension sections |
+| Section 3 | Covers Chapters 1, 2, 3, 4, 5, 7 and 8. No geometry, no surds and no exact (surd) answers: Pythagoras answers are rounded decimals. Chapter 6 has no question: the brief excludes its geometry, and the rest of Test yourself 6 is PATH (6.03, 6.04) |
+| Conventions | NSW/Australian: `$` amounts, metric units, a space between thousands for 5 or more digits (`12 500`, `$81 640`, but `2500`), "correct to 1 decimal place" |
+| Outputs | `../Yearly exam 2026/`: `Year9-5.2-Yearly-Exam-2026.pdf` and `.docx` (14 pages), `Year9-5.2-Yearly-Exam-2026-Marking-Guide.pdf` and `.docx` (26 pages) |
+
+PATH questions that are **not** used (the PATH brackets in the Test yourself pages): TY5 Q6 (5.05, negative indices),
+TY6 Q5 onwards (6.03, 6.04), TY9 Q8 (9.05, sample or census), TY9 Q10–Q11 (9.06, bias).
+TY9 Q9 (9.05, classifying data) sits outside the PATH bracket and is used for Section 1 Q1.
+
+### Questions, marks and levels
+
+Green = Foundation (green square in the textbook), Blue = Standard (blue circle). `src` is the Test yourself question
+each one is modelled on (TY9 Q4 = Test yourself 9, question 4).
+
+**Section 1: Data** (Chapter 9), 25 marks, 17 green + 8 blue
+
+| Q | Type | Marks | Level | Topic | Modelled on |
+|---|---|---|---|---|---|
+| 1 | MC | 1 | green | Classifying data | TY9 Q9 (9.05) |
+| 2 | MC | 1 | green | Shape of a distribution (dot plot) | TY9 Q6a (9.03) |
+| 3 | MC | 1 | green | Median from a stem-and-leaf plot | TY9 Q3b (9.02) |
+| 4 | MC | 1 | green | Mode from a histogram | TY9 Q4b (9.02) |
+| 5 | MC | 1 | green | Effect of an outlier | TY9 Q2c, Q3c-d (9.01, 9.02) |
+| 6–9 | Short answer | 1 each | green | Mean, median, mode, range of a list | TY9 Q1 (9.01) |
+| 10 a–d | Short answer | 4 | green | Frequency table: f × x, mean, median, range | TY9 Q4 (9.02) |
+| 11 a–c | Short answer | 2 + 1 + 1 | blue | Back-to-back stem-and-leaf plot; medians; compare | TY9 Q5 (9.02) |
+| 12 a–d | Worded | 4 | green | Wages with an outlier: mean, median, best measure | TY9 Q2 (9.01) |
+| 13 a–d | Worded | 4 | blue | Comparing two teams (back-to-back plot): means, medians, centre, range | TY9 Q7 (9.04) |
+
+**Section 2: Surface area and volume** (Chapter 10), 24 marks, 17 green + 7 blue
+
+| Q | Type | Marks | Level | Topic | Modelled on |
+|---|---|---|---|---|---|
+| 1 | MC | 1 | green | Capacity: kL to L | TY10 Q1i (10.01) |
+| 2 | MC | 1 | green | Precision and absolute error (scale) | TY10 Q2 (10.02) |
+| 3 | MC | 1 | green | Area of a parallelogram | TY10 Q6a (10.05) |
+| 4 | MC | 1 | green | Area of a kite | TY10 Q6b (10.05) |
+| 5 | MC | 1 | green | Composite area: a frame | TY10 Q5b (10.04) |
+| 6 | Short answer | 2 | green | Perimeter of a composite shape (Pythagoras) | TY10 Q4b (10.04) |
+| 7 | Short answer | 3 | green | Area: rectangle + triangle | TY10 Q5a (10.04) |
+| 8 | Short answer | 2 | blue | Surface area of an open rectangular prism | TY10 Q9b (10.07) |
+| 9 a, b | Short answer | 2 + 2 | blue | Volume and surface area of a cylinder | TY10 Q12b, Q11b (10.09, 10.08) |
+| 10 a–c | Worded | 1 + 2 + 1 | green | L-shaped lawn: perimeter, area, cost | TY10 Q4a, Q5 (10.04) |
+| 11 a | Worded | 2 | green | Water trough: area of the trapezium end | TY10 Q6d (10.05) |
+| 11 b | Worded | 1 | **blue** | Volume of the prism, *V* = *Ah* (2200 × 150) | TY10 Q15, Q14 (10.09) |
+| 11 c | Worded | 1 | **green** | Capacity: cm³ to L (1 L = 1000 cm³ given) | TY10 Q1 (10.01) |
+
+Two levels to confirm: **Q11b** is tagged blue because prism volume (10.09) is blue-only in Test yourself 10, though
+the step is a single multiplication; **Q11c** is tagged green as a one-step 10.01 conversion, though in Test yourself
+10 the same step sits inside Q14, which is blue. Both are defensible; swapping them would keep the totals (17 + 7).
+
+**Section 3: Mixed Topics (Chapters 1–8)**, 21 marks, 15 green + 6 blue
+
+| Q | Type | Marks | Level | Topic | Modelled on |
+|---|---|---|---|---|---|
+| 1 | MC | 1 | green | Substitution | TY1 Q2 (1.02) |
+| 2 | MC | 1 | green | Pythagoras’ theorem: hypotenuse (closest answer) | TY2 Q5 (2.03) |
+| 3 | MC | 1 | green | Discount and selling price | TY3 Q16 (3.06) |
+| 4 | MC | 1 | green | Index laws: multiplying terms | TY5 Q1 (5.01) |
+| 5 | MC | 1 | green | Annual salary to pay per fortnight | TY8 Q1 (8.01) |
+| 6 | Short answer | 2 | blue | Expanding and simplifying | TY1 Q7 (1.07) |
+| 7 | Short answer | 2 | green | Simple interest *I* = *Prn* | TY3 Q19 (3.07) |
+| 8 | Short answer | 2 | green | Trigonometry: finding a side | TY4 Q10 (4.05) |
+| 9 a, b | Short answer | 1 + 1 | green | Scientific notation | TY5 Q10, Q13 (5.08, 5.09) |
+| 10 a | Short answer | 1 | green | Two-step equation | TY7 Q1 (7.01) |
+| 10 b | Short answer | 1 | blue | Equation with brackets, pronumeral on both sides | TY7 Q5 (7.03) |
+| 11 a, b | Worded | 1 + 2 | green, blue | Wages: award with time-and-a-half and double time | TY8 Q2 (8.01), Q4 (8.02) |
+| 12 a–c | Worded | 1 + 1 + 1 | green, green, blue | Ladder: Pythagoras, angle, unknown in the denominator | TY2 Q8 (2.04), TY4 Q13 (4.07), Q11 (4.06) |
+
+Marks by chapter in Section 3: Ch1 3, Ch2 2, Ch3 3, Ch4 4, Ch5 3, Ch7 2, Ch8 4.
+
+## Look and layout
 
 The look copies the teacher's *2024 Yr 9 5.2 Yearly Final Exam* (a Google Docs export), in Kingscliff blue:
 
 * **Front page**: logo top left, NAME and TEACHER boxes top right, the centred lines MATHEMATICS / Year 9 5.2 /
-  Yearly Exam / 2026 (Arial 25 pt), then an *Instructions* box and a *Sections and Marks* box joined by a heavy bar
-  (Kingscliff blue instead of black). The section marks and the total are counted from the questions.
+  Yearly Exam / 2026 (Arial 25 pt, navy), then an *Instructions* box and a *Sections and Marks* box joined by a heavy
+  bar (Kingscliff blue #1d71b8 instead of black). The section marks and the total are counted from the questions.
 * **Section pages**: one bordered table per section (Cambria-style serif, 11 pt) with the template's columns
   (number 6.7 mm | Question 66 mm | Working Out 99.3 mm | Mark 12 mm): a navy title row ("Section 1: Data"), a
   light-blue *Multiple Choice:* row with the small *Mark* heading, the MC rows (question centred, options A. B. C. D.
@@ -23,6 +107,10 @@ The look copies the teacher's *2024 Yr 9 5.2 Yearly Final Exam* (a Google Docs e
   *Worded Problems:* and a final *Total /25* row. Each section starts on a new page. Rows never split across pages:
   a table that runs over continues on the next page under "Section 1: Data (continued)" and the column headings.
 * Page number bottom left (Calibri 11 pt), as in the template.
+* **Marking guide**: a cover in the front-page style (TEACHER COPY, notes for markers, sections with green and blue
+  marks, a mark-distribution table), an answer summary per section ("Section 1 answer summary – Data"), marking
+  criteria for every question and part (answer, working, where each mark is awarded, follow-through notes), then a
+  copy of the exam with the answers in red (tagged "Marking guide: answers in red").
 
 ## Files
 
@@ -31,7 +119,7 @@ The look copies the teacher's *2024 Yr 9 5.2 Yearly Final Exam* (a Google Docs e
 | `exam.js` | Front-page text, instructions, marking notes, the **brief** (marks per section and level, used for checks) and the list of sections |
 | `sections/s1-data.js` | Section 1: Data (Chapter 9) |
 | `sections/s2-sav.js` | Section 2: Surface area and volume (Chapter 10) |
-| `sections/s3-mixed.js` | Section 3: Mixed: Chapters 1-8 |
+| `sections/s3-mixed.js` | Section 3: Mixed Topics (Chapters 1–8) |
 | `lib/helpers.js` | Number formatting (`num`, `money`, `dp`, `unit`, `frac` ...) and maths helpers (`mean`, `median`, `hyp` ...) |
 | `lib/figs.js` | SVG figures drawn to scale, and table helpers |
 | `lib/model.js` | Numbers the questions, totals marks and levels, makes the table rows, checks the data against the brief |
@@ -54,17 +142,9 @@ of the exam with the **answers in red** in the working space and the right MC op
 
 ## The brief (what the checks compare against)
 
-70 marks: Section 1 Data 25 (17 green, 8 blue), Section 2 Surface area and volume 24 (17 green, 7 blue), Section 3
-Mixed 21 (15 green, 6 blue); 49 green and 21 blue overall. Every section: 5 multiple choice (1 mark each) first, then
-short answer (12, 11 and 10 marks), then 2 worded problems (4 + 4, 4 + 4, 3 + 3 marks). These numbers are in
-`exam.js` (`brief`); the build prints every difference.
-
-Questions are NEW questions in the style of the GREEN (Foundation) and BLUE (Standard) *Test yourself* questions of
-New Century Maths 9: same question types, new numbers and contexts. Never RED (Complex), nothing from PATH or
-extension. Section 3: from Chapter 6 only networks (no geometry); no surds and no exact (surd) answers; Pythagoras
-answers as rounded decimals. Give the formula in each question that needs one (`formula`); there is no formula
-sheet. NSW conventions: `$`, metric units, a space between thousands for 5 or more digits (`12 500`, `$420 000`,
-but `2500`), "correct to 1 decimal place".
+The numbers in *The exam* above are in `exam.js` (`brief`): total, green and blue marks, and per section the marks,
+the number of MC questions, the short-answer marks and the worded-problem marks. The build compares the questions with
+them and prints every difference; a correct build ends with "Layout and data checks passed."
 
 ## Writing a section file
 
@@ -174,7 +254,8 @@ Unicode for ½ ² ³ π × ÷ − ° (they stay editable in Word). Helpers in `l
 
 | Helper | Example | Result |
 |---|---|---|
-| `num(x, dp?)` | `num(12500)`, `num(3.14159, 2)`, `num(2500)` | `12 500`, `3.14`, `2500` (thin no-break space for 5+ digits; `num(x, n, { force: true })` groups 4 digits too) |
+| `num(x, dp?)` | `num(12500)`, `num(3.14159, 2)`, `num(2500)` | `12 500`, `3.14`, `2500` (a no-break space U+00A0 between groups for 5+ digits, clearly visible in Caladea/Cambria; `num(x, n, { force: true })` groups 4 digits too) |
+| `groupDec(x)` | `groupDec('0.000724')` | `0.000 724` (decimal places grouped in threes, as NSW books print them) |
 | `dp(x, n)` | `dp(41.5698, 1)`, `dp(2, 2)` | `41.6`, `2.00` |
 | `round(x, n)` | `round(1.005, 2)` | `1.01` (a number) |
 | `money(x, n?)` | `money(1640)`, `money(577.5)`, `money(420000)`, `money(12, 2)` | `$1640`, `$577.50`, `$420 000`, `$12.00` |
@@ -222,7 +303,6 @@ all of them.
 | Rhombus, kite | `rhombus({ x, y, unit, labels?: { x, y }, dims = true })`; `kite({ x, y, c, unit, labels, dims })` (diagonals dashed; lengths on measurement lines outside; `dims: false` writes them beside the diagonals) | `F.rhombus({ x: 16, y: 10, unit: 'cm' })` |
 | Circle, semicircle, quadrant, sector | `sector({ r, angle = 360, rot = 0, unit, show = 'r' \| 'd' \| '', lab?, angleLabel?, size = 34 })`; `circle(o)`, `semicircle(o)` (labels the diameter), `quadrant(o)` | `F.sector({ r: 6, angle: 120, unit: 'cm', angleLabel: '120°' })` |
 | Right-angled triangle | `rightTriangle({ base, height, unit, labels?: { base, height, hyp }, corner = 'BR' \| 'BL' \| 'TR' \| 'TL', angle?: { at: 'base' \| 'vert', label }, size = 42, minSide = 12 })` | `F.rightTriangle({ base: 12, height: 5, corner: 'BL', labels: { base: '12 m', height: '<i>h</i>' }, angle: { at: 'base', label: '23°' } })` |
-| Network | `network({ nodes: { A: [x, y], ... }, edges: [[from, to, weight?, bend?]], size = 60, maxH = 40, labelAt?: { A: 'n' \| 'ne' \| ... }, curve? })` | `F.network({ nodes: { A: [0,0], B: [4,1], C: [2,3] }, edges: [['A','B',5], ['B','C',3], ['A','C',4]] })` |
 
 For a one-off picture, `F.parts` has the building blocks (`reset`, `seg`, `poly`, `pline`, `dot`, `T`, `best`,
 `rightMark`, `arrowHead`, `svg`): call `reset()`, draw, place labels with `T(x, y, text)` or
@@ -231,13 +311,14 @@ For a one-off picture, `F.parts` has the building blocks (`reset`, `seg`, `poly`
 ## Build
 
 ```
-node build.js [--only s1,s2,s3] [--out <dir>] [--shots <dir>] [--no-docx] [--verbose] [--exam <file>]
+node build.js [--only s1,s2,s3] [--out <dir>] [--build <dir>] [--shots <dir>] [--no-docx] [--verbose] [--exam <file>]
 ```
 
 | Flag | Effect |
 |---|---|
-| `--only s1,s3` | Build only these sections (section numbers kept). Without `--out` this goes to `build/only`, so it never replaces the full exam |
+| `--only s1,s3` | Build only these sections (section numbers kept). Without `--out` this goes to `build/only-s1-s3`, so it never replaces the full exam |
 | `--out <dir>` | Where the PDFs and Word files go (default `../Yearly exam 2026`) |
+| `--build <dir>` | The build folder (HTML, `exam.json`, figure PNGs). Default: `build/` for the full build; a build with `--only` or `--out` uses its own folder (`build/only-s1-s3`, `build/out-<name>`), so builds run at the same time never overwrite each other's files |
 | `--shots <dir>` | Also save a PNG of every PDF page (`<name>-p01.png` ...) |
 | `--no-docx` | Skip the Word files (faster) |
 | `--verbose` | Also list the marking-guide notes (worked answers taller than their working space) |
@@ -270,16 +351,28 @@ Marks           total  green  blue   MC  short  worded
   working space under the minimum.
 * `gallery.js` runs the figure checks on every helper.
 
+## Typography (automatic)
+
+`lib/model.js` passes every string of the exam (questions, options, answers, working, criteria, notes, titles) through
+`typo()`, outside HTML tags: straight apostrophes become typographic ones (Pythagoras’, Mia’s, Kestrels’), and the
+space between a number and its unit becomes a no-break space (84 cm², 12 m, 330 L), so a unit never starts a new line.
+Section titles and guide headings use one colon at most: "Section 3: Mixed Topics (Chapters 1–8)", "Section 3 answer
+summary – Mixed Topics (Chapters 1–8)".
+
 ## Word files
 
 `build-docx.py` mirrors the PDF: A4, the same margins (13 mm sides, 25.4 mm top), the same front page (logo, NAME and
 TEACHER boxes, title lines, Instructions and Sections-and-Marks boxes as tables), the same section tables (navy title
 row, light-blue sub-header rows, Question | Working Out | Mark, row heights for the working space, rows that cannot
-split across pages, rows kept with the next where the PDF keeps them), and the figures as the 300 dpi PNGs at the
-same size. Text stays editable: Unicode symbols, real Word tables for frequency tables, and equation objects for
-stacked fractions. Fonts are those of the 2024 exam (Cambria, Arial, Times New Roman, Calibri). Word paginates the
-file itself: the section title row repeats at the top of each continuation page (Word cannot add "(continued)" or
-repeat a heading row from the middle of a table, so those two PDF details are not in Word).
+split across pages (`cantSplit`), rows kept with the next where the PDF keeps them), and the figures as the 300 dpi
+PNGs at the same size. Text stays editable: Unicode symbols, real Word tables for frequency tables, and equation
+objects for stacked fractions. Fonts are those of the 2024 exam (Cambria, Arial, Times New Roman, Calibri).
+
+Page breaks follow the PDF: `page.js` records where each section table (and each answer-summary table) continues on a
+new page (`exam.json` `breaks`), and the Word file starts a new table there with the title row "Section 1: Data
+(continued)" and the column heading in use. The title row of every table is a Word header row (`w:tblHeader`), so if
+an edited page ever runs over, Word repeats the title at the top of the next page. The marking criteria cards are
+paginated by Word (each card stays on one page). Both Word files have the same page count as the PDFs (14 and 26).
 
 To check a Word file: `soffice --headless --convert-to pdf --outdir /tmp/check "../Yearly exam 2026/Year9-5.2-Yearly-Exam-2026.docx"`
 and compare the pages with the PDF (LibreOffice needs its Math module to show the fractions).

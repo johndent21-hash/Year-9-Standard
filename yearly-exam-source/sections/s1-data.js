@@ -6,7 +6,7 @@
 //   Green (17): MC 1-5 (5), Q6-9 (4), Q10 (4), Q12 (4).
 //   Blue (8):   Q11 (4), Q13 (4).
 'use strict';
-const { num, dp, money, unit, list, sum, sorted, mean, median, modes, range, freqStats, expand, q } = require('../lib/helpers');
+const { num, dp, money, unit, list, nw, sum, sorted, mean, median, modes, range, freqStats, expand, q } = require('../lib/helpers');
 const F = require('../lib/figs');
 
 const NB = '\u00a0';                 // no-break space
@@ -168,9 +168,10 @@ module.exports = {
       const cum = []; freqs.reduce((c, f) => { cum.push(c + f); return c + f; }, 0);
       return {
         type: 'sa', src: 'TY9 Q4 (9.02, green)', topic: 'Frequency table: mean, median and range',
-        text: 'A Year 9 class was asked how many times each student went to the beach last week.',
+        text: 'Students were asked how many times they went to the beach last week.', // 2 lines: room for the range note
         fig: F.freqTable({ values, freqs, head: ['Visits (<i>x</i>)', 'Frequency (<i>f</i>)'], fx: 'key', total: 'key' }),
-        formula: 'Mean = total of <i>f</i> × <i>x</i> ÷ total frequency',
+        // one Note with a line break (two separate Notes push Q10 onto a page of its own)
+        formula: `Mean = total of <i>f</i> × <i>x</i> ÷ total frequency<br>${RANGE_F}`,
         parts: [
           { text: 'Complete the table.', marks: 1, level: 'green',
             answer: `<i>f</i> × <i>x</i>: ${list(st.fx)}; totals ${n} and ${st.sumFx}`,
@@ -278,7 +279,7 @@ module.exports = {
             answer: `The ${names[1]}: their mean (${dp(mT, 1)}) and median (${num(dT)}) are both higher than the ${names[0]}’ (${dp(mK, 1)} and ${num(dK)}).`,
             marking: [`${names[1]}, with a reason that compares the means or the medians`], notes: 'Follow-through from parts a and b.' },
           { text: 'Which team is more consistent? Use the range of each team to explain.', marks: 1, level: 'blue', space: 34,
-            answer: `The ${names[0]}: their range is ${rK} goals (${sK[n - 1]} − ${sK[0]}), much smaller than the ${names[1]}’ ${rT} goals (${sT[n - 1]} − ${sT[0]}).`,
+            answer: `The ${names[0]}: their range is ${rK} goals ${nw(`(${sK[n - 1]} − ${sK[0]})`)}, much smaller than the ${names[1]}’ ${rT} goals ${nw(`(${sT[n - 1]} − ${sT[0]})`)}.`,
             marking: [`${names[0]}, with both ranges (${rK} and ${rT}) used to explain`] },
         ],
       };

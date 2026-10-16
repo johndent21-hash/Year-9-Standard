@@ -12,7 +12,8 @@ function prepare() {
 }
 
 // Cut every .flow into pages. A flow holds tables (class "split": cut between rows) and blocks (kept whole).
-// Returns the page count, notes, and breaks: for each section table, the row indexes (data-ri) that start a new page.
+// Returns the page count, notes, and breaks: for each section table (and the answer summary), the row indexes (data-ri)
+// that start a new page.
 // Rows or blocks with class "kn" stay with the next one. On a continuation page a table starts again with its title
 // row (text from data-cont) and the last header row (class "rep") seen before the cut.
 function paginate() {

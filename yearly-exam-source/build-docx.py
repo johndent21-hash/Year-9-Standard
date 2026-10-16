@@ -905,21 +905,20 @@ class Builder:
 
     # ---------- marking guide pages ----------
     def summary(self):
+        """The answer summary tables, cut where the PDF starts a new page (exam.json breaks.guide.summary: row index
+        si * 1000 + ri, with ri 0 = title, 1 = column headings, 2... = answers): a table that continues on a new page
+        starts again with its title "... (continued)" and the column headings, as in the PDF."""
         doc, d = self.doc, self.d
         widths = [13, 71, 14, 20, 66]
-        for si, s in enumerate(d['summary']):
-            if si == 0:
-                tiny_para(doc, page_break=True)
-            else:
-                p = doc.add_paragraph()
-                para_fmt(p, line_exact=5)
-            t = doc.add_table(rows=0, cols=5)
-            table_setup(t, widths, pad=(1.0, 1.6))
+        breaks = set(((d.get('breaks') or {}).get('guide') or {}).get('summary', []))
+
+        def head_rows(t, s, cont=False):
+            title = s.get('title') or f"{s['heading']} – answer summary"
             row = t.add_row()
             row_props(row, 9.5, header=True)
             c = merge(row, 0, 4, widths)
             set_cell_shading(c, NAVY)
-            self.mark_text(c, f"{s['heading']} – answer summary", 13, True)
+            self.mark_text(c, f'{title} (continued)' if cont else title, 13, True)
             c.paragraphs[0].runs[0].font.color.rgb = RGBColor.from_string('FFFFFF')
             self.keep_row(row)
             row = t.add_row()
@@ -929,7 +928,25 @@ class Builder:
                 self.mark_text(row.cells[i], h, 10, True)
                 set_cell_shading(row.cells[i], TINT2)
             self.keep_row(row)
+
+        def new_table():
+            t = doc.add_table(rows=0, cols=5)
+            table_setup(t, widths, pad=(1.0, 1.6))
+            return t
+
+        for si, s in enumerate(d['summary']):
+            if si == 0 or si * 1000 in breaks:
+                tiny_para(doc, page_break=True)
+            else:
+                p = doc.add_paragraph()
+                para_fmt(p, line_exact=5)
+            t = new_table()
+            head_rows(t, s)
             for ri, r in enumerate(s['rows']):
+                if si * 1000 + 2 + ri in breaks:
+                    tiny_para(doc, page_break=True)
+                    t = new_table()
+                    head_rows(t, s, cont=True)
                 row = t.add_row()
                 row_props(row)
                 for i in range(5):
@@ -953,6 +970,10 @@ class Builder:
                 inline(p, r.get('src', ''), size=9, color='444444')
                 if ri == len(s['rows']) - 1:
                     self.keep_row(row)
+            if si * 1000 + 2 + len(s['rows']) in breaks:
+                tiny_para(doc, page_break=True)
+                t = new_table()
+                head_rows(t, s, cont=True)
             row = t.add_row()
             row_props(row, 7)
             for i in range(5):
@@ -981,7 +1002,7 @@ class Builder:
             p = doc.add_paragraph()
             para_fmt(p, align='c', before=1, after=2.5, keep_next=True)
             put(p._p.get_or_add_pPr(), el('w:shd', **{'w:val': 'clear', 'w:color': 'auto', 'w:fill': NAVY}), PPR)
-            font(p.add_run(f"{s['heading']} – marking criteria"), SERIF, 13, True, color='FFFFFF')
+            font(p.add_run(s.get('title') or f"{s['heading']} – marking criteria"), SERIF, 13, True, color='FFFFFF')
             for q in s['questions']:
                 self.crit_question(q)
 
@@ -1004,9 +1025,17 @@ class Builder:
             self.level_runs(p, lv, 10)
         font(p.add_run('    '), SERIF, 10)
         inline(p, q.get('topic', ''), size=10)
-        p2 = c.add_paragraph()
-        para_fmt(p2, align='r')
-        inline(p2, q.get('src', ''), size=9, color='333333')
+        # the source on the same line at a right tab (as in the PDF) when it fits, else on a line of its own
+        inner = widths[0] + widths[1] - 2 * 2.0
+        used_mm = 48 + 17 * len(q['levels']) + 4 + 1.85 * plain_len(q.get('topic', '')) + 1.65 * plain_len(q.get('src', '')) + 4
+        if used_mm <= inner:
+            p.paragraph_format.tab_stops.add_tab_stop(Mm(inner), WD_TAB_ALIGNMENT.RIGHT)
+            font(p.add_run('\t'), SERIF, 10)
+            inline(p, q.get('src', ''), size=9, color='333333')
+        else:
+            p2 = c.add_paragraph()
+            para_fmt(p2, align='r')
+            inline(p2, q.get('src', ''), size=9, color='333333')
         self.keep_row(row)
         multi = len(q['parts']) > 1
         for pi, part in enumerate(q['parts']):

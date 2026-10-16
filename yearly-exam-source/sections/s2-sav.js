@@ -140,7 +140,7 @@ module.exports = {
         type: 'mc', level: 'green', src: 'TY10 Q1i (10.01, green)', topic: 'Metric units: capacity (kL to L)',
         text: `A rainwater tank holds ${unit(kL, 'kL')} of water. How many litres is this?`,
         options: [unit(kL * 100, 'L'), unit(kL * 10000, 'L'), unit(L, 'L'), unit(kL / 1000, 'L')], answer: 2,
-        why: `1 kL = 1000 L, so ${num(kL)} × 1000 = ${num(L)} L. The others use × 100, × 10 000 or ÷ 1000.`,
+        why: `1 kL = 1000 L, so ${num(kL)} × 1000 = ${num(L)} L. The others use × 100, × ${num(10000)} or ÷ 1000.`,
       };
     }),
 
@@ -364,7 +364,7 @@ module.exports = {
           },
           {
             text: 'Find the volume of the trough in cm³.', marks: 1, level: 'blue', space: 36,
-            formula: `Volume of a prism: ${nw(`${it('V')} = ${it('Ah')}`)}<br>(${it('A')} = area of the end, ${it('h')} = length of the prism)`,
+            formula: `Volume of a prism: ${nw(`${it('V')} = ${it('A')} × ${it('l')}`)}<br>(${it('A')} = area of the end, ${it('l')} = length of the prism)`,
             answer: unit(V, 'cm³'),
             working: [`${it('V')} = ${num(A)} × ${len}`],
             marking: [`${num(V)} cm³`],

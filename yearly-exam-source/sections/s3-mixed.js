@@ -1,14 +1,15 @@
-// Section 3: Mixed: Chapters 1-8 (1 Algebra, 2 Pythagoras' theorem, 3 Numeracy and calculation, 4 Trigonometry,
-// 5 Indices, 6 networks only (no geometry), 7 Equations, 8 Earning money). 21 marks: 5 multiple choice (1 mark each),
-// short answer (10 marks), 2 worded problems (3 marks each). Levels: 15 green, 6 blue.
-// No surds and no exact-value answers: Pythagoras answers are rounded decimals. Nothing from PATH or extension
-// (except the one networks question, see MC 5).
+// Section 3: Mixed Topics (Chapters 1–8): 1 Algebra, 2 Pythagoras’ theorem, 3 Numeracy and calculation,
+// 4 Trigonometry, 5 Indices, 7 Equations, 8 Earning money. 21 marks: 5 multiple choice (1 mark each), short answer
+// (10 marks), 2 worded problems (3 marks each). Levels: 15 green, 6 blue.
+// No geometry, no surds and no exact-value answers: Pythagoras answers are rounded decimals. Nothing from PATH or
+// extension. Chapter 6 has no eligible questions: the brief excludes its geometry, and the rest of Test yourself 6 is
+// PATH (6.03, 6.04), so no question comes from Chapter 6.
 //
 // Every question is a NEW question in the style of a GREEN or BLUE Test yourself question (src names it).
 //   Green (15): MC 1-5 (5), Q7 (2), Q8 (2), Q9 (2), Q10a (1), Q11a (1), Q12a (1), Q12b (1).
 //   Blue (6):   Q6 (2), Q10b (1), Q11b (2), Q12c (1).
 // Marks by chapter: Ch1 3 (MC1, Q6), Ch2 2 (MC2, Q12a), Ch3 3 (MC3, Q7), Ch4 4 (Q8, Q12b, Q12c), Ch5 3 (MC4, Q9),
-//   Ch6 1 (MC5), Ch7 2 (Q10), Ch8 3 (Q11).
+//   Ch7 2 (Q10), Ch8 4 (MC5, Q11).
 'use strict';
 const { groupDec, num, dp, money, unit, frac, v, nw, round, hyp, leg, sinD, cosD, acosD, q } = require('../lib/helpers');
 const F = require('../lib/figs');
@@ -75,8 +76,8 @@ const ladderFig = ({ L, d, u = 'm', size = 40 }) => {
 
 module.exports = {
   id: 's3',
-  title: 'Mixed: Chapters 1-8',
-  short: 'Mixed: Chapters 1-8',
+  title: 'Mixed Topics (Chapters 1–8)',
+  short: 'Mixed Topics',
   questions: [
     // ================================================================ multiple choice (5 x 1 mark, all green)
 
@@ -141,24 +142,18 @@ module.exports = {
       };
     }),
 
-    // 5. Networks: sum of the degrees of the vertices (TY6 Q5)
+    // 5. Annual salary to pay per fortnight (TY8 Q1)
     q(() => {
-      const nodes = { P: [0, 1.6], Q: [2, 3.6], R: [2.6, 0], S: [5.2, 3], T: [5.6, 0.4], U: [7.8, 2.2] };
-      const edges = [['P', 'Q'], ['P', 'R'], ['Q', 'R'], ['Q', 'S'], ['R', 'S'], ['R', 'T'], ['S', 'T'], ['S', 'U']];
-      const names = Object.keys(nodes);
-      const degree = Object.fromEntries(names.map((k) => [k, edges.filter((e) => e.includes(k)).length]));
-      const total = names.reduce((s, k) => s + degree[k], 0);
-      check(total === 2 * edges.length, 'MC5: the sum of the degrees must be twice the number of edges');
-      const opts = [names.length, edges.length, 2 * names.length, total];
-      check(new Set(opts).size === 4, 'MC5 options must differ');
+      const salary = 81640;
+      const week = salary / 52, fortnight = salary / 26, half = salary / 24, month = salary / 12;
+      const opts = [week, fortnight, half, month];                         // ÷ 52, right (÷ 26), ÷ 24, ÷ 12
+      check(new Set(opts.map((x) => round(x, 2))).size === 4 && opts.every((x, i) => i === 0 || x > opts[i - 1]), 'MC5 options must differ and be in order');
       return {
-        type: 'mc', level: 'green', src: 'TY6 Q5 (6.03, green)', topic: 'Networks: degree of a vertex',
-        text: 'What is the sum of the degrees of all the vertices in this network?',
-        formula: 'the degree of a vertex is the number of edges that meet at that vertex.',
-        fig: F.network({ nodes, edges, size: 50, maxH: 26 }), figPos: 'right',
-        options: opts.map((x) => num(x)), answer: 3, optLayout: 'row',
-        why: [`Degrees: ${names.map((k) => `${k} = ${degree[k]}`).join(', ')}; sum = ${names.map((k) => degree[k]).join(' + ')} = ${total} (= 2 × ${edges.length} edges). (${names.length} is the number of vertices, ${edges.length} the number of edges, ${2 * names.length} is 2 × the number of vertices.)`,
-          'TY6 Q5 sits in a PATH section of the textbook (6.03). It is used because the brief asks for Chapter 6 networks only.'],
+        type: 'mc', level: 'green', src: 'TY8 Q1 (8.01, green)', topic: 'Salary: pay per fortnight',
+        text: `Ella is a nurse. She earns an annual salary of ${money(salary)}. How much is she paid per fortnight?`,
+        formula: '1 year = 52 weeks = 26 fortnights = 12 months',
+        options: opts.map((x) => money(x, 2)), answer: 1, optLayout: 'row',
+        why: `Pay per fortnight = ${money(salary)} ÷ 26 = ${money(fortnight, 2)}. (${money(week, 2)} is the pay per week (÷ 52), ${money(month, 2)} the pay per month (÷ 12), and ${money(half, 2)} divides by 24 instead of 26.)`,
       };
     }),
 

@@ -16,9 +16,19 @@ const floorSpace = (marks) => SPACE.floorBase + SPACE.floorPerMark * Math.max(0,
 const arr = (x) => (x === undefined || x === null || x === '' ? [] : Array.isArray(x) ? x : [x]);
 const isSvg = (x) => typeof x === 'string' && x.trim().startsWith('<svg');
 const isTable = (x) => x && typeof x === 'object' && x.kind === 'table';
+// Typography in text (never inside tags), applied to every string of the exam (questions, options, answers, working,
+// criteria, notes, titles), so the PDF and Word always agree even when a section file types it plainly:
+//   typographic apostrophes: Pythagoras' -> Pythagoras’, Mia's -> Mia’s, Kestrels' -> Kestrels’;
+//   a no-break space between a number and its unit (84 cm², 12 m, 330 L), so a unit never starts a new line.
+const UNIT_AFTER = /(\d) (?=(?:mm|cm|km|m|mL|kL|L|kg|g|min)(?:²|³)?(?![A-Za-z]))/g;
+const curly = (s) => s.split(/(<[^>]*>)/).map((t, i) => (i % 2 ? t
+  : t.replace(/([A-Za-z0-9])'(?=[A-Za-z])/g, '$1’').replace(/([A-Za-z])'(?=[\s.,;:!?)]|$)/g, '$1’').replace(UNIT_AFTER, '$1\u00a0'))).join('');
+const typo = (x) => (typeof x === 'string' ? curly(x) : Array.isArray(x) ? x.map(typo)
+  : x && typeof x === 'object' && Object.getPrototypeOf(x) === Object.prototype ? Object.fromEntries(Object.entries(x).map(([k, val]) => [k, typo(val)])) : x);
 const strip = (h) => String(h).replace(/<span class="fr"><span class="fn">(.*?)<\/span><span class="fd">(.*?)<\/span><\/span>/g, '$1/$2').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
 
-function buildModel(exam) {
+function buildModel(examIn) {
+  const exam = { ...examIn, instructions: typo(examIn.instructions), markingNotes: typo(examIn.markingNotes), sections: typo(examIn.sections) };
   const warnings = [];
   const brief = [];
   const figures = {};
@@ -195,14 +205,14 @@ function buildModel(exam) {
 
   // ---------- marking guide ----------
   const summary = sections.map((S) => ({
-    id: S.id, heading: S.heading, marks: S.marks, green: S.green, blue: S.blue,
+    id: S.id, heading: S.heading, title: `Section ${S.no} answer summary – ${S.title}`, marks: S.marks, green: S.green, blue: S.blue,
     rows: S.questions.filter((q) => q.type !== 'info').flatMap((q) => q.parts.map((p, i) => ({
       q: `${q.n}${p.label}`, first: i === 0, answer: q.type === 'mc' ? `${LETTERS[q.answer]}${isSvg(q.options[q.answer]) ? '' : `&nbsp;&nbsp;(${q.options[q.answer]})`}` : String(p.answer ?? ''),
       marks: p.marks, level: p.level, topic: q.topic || '', src: q.src || '',
     }))),
   }));
   const criteria = sections.map((S) => ({
-    id: S.id, heading: S.heading,
+    id: S.id, heading: S.heading, title: `Section ${S.no} marking criteria – ${S.title}`,
     questions: S.questions.filter((q) => q.type !== 'info').map((q) => ({
       n: q.n, ref: q.ref, type: q.type, marks: q.marks, topic: q.topic || '', src: q.src || '',
       levels: [...new Set(q.parts.map((p) => p.level))],
@@ -230,4 +240,4 @@ function autoOptLayout(options) {
   return 'stack';
 }
 
-module.exports = { buildModel, defaultSpace, floorSpace, SPACE, LETTERS, strip };
+module.exports = { buildModel, defaultSpace, floorSpace, SPACE, LETTERS, strip, typo };

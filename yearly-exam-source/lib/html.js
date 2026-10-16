@@ -116,16 +116,16 @@ function renderAll(model, { assets }) {
   const SUMCOLS = '<colgroup><col style="width:13mm"><col style="width:71mm"><col style="width:14mm"><col style="width:20mm"><col style="width:66mm"></colgroup>';
   const summaryFlow = () => `
 <div class="flow" data-flow="summary">
-${model.summary.map((s) => `<table class="sum split">${SUMCOLS}<tbody>
-  <tr class="ttl kn" data-cont="${esc(s.heading)} – answer summary (continued)"><td colspan="5">${esc(s.heading)} – answer summary</td></tr>
-  <tr class="colhdr rep kn"><td>Q</td><td>Answer</td><td>Marks</td><td>Level</td><td>Topic and source</td></tr>
-  ${s.rows.map((r, i) => `<tr class="${r.first ? 'qfirst' : ''}${i === s.rows.length - 1 ? ' kn' : ''}"><td class="c"><b>${r.q}</b></td><td>${r.answer}</td><td class="c">${r.marks}</td><td class="lvc">${lvl(r.level)}</td><td>${r.topic ? `${r.topic}<br>` : ''}<span class="src">${r.src}</span></td></tr>`).join('')}
-  <tr class="total"><td></td><td>Total</td><td class="c">${s.marks}</td><td colspan="2" class="lvsum">${s.green} green · ${s.blue} blue</td></tr>
+${model.summary.map((s, si) => `<table class="sum split">${SUMCOLS}<tbody>
+  <tr class="ttl kn" data-ri="${si * 1000}" data-cont="${esc(s.title)} (continued)"><td colspan="5">${esc(s.title)}</td></tr>
+  <tr class="colhdr rep kn" data-ri="${si * 1000 + 1}"><td>Q</td><td>Answer</td><td>Marks</td><td>Level</td><td>Topic and source</td></tr>
+  ${s.rows.map((r, i) => `<tr data-ri="${si * 1000 + 2 + i}" class="${r.first ? 'qfirst' : ''}${i === s.rows.length - 1 ? ' kn' : ''}"><td class="c"><b>${r.q}</b></td><td>${r.answer}</td><td class="c">${r.marks}</td><td class="lvc">${lvl(r.level)}</td><td>${r.topic ? `${r.topic}<br>` : ''}<span class="src">${r.src}</span></td></tr>`).join('')}
+  <tr class="total" data-ri="${si * 1000 + 2 + s.rows.length}"><td></td><td>Total</td><td class="c">${s.marks}</td><td colspan="2" class="lvsum">${s.green} green · ${s.blue} blue</td></tr>
 </tbody></table><div class="gap"></div>`).join('')}
 </div>`;
   const critFlow = () => `
 <div class="flow" data-flow="criteria" data-cont="Marking criteria (continued)">
-${model.criteria.map((s) => `<div class="blk crh kn">${esc(s.heading)} – marking criteria</div>
+${model.criteria.map((s) => `<div class="blk crh kn">${esc(s.title)}</div>
 ${s.questions.map((q) => `<div class="blk crit">
   <div class="ch"><b>Question ${q.n}</b><span>${q.marks} mark${q.marks === 1 ? '' : 's'}</span><span>${q.levels.map(lvl).join(' + ')}</span><span class="tp">${q.topic}</span><span class="src">${q.src}</span></div>
   ${q.parts.map((p) => `<div class="cp">
