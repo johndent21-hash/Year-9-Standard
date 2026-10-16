@@ -1,0 +1,179 @@
+/* Year 9 5.2 Yearly Exam 2026: the look of the 2024 exam (a Google Docs export: Cambria tables, Arial front page,
+   Calibri page numbers) in Kingscliff blue. Caladea, Liberation Sans and Carlito have the same letter widths as
+   Cambria, Arial and Calibri, so the PDF and the Word file line up. Cells stay white and text black, so it prints
+   well in black and white. Answers (class "key") only show in the marking guide. */
+:root {
+  --navy: #0f3a63;      /* section title rows: a deep shade of the logo blue */
+  --kblue: #1d71b8;     /* Kingscliff blue (logo lettering) */
+  --klight: #8aa5d6;    /* the light blue wave in the logo */
+  --maroon: #7d003e;    /* the logo tagline */
+  --tint: #dbe7f4;      /* sub-header rows */
+  --tint2: #eef4fb;     /* column headings and Total rows */
+  --rule: #1f1f1f;
+  --key: #c00000;
+  --green: #2e9b47;
+}
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+html, body { margin: 0; padding: 0; background: #fff; }
+body { font-family: Caladea, Cambria, "Liberation Serif", serif; font-size: 11pt; line-height: 1.17; color: #000; }
+p { margin: 0; }
+b { font-weight: 700; }
+sup, sub { font-size: 70%; line-height: 0; }
+.nw { white-space: nowrap; }
+
+/* stacked fraction */
+.fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 0.12em; line-height: 1.05; }
+.fr > .fn { border-bottom: 0.25mm solid currentColor; padding: 0 0.15em; }
+.fr > .fd { padding: 0 0.15em; }
+
+/* ---------- pages ---------- */
+.page { width: 210mm; height: 297mm; position: relative; overflow: hidden; break-after: page; background: #fff; }
+.content { position: absolute; top: 25.4mm; left: 13mm; width: 184mm; height: 247mm; }
+.pn { position: absolute; left: 25.4mm; top: 276.9mm; font: 11pt/4mm Carlito, Calibri, sans-serif; }
+.guidetag { position: absolute; top: 15.5mm; right: 13mm; font: 700 9pt/1 "Liberation Sans", Arial, sans-serif; color: var(--key); border: 0.3mm solid var(--key); padding: 1mm 2.2mm; border-radius: 1mm; }
+.contlabel { font: 700 13pt/1.2 Caladea, Cambria, serif; color: var(--navy); margin-bottom: 3mm; }
+
+/* ---------- front page (positions measured from the 2024 exam) ---------- */
+.front { font-family: "Liberation Sans", Arial, sans-serif; }
+.front .logo { position: absolute; left: 33.4mm; top: 45mm; width: 62.7mm; }
+.front .idbox { position: absolute; left: 108.2mm; width: 72.1mm; height: 11.3mm; border: 0.3mm solid #444; font: 11pt "Liberation Serif", "Times New Roman", serif; padding: 3.1mm 2.2mm 0; }
+.front .idbox.name { top: 48.9mm; }
+.front .idbox.teacher { top: 70.9mm; }
+.front .idbox.tc { color: var(--key); border-color: var(--key); font: 700 12pt "Liberation Sans", Arial, sans-serif; text-align: center; height: auto; padding: 2.4mm 2mm; }
+.front .idbox.tc span { display: block; font-weight: 400; font-size: 9pt; margin-top: 0.8mm; }
+.front .titles { position: absolute; left: 0; right: 0; top: 89mm; text-align: center; font-size: 25pt; line-height: 14.7mm; color: var(--navy); }
+.front .titles.g { top: 86mm; line-height: 13.4mm; }
+.front .titles .mg { color: var(--key); font-weight: 700; font-size: 22pt; }
+.front .infobox { position: absolute; left: 27.45mm; top: 153.8mm; width: 155.1mm; height: 84.7mm; border: 0.35mm solid #000; display: flex; }
+.front .infobox.g { top: 156mm; height: 73mm; }
+.front .ib-l { width: 74.8mm; padding: 3mm 2.6mm; }
+.front .ib-bar { width: 5.3mm; background: var(--kblue); }
+.front .ib-r { flex: 1; padding: 3mm 2.6mm; }
+.front h3 { margin: 0; font-size: 12pt; font-weight: 700; color: var(--navy); line-height: 1.15; }
+.front ol { margin: 8.6mm 0 0; padding-left: 12.7mm; font-size: 12pt; line-height: 1.15; }
+.front ol li { padding-left: 1.6mm; margin-bottom: 4.85mm; }
+.front .infobox.g ol { margin-top: 4mm; font-size: 10pt; padding-left: 7mm; }
+.front .infobox.g ol li { margin-bottom: 2mm; }
+.front table.sm { margin-top: 6.2mm; border-collapse: collapse; width: 100%; font-size: 11pt; }
+.front table.sm td { padding: 0 0 5.4mm; vertical-align: bottom; line-height: 1.15; }
+.front table.sm td.m { width: 19mm; }
+.front table.sm tr.tot td { font-size: 12pt; font-weight: 700; padding-top: 1.5mm; }
+.front .infobox.g table.sm { margin-top: 4mm; }
+.front .infobox.g table.sm td { padding-bottom: 3mm; }
+.front .lvl-line { font-size: 8.5pt; color: #333; margin-top: 0.6mm; }
+.front .dist { position: absolute; left: 27.45mm; width: 155.1mm; top: 235mm; }
+.front table.dt { width: 100%; border-collapse: collapse; font-size: 9pt; }
+.front table.dt td { border: 0.25mm solid var(--rule); padding: 0.9mm 1.6mm; text-align: center; white-space: nowrap; }
+.front table.dt td:first-child, .front table.dt td:last-child { text-align: left; }
+.front table.dt tr.dh td { background: var(--tint); font-weight: 700; }
+.front table.dt tr.dtot td { background: var(--tint2); font-weight: 700; }
+
+/* level markers: the textbook's green square (Foundation) and blue circle (Standard) */
+.lv { display: inline-block; width: 2.6mm; height: 2.6mm; margin-right: 1.2mm; vertical-align: -0.2mm; }
+.lv.g { background: var(--green); }
+.lv.b { background: var(--kblue); border-radius: 50%; }
+
+/* ---------- section tables (layout of the 2024 exam) ---------- */
+table.sec { width: 184mm; table-layout: fixed; border-collapse: collapse; }
+table.sec col.c-num { width: 6.7mm; }
+table.sec col.c-q { width: 66mm; }
+table.sec col.c-wk { width: 99.3mm; }
+table.sec col.c-mk { width: 12mm; }
+table.sec > tbody > tr > td { border: 0.26mm solid var(--rule); padding: 1.2mm 1.6mm; vertical-align: top; }
+table.sec > tbody > tr > td.num { text-align: center; vertical-align: middle; padding: 1mm 0.3mm; }
+table.sec > tbody > tr > td.mk { text-align: center; vertical-align: middle; }
+tr.ttl > td { background: var(--navy); color: #fff; font-weight: 700; font-size: 16pt; text-align: center; vertical-align: middle !important; height: 11.7mm; }
+tr.sub > td { background: var(--tint); font-weight: 700; text-align: center; vertical-align: middle !important; height: 9.1mm; }
+tr.sub > td.mhd { font-size: 9pt; padding: 0.5mm !important; }
+tr.colhdr > td { background: var(--tint2); font-weight: 700; text-align: center; vertical-align: middle !important; height: 9.1mm; }
+tr.total > td { background: var(--tint2); text-align: center; vertical-align: middle !important; height: 9.1mm; font-weight: 700; }
+
+/* multiple choice: question centred, options A. B. C. D. on a line beneath */
+td.mcq { text-align: center; padding: 2.6mm 3mm 3mm !important; }
+td.mcq p { margin-bottom: 1mm; }
+.opts { display: grid; margin: 3.6mm 0 0; text-align: left; column-gap: 4mm; row-gap: 1.8mm; }
+.opts.row { grid-template-columns: repeat(4, 1fr); padding: 0 4mm 0 9mm; }
+.opts.grid { grid-template-columns: 1fr 1fr; padding: 0 4mm 0 9mm; }
+.opts.stack { grid-template-columns: 1fr; padding: 0 6mm 0 18mm; }
+.opt { display: flex; align-items: baseline; gap: 1.6mm; }
+.opt .ol { flex: none; min-width: 4.6mm; }
+.opt .ot .fig { display: inline-block; vertical-align: baseline; } /* the letter sits at the foot of a figure option, as in Word */
+.mcright { display: flex; align-items: center; gap: 4mm; }
+.mcright .mcl { flex: 1; min-width: 0; }
+.mcright .mcf { flex: none; }
+
+/* short answer and worded problems */
+td.qc p, td.stemc p, td.infoc p { margin-bottom: 1.2mm; }
+td.qc p:last-child, td.stemc p:last-child { margin-bottom: 0; }
+td.infoc { text-align: center; }
+.partline { display: flex; gap: 1mm; margin: 0.6mm 0 0.6mm 0.5mm; }
+.partline .pl { flex: none; width: 5mm; }
+.formula { margin-top: 1.6mm !important; }
+td.plab { font-weight: 400; }
+td.wkc { padding: 0 !important; }
+.wk { padding: 1.2mm 2mm 1.2mm; }
+.wk .wl { display: block; }
+td.mkc { padding: 0 !important; vertical-align: top !important; }
+.mkp { display: flex; align-items: center; justify-content: center; }
+.stemright { display: flex; gap: 5mm; align-items: flex-start; }
+.stemright .stl { flex: 1; min-width: 0; }
+.stemright .stf { flex: none; }
+
+/* figures and tables inside questions */
+.figp { text-align: center; margin: 1.6mm 0; }
+.figp:last-child { margin-bottom: 0.4mm; }
+.fig { display: inline-block; line-height: 0; }
+.fig svg { max-width: 100%; height: auto; }
+td.qc .fig svg { max-width: 62.8mm; }
+.figrow { display: flex; justify-content: space-around; align-items: center; gap: 3mm; margin: 1.6mm 0; }
+.tblp { margin: 1.6mm 0; }
+table.ft { border-collapse: collapse; margin: 0 auto; font-size: 10.5pt; }
+table.ft td, table.ft th { border: 0.22mm solid #333; padding: 0.7mm 2.4mm; text-align: center; vertical-align: middle; min-width: 8mm; }
+table.ft th { background: var(--tint2); font-weight: 700; }
+table.ft tr.ft-foot td, table.ft tr.ft-foot th { font-weight: 700; }
+table.ft.left td, table.ft.left th { text-align: left; }
+table.ft td.kc { min-width: 11mm; }
+
+/* answers: hidden in the exam, red in the marking guide */
+.key { display: none; color: var(--key); }
+body.guide .key { display: block; }
+body.guide span.key, body.guide td.kc .key { display: inline; font-weight: 700; }
+.wk .key { font-size: 10pt; line-height: 1.22; margin-top: 0.4mm; }
+.wk .key p { margin: 0 0 0.5mm; }
+.wk .key p.ans { font-weight: 700; margin-top: 0.8mm; }
+body.guide .opt.right { color: var(--key); font-weight: 700; }
+body.guide .opt.right .ol { border: 0.35mm solid var(--key); border-radius: 50%; padding: 0 0.9mm; margin-left: -1.1mm; margin-top: -0.4mm; }
+
+/* ---------- marking guide: answer summary and criteria ---------- */
+table.sum { width: 184mm; table-layout: fixed; border-collapse: collapse; font-size: 10pt; }
+table.sum td { border: 0.26mm solid var(--rule); padding: 1mm 1.6mm; vertical-align: top; }
+table.sum tr.ttl td { font-size: 13pt; height: 9.5mm; }
+table.sum tr.colhdr td { height: 7mm; }
+table.sum tr.total td { height: 7mm; }
+table.sum td.c { text-align: center; }
+table.sum td.lvc { white-space: nowrap; }
+table.sum td.lvsum { text-align: left; font-weight: 400; }
+table.sum .src { color: #444; font-size: 9pt; }
+.gap { height: 5mm; }
+.crh { background: var(--navy); color: #fff; font-weight: 700; font-size: 13pt; text-align: center; padding: 2mm; border: 0.26mm solid var(--rule); margin-bottom: 2.5mm; }
+.crit { border: 0.26mm solid var(--rule); margin-bottom: 2.5mm; font-size: 10pt; }
+.crit .ch { background: var(--tint); padding: 1.2mm 2mm; display: flex; gap: 4mm; align-items: baseline; border-bottom: 0.26mm solid var(--rule); }
+.crit .ch b { font-size: 10.5pt; }
+.crit .ch .tp { flex: 1; }
+.crit .ch .src { color: #333; font-size: 9pt; text-align: right; }
+.crit .cp { display: flex; padding: 1.2mm 2mm; gap: 2mm; }
+.crit .cp + .cp { border-top: 0.2mm dashed #888; }
+.crit .cpl { flex: none; width: 5mm; font-weight: 700; }
+.crit .cpb { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.8mm; }
+.crit .cpb > div { display: flex; gap: 2mm; }
+.crit .lab { flex: none; width: 15mm; color: #444; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.03em; padding-top: 0.5mm; }
+.crit .red { color: var(--key); font-weight: 700; }
+.crit .pm { margin-left: auto; color: #333; white-space: nowrap; }
+.crit .cwk > div > div { color: var(--key); }
+.crit .cnote > div { font-style: italic; }
+
+/* ---------- figure sheet (rendered to PNG for Word) ---------- */
+body.figs { background: #fff; }
+.figsheet { padding: 4mm; }
+.figsheet .fs { display: inline-block; margin: 2mm; background: #fff; line-height: 0; }
