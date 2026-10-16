@@ -317,7 +317,7 @@ const backToBack = ({ left = [], right = [], rows, stemUnit = 10, decimals = 0, 
 //   red in the marking guide), or { text, b: true } for bold. transpose: true lays the table out sideways (the head
 //   becomes the first column). colW: column widths in mm. align: 'center' (default) or 'left'.
 const table = ({ head = [], rows = [], foot, transpose = false, colW, align = 'center', size } = {}) => {
-  let all = [head, ...rows, ...(foot ? [foot] : [])];
+  let all = [...(head.length ? [head] : []), ...rows, ...(foot ? [foot] : [])]; // no head: no empty first row
   if (transpose) all = all[0].map((_, c) => all.map((r) => r[c]));
   return { kind: 'table', rows: all, headRow: !transpose && head.length > 0, headCol: transpose, footRow: !!foot && !transpose, colW, align, size };
 };

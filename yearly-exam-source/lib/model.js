@@ -50,7 +50,7 @@ function buildModel(exam) {
     if (isSvg(t) || isTable(t)) throw new Error('Put figures and tables in `fig`, not in `text`.');
     return { t: 'p', html: String(t), cls };
   });
-  const formulaBlocks = (formula) => arr(formula).map((f) => ({ t: 'p', cls: 'formula', html: `Note: ${f}` }));
+  const formulaBlocks = (formula, extra = '') => arr(formula).map((f) => ({ t: 'p', cls: `formula${extra ? ` ${extra}` : ''}`, html: `Note: ${f}` }));
 
   // ---------- marking ----------
   const markingList = (p, ref) => {
@@ -146,7 +146,7 @@ function buildModel(exam) {
       if (q.type === 'mc') {
         rows.push({
           k: 'mc', n: q.n, ref: q.ref, marks: q.marks,
-          stem: paras(q.text, 'c'), fig: figBlocks(q.fig, id), figPos: q.figPos || 'below',
+          stem: [...paras(q.text, 'c'), ...formulaBlocks(q.formula, 'c')], fig: figBlocks(q.fig, id), figPos: q.figPos || 'below', // formula notes centred under the question
           options: q.options.map((o, i) => (isSvg(o) ? { fig: figBlock(o, `${id}-opt${LETTERS[i]}`) } : { html: String(o) })),
           optLayout: q.optLayout || autoOptLayout(q.options), answer: q.answer,
         });

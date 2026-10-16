@@ -4,7 +4,10 @@
 // NSW / Australian conventions: $ amounts, metric units, a space between thousands for numbers of 5 or more digits
 // (12 500, $420 000; but 2500 and $1640), "correct to 1 decimal place".
 
-const NNBSP = ' '; // narrow no-break space: the thousands separator (never breaks across lines)
+// The thousands separator (12 500, $420 000, 0.000 724). A no-break space (U+00A0): it never breaks across lines, and
+// it is about 0.2 em wide in Caladea/Cambria. (The narrow no-break space U+202F is only 0.11 em in Caladea, so
+// '$11 540' looked like '$11540' in the PDF.) The name NNBSP is kept for section files that import it.
+const NNBSP = '\u00a0';
 const NBSP = ' ';  // no-break space: between a number and its unit
 
 // Group the digits of an integer string in threes. Numbers with 4 digits are not grouped unless force is true.
@@ -35,6 +38,10 @@ const num = (x, n, opts = {}) => {
   const out = group(i, opts.force) + (d ? `.${d}` : '');
   return neg && +s !== 0 ? (opts.minus === false ? '-' : '−') + out : out;
 };
+
+// Group the decimal places in threes, as NSW textbooks print small numbers: groupDec('0.000724') -> '0.000 724'.
+// Takes a number or a numeric string (a string keeps its digits exactly as written).
+const groupDec = (x) => { const [i, d] = String(x).split('.'); return d ? `${i}.${d.replace(/(\d{3})(?=\d)/g, `$1${NNBSP}`)}` : i; };
 
 // dp(x, n): exactly n decimal places, grouped: dp(41.5698, 1) -> "41.6", dp(2, 2) -> "2.00".
 const dp = (x, n) => num(x, n);
@@ -131,7 +138,7 @@ const dms = (d) => { let D = Math.floor(d), M = Math.round((d - D) * 60); if (M 
 const q = (f) => f();
 
 module.exports = {
-  NNBSP, NBSP, group, round, num, dp, money, unit, U, pi, PI, TIMES, DIV, MINUS, HALF, DEG, v, nw, frac, pow, deg, list, b,
+  NNBSP, NBSP, group, groupDec, round, num, dp, money, unit, U, pi, PI, TIMES, DIV, MINUS, HALF, DEG, v, nw, frac, pow, deg, list, b,
   sum, sorted, mean, median, modes, mode, range, quartiles, expand, freqStats, counts,
   hyp, leg, rad, sinD, cosD, tanD, asinD, acosD, atanD, dms, q,
 };

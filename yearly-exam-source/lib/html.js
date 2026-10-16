@@ -46,17 +46,17 @@ function renderAll(model, { assets }) {
 
   // ---------- section table rows ----------
   const COLS = '<colgroup><col class="c-num"><col class="c-q"><col class="c-wk"><col class="c-mk"></colgroup>';
-  const row = (r) => {
+  const row = (r, ri) => {
     const kn = r.kn ? ' kn' : '';
-    const ref = r.ref ? ` data-ref="${r.ref}"` : '';
+    const ref = `${r.ref ? ` data-ref="${r.ref}"` : ''} data-ri="${ri}"`;
     switch (r.k) {
-      case 'title': return `<tr class="ttl${kn}" data-cont="${esc(r.cont)}"><td class="num"></td><td colspan="3">${esc(r.text)}</td></tr>`;
+      case 'title': return `<tr class="ttl${kn}"${ref} data-cont="${esc(r.cont)}"><td class="num"></td><td colspan="3">${esc(r.text)}</td></tr>`;
       case 'sub': return r.markHead
-        ? `<tr class="sub rep${kn}"><td class="num"></td><td colspan="2">${r.text}</td><td class="mhd">${r.markHead}</td></tr>`
-        : `<tr class="sub${kn}"><td class="num"></td><td colspan="3">${r.text}</td></tr>`;
-      case 'colhdr': return `<tr class="colhdr rep${kn}"><td class="num"></td><td>Question</td><td>Working Out</td><td>Mark</td></tr>`;
+        ? `<tr class="sub rep${kn}"${ref}><td class="num"></td><td colspan="2">${r.text}</td><td class="mhd">${r.markHead}</td></tr>`
+        : `<tr class="sub${kn}"${ref}><td class="num"></td><td colspan="3">${r.text}</td></tr>`;
+      case 'colhdr': return `<tr class="colhdr rep${kn}"${ref}><td class="num"></td><td>Question</td><td>Working Out</td><td>Mark</td></tr>`;
       case 'info': return `<tr class="info${kn}"${ref}><td class="num"></td><td colspan="2" class="infoc">${blocks(r.q)}</td><td class="mk"></td></tr>`;
-      case 'total': return `<tr class="total"><td class="num"></td><td colspan="2">Total</td><td class="mk">/${r.marks}</td></tr>`;
+      case 'total': return `<tr class="total"${ref}><td class="num"></td><td colspan="2">Total</td><td class="mk">/${r.marks}</td></tr>`;
       case 'mc': {
         const opts = `<div class="opts ${r.optLayout}">${r.options.map((o, i) => `<div class="opt${i === r.answer ? ' right' : ''}"><span class="ol">${LETTERS[i]}.</span><span class="ot">${o.fig ? figHtml(o.fig) : o.html}</span></div>`).join('')}</div>`;
         const stem = blocks(r.stem);
@@ -83,7 +83,7 @@ function renderAll(model, { assets }) {
   };
   const sectionFlow = (S, chrome = '') => `
 <div class="flow" data-flow="${S.id}"${chrome ? ` data-chrome="${esc(chrome)}"` : ''}>
-  <table class="sec split">${COLS}<tbody>${S.rows.map(row).join('\n')}</tbody></table>
+  <table class="sec split">${COLS}<tbody>${S.rows.map((r, i) => row(r, i)).join('\n')}</tbody></table>
 </div>`;
 
   // ---------- front page ----------
@@ -117,7 +117,7 @@ function renderAll(model, { assets }) {
   const summaryFlow = () => `
 <div class="flow" data-flow="summary">
 ${model.summary.map((s) => `<table class="sum split">${SUMCOLS}<tbody>
-  <tr class="ttl kn" data-cont="${esc(s.heading)}: answer summary (continued)"><td colspan="5">${esc(s.heading)}: answer summary</td></tr>
+  <tr class="ttl kn" data-cont="${esc(s.heading)} – answer summary (continued)"><td colspan="5">${esc(s.heading)} – answer summary</td></tr>
   <tr class="colhdr rep kn"><td>Q</td><td>Answer</td><td>Marks</td><td>Level</td><td>Topic and source</td></tr>
   ${s.rows.map((r, i) => `<tr class="${r.first ? 'qfirst' : ''}${i === s.rows.length - 1 ? ' kn' : ''}"><td class="c"><b>${r.q}</b></td><td>${r.answer}</td><td class="c">${r.marks}</td><td class="lvc">${lvl(r.level)}</td><td>${r.topic ? `${r.topic}<br>` : ''}<span class="src">${r.src}</span></td></tr>`).join('')}
   <tr class="total"><td></td><td>Total</td><td class="c">${s.marks}</td><td colspan="2" class="lvsum">${s.green} green · ${s.blue} blue</td></tr>
@@ -125,7 +125,7 @@ ${model.summary.map((s) => `<table class="sum split">${SUMCOLS}<tbody>
 </div>`;
   const critFlow = () => `
 <div class="flow" data-flow="criteria" data-cont="Marking criteria (continued)">
-${model.criteria.map((s) => `<div class="blk crh kn">${esc(s.heading)}: marking criteria</div>
+${model.criteria.map((s) => `<div class="blk crh kn">${esc(s.heading)} – marking criteria</div>
 ${s.questions.map((q) => `<div class="blk crit">
   <div class="ch"><b>Question ${q.n}</b><span>${q.marks} mark${q.marks === 1 ? '' : 's'}</span><span>${q.levels.map(lvl).join(' + ')}</span><span class="tp">${q.topic}</span><span class="src">${q.src}</span></div>
   ${q.parts.map((p) => `<div class="cp">

@@ -5,8 +5,11 @@
 
 build.js runs this after it has written exam.json and the figure PNGs (build/figs, 300 dpi). The Word files mirror
 the PDF: A4, the same margins, the same front page (logo, NAME and TEACHER boxes, title lines, Instructions and
-Sections-and-Marks boxes), and the same section tables (navy title row repeated on every page, light-blue sub-header
-rows, Question | Working Out | Mark columns, row heights for working space, rows that never split across pages).
+Sections-and-Marks boxes), and the same section tables (navy title row, light-blue sub-header rows, Question |
+Working Out | Mark columns, row heights for working space, rows that never split across pages). Each section table is
+cut where the PDF starts a new page (exam.json "breaks"): the next page starts a new table under the title
+"Section 1: Data (continued)" and the current column heading, exactly as in the PDF. Those two rows are Word header
+rows, so if an edited page ever runs over, Word repeats them on the extra page.
 Text stays editable: Unicode for ½ ² ³ π × ÷, real Word tables, and equation objects for stacked fractions.
 Fonts are Cambria (tables), Arial (front page), Times New Roman (name boxes) and Calibri (page numbers): the fonts of
 the 2024 exam. LibreOffice shows them with Caladea, Liberation Sans/Serif and Carlito, which have the same widths.
@@ -43,7 +46,8 @@ LETTERS = 'ABCD'
 PAGE_W, PAGE_H = 210, 297
 M_LEFT = M_RIGHT = 13
 M_TOP = 25.4
-M_BOTTOM = 24.6
+M_BOTTOM = 21.0                      # the PDF's content ends 24.6 mm from the bottom; 3.6 mm more lets Word's rows run a
+                                     # little taller than the PDF's without pushing a row onto an extra page
 TABLE_W = 184
 COLS = [6.7, 66, 99.3, 12]           # number | question | working out | mark
 CELL_PAD_X, CELL_PAD_Y = 1.6, 1.2
@@ -260,7 +264,9 @@ SUPS = str.maketrans('0123456789-+', '⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺')
 def omml_run(text, italic, color, size):
     t = (text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
     col = f'<w:color w:val="{color}"/>' if color else ''
-    return (f'<m:r><m:rPr><m:sty m:val="{"i" if italic else "p"}"/></m:rPr>'
+    # upright text (opp, hyp, numbers) is "normal text" (m:nor): Word and LibreOffice both keep it upright; m:sty p alone
+    # is shown in italics by LibreOffice
+    return (f'<m:r><m:rPr>{"<m:sty m:val=\"i\"/>" if italic else "<m:nor/>"}</m:rPr>'
             f'<w:rPr><w:rFonts w:ascii="Cambria Math" w:hAnsi="Cambria Math"/>{col}<w:sz w:val="{int(size * 2)}"/></w:rPr>'
             f'<m:t xml:space="preserve">{t}</m:t></m:r>')
 
@@ -314,6 +320,8 @@ class Inline(HTMLParser):
                 self.part = 'den'
             elif 'key' in cls:
                 d = {'color': RED, 'bold': True}
+            elif 'nw' in cls:
+                d = {'nw': True}
         self.stack.append((tag, d))
 
     def handle_startendtag(self, tag, attrs):
@@ -339,6 +347,8 @@ class Inline(HTMLParser):
             txt = data.translate(SUPS) if s.get('sup') else data
             self.frac[self.part].append((txt, bool(s.get('italic'))))
             return
+        if s.get('nw'):  # nw(): keep on one line, as white-space: nowrap does in the PDF
+            data = data.replace(' ', '\u00a0')
         r = self.p.add_run(data)
         font(r, s.get('font', SERIF), s.get('size', 11), s.get('bold', False), s.get('italic', False), s.get('color'), s.get('sup', False), s.get('sub', False))
 
@@ -572,7 +582,7 @@ class Builder:
                     para_fmt(p, align='l', after=0.5, before=0.8 if 'ans' in cls else 0, keep_next=keep)
                     inline(p, b['html'], size=10, color=RED, bold='ans' in cls)
                 else:
-                    para_fmt(p, align=al, before=1.6 if 'formula' in cls else 0, after=1.2, keep_next=keep)
+                    para_fmt(p, align=al, before=1.6 if 'formula' in cls and 'c' not in cls else 0, after=1.2, keep_next=keep)
                     inline(p, b['html'], size=size)
             elif t == 'fig':
                 p = next_para(cell, used)
@@ -668,16 +678,34 @@ class Builder:
 
     # ---------- section tables ----------
     def section(self, S, first):
+        """One table per PDF page: where the PDF continues a section on a new page, Word does too, and the new table
+        starts with the title "... (continued)" and the column heading in use (Multiple Choice | Mark, or
+        Question | Working Out | Mark), as page.js does for the PDF."""
         doc = self.doc
         if first is False:
             tiny_para(doc, page_break=True)
+        rows = S['rows']
+        breaks = set(((self.d.get('breaks') or {}).get('guide' if self.guide else 'exam') or {}).get(S['id'], []))
+        title = rows[0] if rows and rows[0]['k'] == 'title' else None
         t = doc.add_table(rows=0, cols=4)
         table_setup(t, COLS)
-        for r in S['rows']:
+        last_rep = None
+        for ri, r in enumerate(rows):
+            if ri in breaks and ri > 0:
+                tiny_para(doc, page_break=True)
+                t = doc.add_table(rows=0, cols=4)
+                table_setup(t, COLS)
+                if title and r['k'] != 'title':
+                    self.row(t, {**title, 'text': title.get('cont') or title['text'], 'kn': True}, header=True)
+                    if last_rep and not r.get('rep') and r['k'] != 'sub':
+                        self.row(t, {**last_rep, 'kn': True}, header=True)
             self.row(t, r)
+            if r.get('rep'):
+                last_rep = r
         return t
 
-    def row(self, t, r):
+    def row(self, t, r, header=False):
+        """header: a Word header row (repeated at the top of the page if the table runs over)."""
         k = r['k']
         row = t.add_row()
         for i, c in enumerate(row.cells):
@@ -693,7 +721,7 @@ class Builder:
             self.mark_text(c, r['text'], 16, True)
             c.paragraphs[0].runs[0].font.color.rgb = RGBColor.from_string('FFFFFF')
         elif k == 'sub':
-            row_props(row, 9.1)
+            row_props(row, 9.1, header=header)
             if r.get('markHead'):
                 c = merge(row, 1, 2)
                 self.mark_text(c, r['text'], 11, True)
@@ -708,7 +736,7 @@ class Builder:
             for x in cells:
                 set_cell_shading(x, TINT)
         elif k == 'colhdr':
-            row_props(row, 9.1)
+            row_props(row, 9.1, header=header)
             for i, txt in enumerate(['', 'Question', 'Working Out', 'Mark']):
                 self.mark_text(row.cells[i], txt, 11, True)
                 set_cell_shading(row.cells[i], TINT2)
@@ -891,7 +919,7 @@ class Builder:
             row_props(row, 9.5, header=True)
             c = merge(row, 0, 4, widths)
             set_cell_shading(c, NAVY)
-            self.mark_text(c, f"{s['heading']}: answer summary", 13, True)
+            self.mark_text(c, f"{s['heading']} – answer summary", 13, True)
             c.paragraphs[0].runs[0].font.color.rgb = RGBColor.from_string('FFFFFF')
             self.keep_row(row)
             row = t.add_row()
@@ -953,7 +981,7 @@ class Builder:
             p = doc.add_paragraph()
             para_fmt(p, align='c', before=1, after=2.5, keep_next=True)
             put(p._p.get_or_add_pPr(), el('w:shd', **{'w:val': 'clear', 'w:color': 'auto', 'w:fill': NAVY}), PPR)
-            font(p.add_run(f"{s['heading']}: marking criteria"), SERIF, 13, True, color='FFFFFF')
+            font(p.add_run(f"{s['heading']} – marking criteria"), SERIF, 13, True, color='FFFFFF')
             for q in s['questions']:
                 self.crit_question(q)
 

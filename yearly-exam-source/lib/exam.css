@@ -92,6 +92,7 @@ tr.total > td { background: var(--tint2); text-align: center; vertical-align: mi
 /* multiple choice: question centred, options A. B. C. D. on a line beneath */
 td.mcq { text-align: center; padding: 2.6mm 3mm 3mm !important; }
 td.mcq p { margin-bottom: 1mm; }
+td.mcq p.formula { margin-top: 0 !important; } /* MC formula notes sit right under the question, as in the 2024 exam */
 .opts { display: grid; margin: 3.6mm 0 0; text-align: left; column-gap: 4mm; row-gap: 1.8mm; }
 .opts.row { grid-template-columns: repeat(4, 1fr); padding: 0 4mm 0 9mm; }
 .opts.grid { grid-template-columns: 1fr 1fr; padding: 0 4mm 0 9mm; }
@@ -160,7 +161,7 @@ table.sum .src { color: #444; font-size: 9pt; }
 .crit { border: 0.26mm solid var(--rule); margin-bottom: 2.5mm; font-size: 10pt; }
 .crit .ch { background: var(--tint); padding: 1.2mm 2mm; display: flex; gap: 4mm; align-items: baseline; border-bottom: 0.26mm solid var(--rule); }
 .crit .ch b { font-size: 10.5pt; }
-.crit .ch .tp { flex: 1; }
+.crit .ch .tp { flex: 1 1 auto; min-width: 62mm; } /* the topic keeps its width; a long source wraps instead */
 .crit .ch .src { color: #333; font-size: 9pt; text-align: right; }
 .crit .cp { display: flex; padding: 1.2mm 2mm; gap: 2mm; }
 .crit .cp + .cp { border-top: 0.2mm dashed #888; }

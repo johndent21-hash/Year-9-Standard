@@ -1,12 +1,14 @@
 // Builds the Year 9 5.2 Yearly Exam 2026 and its marking guide.
 //
-//   node build.js [--only s1,s2,s3] [--out <dir>] [--shots <dir>] [--no-docx] [--verbose] [--exam <file>]
+//   node build.js [--only s1,s2,s3] [--out <dir>] [--build <dir>] [--shots <dir>] [--no-docx] [--verbose] [--exam <file>]
 //
 // Writes to --out (default: ../Yearly exam 2026):
 //   Year9-5.2-Yearly-Exam-2026.pdf, Year9-5.2-Yearly-Exam-2026-Marking-Guide.pdf,
 //   Year9-5.2-Yearly-Exam-2026.docx, Year9-5.2-Yearly-Exam-2026-Marking-Guide.docx (unless --no-docx)
-// and to build/: exam.json (all questions, computed answers, totals, levels), figs/*.png (every figure at 300 dpi,
-// used by Word), and the HTML pages. --shots <dir> saves a PNG of every PDF page. Layout checks print warnings.
+// and to the build folder: exam.json (all questions, computed answers, totals, levels, page breaks), figs/*.png (every
+// figure at 300 dpi, used by Word), and the HTML pages. The full build uses build/; a build with --only or --out uses
+// its own folder (build/only-s1-s2, build/out-<name>, or --build <dir>), so builds run at the same time never
+// overwrite each other's figures or exam.json. --shots <dir> saves a PNG of every PDF page. Layout checks print warnings.
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -16,13 +18,17 @@ const { renderAll } = require('./lib/html');
 const pageCode = require('./lib/page');
 
 const ROOT = __dirname;
-const BUILD = path.join(ROOT, 'build');
 const args = process.argv.slice(2);
 const opt = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : undefined; };
 const flag = (name) => args.includes(name);
 const ONLY = opt('--only') ? opt('--only').split(',').map((s) => s.trim()) : null;
-// a partial build (--only) goes to build/only unless --out is given, so it never replaces the full exam
-const OUT = path.resolve(opt('--out') || (ONLY ? path.join(BUILD, 'only') : path.join(ROOT, '..', 'Yearly exam 2026')));
+// The build folder (HTML, figure PNGs, exam.json): build/ for the full build; a partial build (--only) or a build to
+// another --out folder gets its own folder, so parallel builds never overwrite each other's files.
+const safe = (s) => s.replace(/[^A-Za-z0-9._-]+/g, '-');
+const BUILD = path.resolve(opt('--build') || (ONLY ? path.join(ROOT, 'build', `only-${safe(ONLY.join('-'))}`)
+  : opt('--out') ? path.join(ROOT, 'build', `out-${safe(path.basename(path.resolve(opt('--out'))))}`) : path.join(ROOT, 'build')));
+// a partial build (--only) writes its PDFs into its build folder unless --out is given, so it never replaces the full exam
+const OUT = path.resolve(opt('--out') || (ONLY ? BUILD : path.join(ROOT, '..', 'Yearly exam 2026')));
 const SHOTS = opt('--shots') ? path.resolve(opt('--shots')) : null;
 const VERBOSE = flag('--verbose');
 
@@ -43,16 +49,17 @@ const loadPlaywright = () => {
   fs.mkdirSync(path.join(BUILD, 'figs'), { recursive: true });
   for (const f of fs.readdirSync(path.join(BUILD, 'figs'))) fs.unlinkSync(path.join(BUILD, 'figs', f));
 
-  const { examHtml, guideHtml, figsHtml } = renderAll(model, { assets: '../assets' });
+  const { examHtml, guideHtml, figsHtml } = renderAll(model, { assets: path.relative(BUILD, path.join(ROOT, 'assets')).split(path.sep).join('/') });
   const jobs = [
-    { name: base, file: 'exam.html', html: examHtml },
-    { name: `${base}-Marking-Guide`, file: 'guide.html', html: guideHtml },
+    { key: 'exam', name: base, file: 'exam.html', html: examHtml },
+    { key: 'guide', name: `${base}-Marking-Guide`, file: 'guide.html', html: guideHtml },
   ];
 
   const { chromium } = loadPlaywright();
   const browser = await chromium.launch();
   const layout = [];
   const pagesOut = {};
+  const breaks = {}; // where each section table continues on a new page, per document (Word splits its tables there)
   for (const job of jobs) {
     const htmlPath = path.join(BUILD, job.file);
     fs.writeFileSync(htmlPath, job.html);
@@ -66,6 +73,7 @@ const loadPlaywright = () => {
     res.forEach((r) => layout.push(`${job.name}: ${r}`));
     await page.pdf({ path: path.join(OUT, `${job.name}.pdf`), format: 'A4', printBackground: true, preferCSSPageSize: true });
     pagesOut[job.name] = pg.pages;
+    breaks[job.key] = pg.breaks;
     if (SHOTS) {
       fs.mkdirSync(SHOTS, { recursive: true });
       const els = await page.$$('.page');
@@ -91,7 +99,7 @@ const loadPlaywright = () => {
   await browser.close();
 
   // exam.json: everything the Word builder (and anyone checking the exam) needs
-  const json = { ...model, generated: new Date().toISOString(), files: { exam: base, guide: `${base}-Marking-Guide` }, logo: path.join(ROOT, 'assets', 'kingscliff-logo.png'), partial: !!ONLY };
+  const json = { ...model, generated: new Date().toISOString(), files: { exam: base, guide: `${base}-Marking-Guide` }, logo: path.join(ROOT, 'assets', 'kingscliff-logo.png'), partial: !!ONLY, breaks };
   // the question data without the SVG code (figures are in build/figs and listed under "figures")
   const noSvg = (x) => (typeof x === 'string' && x.trim().startsWith('<svg') ? '[figure]' : Array.isArray(x) ? x.map(noSvg)
     : x && typeof x === 'object' ? Object.fromEntries(Object.entries(x).map(([k, v]) => [k, noSvg(v)])) : x);
@@ -116,7 +124,8 @@ const loadPlaywright = () => {
 
   console.log(`\nWrote to ${OUT}:`);
   jobs.forEach((j) => console.log(`  ${j.name}.pdf (${pagesOut[j.name]} pages)${flag('--no-docx') ? '' : `, ${j.name}.docx`}`));
-  console.log(`  build/exam.json, ${Object.keys(model.figures).length} figure PNG(s) in build/figs${ONLY ? `  [partial build: ${ONLY.join(', ')}]` : ''}`);
+  const rel = path.relative(ROOT, BUILD) || '.';
+  console.log(`  ${rel}/exam.json, ${Object.keys(model.figures).length} figure PNG(s) in ${rel}/figs${ONLY ? `  [partial build: ${ONLY.join(', ')}]` : ''}`);
   console.log('\nMarks           total  green  blue   MC  short  worded');
   model.sections.forEach((S) => console.log(`  Section ${S.no}      ${String(S.marks).padStart(3)}    ${String(S.green).padStart(3)}   ${String(S.blue).padStart(3)}  ${String(S.groups.mc.marks).padStart(3)}    ${String(S.groups.sa.marks).padStart(3)}    ${S.groups.worded.each.join('+') || '0'}`));
   console.log(`  Overall        ${String(model.total).padStart(3)}    ${String(model.green).padStart(3)}   ${String(model.blue).padStart(3)}   (brief: ${model.brief.total} = ${model.brief.green} green + ${model.brief.blue} blue)`);

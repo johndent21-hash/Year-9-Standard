@@ -12,10 +12,12 @@ function prepare() {
 }
 
 // Cut every .flow into pages. A flow holds tables (class "split": cut between rows) and blocks (kept whole).
+// Returns the page count, notes, and breaks: for each section table, the row indexes (data-ri) that start a new page.
 // Rows or blocks with class "kn" stay with the next one. On a continuation page a table starts again with its title
 // row (text from data-cont) and the last header row (class "rep") seen before the cut.
 function paginate() {
   const notes = [];
+  const breaks = {}; // section id -> indexes of the rows that start a continuation page (build-docx.py splits the Word tables there)
   const flows = [...document.querySelectorAll('.flow')];
   for (const flow of flows) {
     let content = null;
@@ -69,6 +71,7 @@ function paginate() {
             if (!tb.rows.length) tb.parentNode.remove();
             newPage();
             tb = shell();
+            if (grp[0].dataset.ri !== undefined) (breaks[flow.dataset.flow] = breaks[flow.dataset.flow] || []).push(+grp[0].dataset.ri);
             const startsOwn = grp[0].classList.contains('ttl');
             if (title && !startsOwn) {
               const t = title.cloneNode(true);
@@ -99,7 +102,7 @@ function paginate() {
   }
   const pages = [...document.querySelectorAll('.page')];
   pages.forEach((p, i) => p.insertAdjacentHTML('beforeend', `<div class="pn">${i + 1}</div>`));
-  return { pages: pages.length, notes };
+  return { pages: pages.length, notes, breaks };
 }
 
 // Layout checks. Returns a list of warnings (strings).
