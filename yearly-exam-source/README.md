@@ -18,14 +18,14 @@ node gallery.js                    # build/figure-gallery.pdf: every figure help
 |---|---|
 | Course | Year 9 5.2 (Stage 5.2), New Century Maths 9 (2024 edition) |
 | Time | 5 minutes reading time, 90 minutes working time. Calculator permitted. No formula sheet: each question that needs a formula gives it as "Note: ..." (as the 2024 exam did) |
-| Marks | **70**: Section 1 Data **25**, Section 2 Surface area and volume **24**, Section 3 Mixed Topics (Chapters 1–8) **21** |
-| Chapters | 49 marks (70%) from Chapter 9 (Analysing data) and Chapter 10 (Surface area and volume); 21 marks (30%) from Chapters 1–8; nothing from Chapters 11–13 |
-| Levels | **49 green** (Foundation, 70%) and **21 blue** (Standard, 30%): Section 1 17 + 8, Section 2 17 + 7, Section 3 15 + 6 |
-| Structure | Every section: 5 multiple-choice questions (1 mark each) first; then short-answer calculation questions (12, 11 and 10 marks); then 2 worded (real-life, multi-step) problems (4 + 4, 4 + 4 and 3 + 3 marks) |
+| Marks | **72**: Section 1 Data **17**, Section 2 Surface area and volume **22**, Section 3 Mixed Topics (Chapters 1–8) **33**. A part that takes 2 steps is worth 2 marks, 3 steps 3 marks (teacher's rule, 2026 edit) |
+| Chapters | 39 marks from Chapter 9 (Analysing data) and Chapter 10 (Surface area and volume); 33 marks from Chapters 1–8; nothing from Chapters 11–13 |
+| Levels | **49 green** (Foundation) and **23 blue** (Standard): Section 1 11 + 6, Section 2 12 + 10, Section 3 26 + 7 |
+| Structure | Every section: multiple-choice questions (4, 4 and 5, 1 mark each) first; then short-answer calculation questions (3, 8 and 18 marks); then worded (real-life, multi-step) problems (4 + 6, 5 + 5 and 3 + 3 + 4 marks) |
 | Source | The *Test yourself* pages of New Century Maths 9 (chapters 1–13). Every question is a NEW question in the style of a GREEN (Foundation, green square) or BLUE (Standard, blue circle) Test yourself question: the same question type with new numbers and contexts. Never RED (Complex); nothing from PATH or extension sections |
 | Section 3 | Covers Chapters 1, 2, 3, 4, 5, 7 and 8. No geometry, no surds and no exact (surd) answers: Pythagoras answers are rounded decimals. Chapter 6 has no question: the brief excludes its geometry, and the rest of Test yourself 6 is PATH (6.03, 6.04) |
 | Conventions | NSW/Australian: `$` amounts, metric units, a space between thousands for 5 or more digits (`12 500`, `$81 640`, but `2500`), "correct to 1 decimal place" |
-| Outputs | `../Yearly exam 2026/`: `Year9-5.2-Yearly-Exam-2026.pdf` and `.docx` (14 pages), `Year9-5.2-Yearly-Exam-2026-Marking-Guide.pdf` and `.docx` (26 pages) |
+| Outputs | `../Yearly exam 2026/`: `Year9-5.2-Yearly-Exam-2026.pdf` and `.docx` (12 pages), `Year9-5.2-Yearly-Exam-2026-Marking-Guide.pdf` and `.docx` (22 pages) |
 
 PATH questions that are **not** used (the PATH brackets in the Test yourself pages): TY5 Q6 (5.05, negative indices),
 TY6 Q5 onwards (6.03, 6.04), TY9 Q8 (9.05, sample or census), TY9 Q10–Q11 (9.06, bias).
@@ -35,6 +35,10 @@ TY9 Q9 (9.05, classifying data) sits outside the PATH bracket and is used for Se
 
 Green = Foundation (green square in the textbook), Blue = Standard (blue circle). `src` is the Test yourself question
 each one is modelled on (TY9 Q4 = Test yourself 9, question 4).
+
+> **2026 edit (October):** the per-section tables below describe the first version (70 marks). The current questions,
+> marks and levels are listed in the header comment of each section file and in `../yearly-exam-source/HANDOFF.md`.
+> Update these tables once the teacher approves the new version.
 
 **Section 1: Data** (Chapter 9), 25 marks, 17 green + 8 blue
 

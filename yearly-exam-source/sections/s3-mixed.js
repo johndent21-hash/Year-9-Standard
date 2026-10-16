@@ -1,17 +1,20 @@
 // Section 3: Mixed Topics (Chapters 1–8): 1 Algebra, 2 Pythagoras’ theorem, 3 Numeracy and calculation,
-// 4 Trigonometry, 5 Indices, 7 Equations, 8 Earning money. 21 marks: 5 multiple choice (1 mark each), short answer
-// (10 marks), 2 worded problems (3 marks each). Levels: 15 green, 6 blue.
+// 4 Trigonometry, 5 Indices, 7 Equations, 8 Earning money. 33 marks: 5 multiple choice (1 mark each), short answer
+// (18 marks), 3 worded problems (3, 3 and 4 marks). Levels: 26 green, 7 blue.
+// 2026 edit: 10 marks moved here from Data (more algebra, equations, percentages and money); the trig-side and
+// scientific-notation questions cut; the wages and ladder questions made easier. A question part that takes 2 steps
+// is worth 2 marks, 3 steps 3 marks.
 // No geometry, no surds and no exact-value answers: Pythagoras answers are rounded decimals. Nothing from PATH or
 // extension. Chapter 6 has no eligible questions: the brief excludes its geometry, and the rest of Test yourself 6 is
 // PATH (6.03, 6.04), so no question comes from Chapter 6.
 //
 // Every question is a NEW question in the style of a GREEN or BLUE Test yourself question (src names it).
-//   Green (15): MC 1-5 (5), Q7 (2), Q8 (2), Q9 (2), Q10a (1), Q11a (1), Q12a (1), Q12b (1).
-//   Blue (6):   Q6 (2), Q10b (1), Q11b (2), Q12c (1).
-// Marks by chapter: Ch1 3 (MC1, Q6), Ch2 2 (MC2, Q12a), Ch3 3 (MC3, Q7), Ch4 4 (Q8, Q12b, Q12c), Ch5 3 (MC4, Q9),
-//   Ch7 2 (Q10), Ch8 4 (MC5, Q11).
+//   Green (26): MC 1-5 (5), Q6 (3), Q9 (2), Q10 (2), Q11a (2), Q12 (2), Q13 (3), Q14 (3), Q15 (4).
+//   Blue (7):   Q7 (2), Q8 (2), Q11b (3).
+// Marks by chapter: Ch1 8 (MC1, Q6, Q7, Q8), Ch2 3 (MC2, Q15a), Ch3 5 (MC3, Q9, Q10), Ch4 2 (Q15b), Ch5 1 (MC4),
+//   Ch7 8 (Q11, Q14), Ch8 6 (MC5, Q12, Q13).
 'use strict';
-const { groupDec, num, dp, money, unit, frac, v, nw, round, hyp, leg, sinD, cosD, acosD, q } = require('../lib/helpers');
+const { num, dp, money, unit, frac, v, nw, round, hyp, leg, acosD, q } = require('../lib/helpers');
 const F = require('../lib/figs');
 
 const check = (cond, msg) => { if (!cond) throw new Error(`s3-mixed: ${msg}`); };
@@ -20,7 +23,6 @@ const check = (cond, msg) => { if (!cond) throw new Error(`s3-mixed: ${msg}`); }
 const PYTH = `Pythagoras’ theorem: ${nw(`${v('c')}² = ${v('a')}² + ${v('b')}²`)}`;
 const SIN = nw(`sin ${v('θ')} = ${frac('opp', 'hyp')}`), COS = nw(`cos ${v('θ')} = ${frac('adj', 'hyp')}`), TAN = nw(`tan ${v('θ')} = ${frac('opp', 'adj')}`);
 const TRIG = `${SIN}, ${COS}, ${TAN}`;
-const TRIG2 = `${SIN}, ${COS},<br>${TAN}`;      // for the narrow Question column: breaks before tan
 // A signed term for a worked line: term(-15) -> ' − 15', term(12) -> ' + 12', term(4, x, true) -> '4x' (first term).
 const coefX = (a, x) => (a === 1 ? x : a === -1 ? `−${x}` : `${num(a)}${x}`);
 const term = (a, x = '', first = false) => {
@@ -29,16 +31,7 @@ const term = (a, x = '', first = false) => {
   return a < 0 ? ` − ${body}` : ` + ${body}`;
 };
 const lin = (a, b, x) => `${coefX(a, x)}${b === 0 ? '' : term(b)}`;
-// Scientific notation: sci(168000) -> { m: 1.68, e: 5 }; sciStr(1.68, 5) -> '1.68 × 10⁵' (with <sup>).
-const sci = (x) => {
-  let e = Math.floor(Math.log10(Math.abs(x)) + 1e-9);
-  let m = round(x / 10 ** e, 6);
-  if (Math.abs(m) >= 10) { m = round(m / 10, 6); e += 1; }
-  return { m, e };
-};
 const sup = (e) => `<sup>${e < 0 ? `−${-e}` : e}</sup>`;
-const sciStr = (m, e) => `${num(m)} × 10${sup(e)}`;
-// Decimal places grouped in threes (NSW style): groupDec('0.000724') -> '0.000 724' (lib/helpers.js).
 
 // ---------------------------------------------------------------- one-off figure: a ladder against a wall
 // The ladder (length L) leans on a wall with its foot d from the wall. Drawn to scale: the wall height reached is
@@ -157,9 +150,26 @@ module.exports = {
       };
     }),
 
-    // ================================================================ short answer (10 marks: 7 green, 3 blue)
+    // ================================================================ short answer (18 marks: 11 green, 7 blue)
 
-    // 6. Expand and simplify with a negative multiplier (TY1 Q7)
+    // 6. Simplifying: like terms, multiplying and dividing terms (TY1 Q3 and Q4)
+    q(() => {
+      const a = v('a'), b = v('b'), x = v('x'), y = v('y'), m = v('m'), n = v('n');
+      return {
+        type: 'sa', src: 'TY1 Q3 and Q4 (1.03, 1.04, green)', topic: 'Simplifying algebraic expressions',
+        text: 'Simplify:',
+        parts: [
+          { text: nw(`5${a} + 3${b} − 2${a} + ${b}`), marks: 1, level: 'green',
+            answer: `3${a} + 4${b}`, marking: [`3${a} + 4${b}`] },
+          { text: nw(`4${x} × 3${y}`), marks: 1, level: 'green',
+            answer: `12${x}${y}`, marking: [`12${x}${y}`] },
+          { text: nw(`18${m}${n} ÷ 6${m}`), marks: 1, level: 'green',
+            answer: `3${n}`, marking: [`3${n}`] },
+        ],
+      };
+    }),
+
+    // 7. Expand and simplify with a negative multiplier (TY1 Q7)
     q(() => {
       const p = 3, b1 = 4, c1 = -5, r = -2, b2 = 1, c2 = -6, x = v('x');
       const A = p * b1 + r * b2, B = p * c1 + r * c2;
@@ -177,7 +187,22 @@ module.exports = {
       };
     }),
 
-    // 7. Simple interest I = Prn (TY3 Q19)
+    // 8. Factorising: highest common factor (TY1 Q8)
+    q(() => {
+      const x = v('x'), y = v('y');
+      return {
+        type: 'sa', src: 'TY1 Q8 (1.08, blue)', topic: 'Factorising',
+        text: 'Factorise:',
+        parts: [
+          { text: nw(`6${x} + 15`), marks: 1, level: 'blue',
+            answer: `3(2${x} + 5)`, marking: [`3(2${x} + 5)`] },
+          { text: nw(`${y}² − 8${y}`), marks: 1, level: 'blue',
+            answer: `${y}(${y} − 8)`, marking: [`${y}(${y} − 8)`] },
+        ],
+      };
+    }),
+
+    // 9. Simple interest I = Prn (TY3 Q19)
     q(() => {
       const P = 7250, rate = 4.2, n = 3;
       const I = P * (rate / 100) * n;
@@ -192,120 +217,130 @@ module.exports = {
       };
     }),
 
-    // 8. Unknown side in the numerator (TY4 Q10)
+    // 10. Profit and percentage profit (TY3 Q17)
     q(() => {
-      const H = 14.5, ang = 38;
-      const x = H * sinD(ang), adj = H * cosD(ang);
+      const cost = 480, sell = 612, profit = sell - cost, pct = (profit / cost) * 100;
       return {
-        type: 'sa', marks: 2, level: 'green', src: 'TY4 Q10 (4.05, green)', topic: 'Trigonometry: finding a side',
-        text: `Find the value of ${v('x')}, correct to 2 decimal places.`,
-        fig: F.rightTriangle({ base: adj, height: x, corner: 'BR', labels: { base: '', height: `${v('x')} cm`, hyp: unit(H, 'cm') }, angle: { at: 'base', label: `${ang}°` }, size: 40 }),
-        formula: TRIG2,
-        answer: unit(x, 'cm', 2),
-        working: [`sin ${ang}° = ${frac(v('x'), num(H))}`, `${v('x')} = ${num(H)} × sin ${ang}° = ${dp(x, 4)}…`],
-        marking: [`sin ${ang}° = ${v('x')} ÷ ${num(H)} (or ${v('x')} = ${num(H)} sin ${ang}°)`, `${dp(x, 2)} cm`],
-        notes: `Common errors: ${num(H)} × cos ${ang}° = ${dp(adj, 2)} or ${num(H)} ÷ sin ${ang}° = ${dp(H / sinD(ang), 2)}: 0 marks.`,
-      };
-    }),
-
-    // 9. Scientific notation: write a small number; multiply in scientific notation (TY5 Q10, Q13)
-    q(() => {
-      const small = '0.000724', val = +small, s = sci(val);
-      const m1 = 4.8, e1 = 6, m2 = 3.5, e2 = -2;
-      const prod = m1 * 10 ** e1 * m2 * 10 ** e2, P = sci(prod), mm = round(m1 * m2, 6);
-      check(mm >= 10 && P.e === e1 + e2 + 1, 'Q9b: the product of the numbers should be over 10 (so it must be adjusted)');
-      return {
-        type: 'sa', src: 'TY5 Q10 and Q13 (5.08, 5.09, green)', topic: 'Scientific notation',
-        text: '',
+        type: 'sa', src: 'TY3 Q17 (3.06, green)', topic: 'Profit as a percentage of the cost price',
+        text: `A surf shop buys a surfboard for ${money(cost)} and sells it for ${money(sell)}.`,
+        formula: 'Percentage profit = profit ÷ cost price × 100%',
         parts: [
-          { text: `Write ${nw(groupDec(small))} in scientific notation.`, marks: 1, level: 'green',
-            answer: sciStr(s.m, s.e), working: [`Move the decimal point ${-s.e} places to the right.`],
-            marking: [sciStr(s.m, s.e)] },
-          { text: `Evaluate ${nw(`(${sciStr(m1, e1)})`)} × ${nw(`(${sciStr(m2, e2)})`)}, giving your answer in scientific notation.`, marks: 1, level: 'green',
-            answer: sciStr(P.m, P.e),
-            working: [`= ${num(m1)} × ${num(m2)} × 10${sup(e1)} × 10${sup(e2)}`, `= ${num(mm)} × 10${sup(e1 + e2)}`],
-            marking: [sciStr(P.m, P.e)],
-            notes: `${num(mm)} × 10${sup(e1 + e2)} is not in scientific notation: 0 marks. Accept ${num(prod)} only if also written as ${sciStr(P.m, P.e)}.` },
+          { text: 'Find the profit.', marks: 1, level: 'green',
+            answer: money(profit), working: [`${money(sell)} − ${money(cost)}`],
+            marking: [money(profit)] },
+          { text: 'Find the profit as a percentage of the cost price.', marks: 1, level: 'green',
+            answer: `${num(pct)}%`, working: [`${money(profit)} ÷ ${money(cost)} × 100%`],
+            marking: [`${num(pct)}%`],
+            notes: `Follow-through from part a. Common error: dividing by the selling price (${num((profit / sell) * 100, 1)}%): 0 marks.` },
         ],
       };
     }),
 
-    // 10. Solving equations: two-step (TY7 Q1), then brackets with a negative and the variable on both sides (TY7 Q5)
+    // 11. Solving equations: two-step (TY7 Q1), then brackets with a negative and the variable on both sides (TY7 Q5)
     q(() => {
       const a1 = 5, b1 = -8, r1 = 27, x = v('x');
       const xa = (r1 - b1) / a1;
       const A = 7, B = 2, C = 3, D = 3, E = 10, m = v('m');      // 7m − 2(m + 3) = 3m + 10
       const mb = (E + B * C) / (A - B - D);
       const mWrong = (E - B * C) / (A - B - D);                   // −2 × 3 taken as +6
-      check(Number.isInteger(xa) && Number.isInteger(mb), 'Q10: the solutions should be whole numbers');
+      check(Number.isInteger(xa) && Number.isInteger(mb), 'Q11: the solutions should be whole numbers');
       return {
         type: 'sa', src: 'TY7 Q1 (7.01, green) and Q5 (7.03, blue)', topic: 'Solving equations',
         text: 'Solve each equation.',
         parts: [
-          { text: nw(`${lin(a1, b1, x)} = ${r1}`), marks: 1, level: 'green',
+          { text: nw(`${lin(a1, b1, x)} = ${r1}`), marks: 2, level: 'green',
             answer: `${x} = ${num(xa)}`, working: [`${coefX(a1, x)} = ${r1 - b1}`],
-            marking: [`${x} = ${num(xa)}`] },
-          { text: nw(`${coefX(A, m)} − ${B}(${m} + ${C}) = ${lin(D, E, m)}`), marks: 1, level: 'blue', space: 30,
+            marking: [`${coefX(a1, x)} = ${r1 - b1}`, `${x} = ${num(xa)}`] },
+          { text: nw(`${coefX(A, m)} − ${B}(${m} + ${C}) = ${lin(D, E, m)}`), marks: 3, level: 'blue', space: 40,
             answer: `${m} = ${num(mb)}`,
             working: [`${coefX(A, m)} − ${coefX(B, m)} − ${B * C} = ${lin(D, E, m)}`, `${lin(A - B, -B * C, m)} = ${lin(D, E, m)}`, `${coefX(A - B - D, m)} = ${E + B * C}`],
-            marking: [`${m} = ${num(mb)}`],
-            notes: `Common error: −${B} × ${C} taken as +${B * C}, giving ${m} = ${num(mWrong)}: 0 marks.` },
+            marking: [`expands the bracket: ${coefX(A, m)} − ${coefX(B, m)} − ${B * C}`, `collects the terms: ${coefX(A - B - D, m)} = ${E + B * C}`, `${m} = ${num(mb)}`],
+            notes: `Common error: −${B} × ${C} taken as +${B * C}, giving ${m} = ${num(mWrong)}: 2 marks (follow-through).` },
         ],
       };
     }),
 
-    // ================================================================ worded problems (2 x 3 marks)
-
-    // 11. Wages from an award with time-and-a-half and double time (TY8 Q2 and Q4)
+    // 12. Retainer plus commission (TY8 Q5)
     q(() => {
-      const rate = 26.8, worked = 44, normalH = 38, t1H = 3, t2H = worked - normalH - t1H;
-      const normal = normalH * rate, ot1 = t1H * 1.5 * rate, ot2 = t2H * 2 * rate, total = normal + ot1 + ot2;
-      const allOneHalf = normal + (worked - normalH) * 1.5 * rate;
-      check(t2H > 0, 'Q11: some hours must be at double time');
+      const retainer = 520, rate = 2.5, sales = 46800;
+      const comm = sales * rate / 100, total = retainer + comm;
       return {
-        type: 'worded', keepTogether: true, src: 'TY8 Q2 (8.01, green) and Q4 (8.02, blue)', topic: 'Wages and overtime (award rates)',
-        text: [`Mia works in a bakery. Her normal rate of pay is ${money(rate, 2)} per hour, and she is paid according to the award shown below.`,
+        type: 'sa', marks: 2, level: 'green', src: 'TY8 Q5 (8.03, green)', topic: 'Commission',
+        text: `Jake sells cars. He is paid ${money(retainer)} per week plus ${rate}% commission on his sales. Last week he sold ${money(sales)} worth of cars. Calculate Jake’s total pay for the week.`,
+        answer: money(total),
+        working: [`Commission: ${rate}% × ${money(sales)} = ${money(comm)}`, `Total: ${money(retainer)} + ${money(comm)}`],
+        marking: [`commission ${money(comm)}`, `total pay ${money(total)}`],
+        notes: `Commission only (${money(comm)}) earns the first mark.`,
+      };
+    }),
+
+    // ================================================================ worded problems (3 + 3 + 4 marks)
+
+    // 13. Wages with overtime at time-and-a-half (TY8 Q2 and Q3)
+    q(() => {
+      const rate = 26.8, worked = 44, normalH = 38, otH = worked - normalH;
+      const normal = normalH * rate, ot = otH * 1.5 * rate, total = normal + ot;
+      return {
+        type: 'worded', keepTogether: true, src: 'TY8 Q2 and Q3 (8.01, 8.02, green)', topic: 'Wages and overtime',
+        text: [`Mia works in a bakery. Her normal rate of pay is ${money(rate, 2)} per hour for the first ${normalH} hours each week. She is paid time-and-a-half for each hour after that.`,
           `Last week Mia worked ${worked} hours.`],
-        fig: F.table({ head: ['Pay rate', 'Hours worked'], rows: [['Normal rate', `For 0 to ${normalH} hours`], ['Time-and-a-half', `For the next ${t1H} hours`], ['Double time', 'For each hour after that']], align: 'left' }),
         parts: [
-          { text: `Calculate Mia’s pay for the first ${normalH} hours.`, marks: 1, level: 'green', space: 34,
+          { text: `Calculate Mia’s pay for the first ${normalH} hours.`, marks: 1, level: 'green', space: 22,
             answer: money(normal, 2), working: [`${normalH} × ${money(rate, 2)}`],
             marking: [money(normal, 2)] },
-          { text: `Calculate Mia’s total pay for the ${worked} hours.`, marks: 2, level: 'blue', space: 58,
+          { text: `Calculate Mia’s total pay for the ${worked} hours.`, marks: 2, level: 'green', space: 36,
             answer: money(total, 2),
-            working: [`Time-and-a-half: ${t1H} × 1.5 × ${money(rate, 2)} = ${money(ot1, 2)}`, `Double time: ${t2H} × 2 × ${money(rate, 2)} = ${money(ot2, 2)}`, `Total: ${money(normal, 2)} + ${money(ot1, 2)} + ${money(ot2, 2)}`],
-            marking: [`overtime pay at both rates: ${money(ot1, 2)} and ${money(ot2, 2)} (or ${money(ot1 + ot2, 2)} in total)`, `total ${money(total, 2)}`],
-            notes: [`Follow-through from part a.`, `Common error: all ${worked - normalH} extra hours at time-and-a-half (${money(allOneHalf, 2)}): 1 mark.`] },
+            working: [`Overtime: ${otH} × 1.5 × ${money(rate, 2)} = ${money(ot, 2)}`, `Total: ${money(normal, 2)} + ${money(ot, 2)}`],
+            marking: [`overtime pay ${money(ot, 2)} (${otH} hours at time-and-a-half)`, `total ${money(total, 2)}`],
+            notes: [`Follow-through from part a.`, `Common error: overtime at the normal rate (${money(worked * rate, 2)} in total): 1 mark.`] },
         ],
       };
     }),
 
-    // 12. A ladder against a wall: Pythagoras (TY2 Q8), an angle (TY4 Q13), unknown in the denominator (TY4 Q11)
+    // 14. Using a formula: gym membership (TY7 Q11)
+    q(() => {
+      const fee = 60, perW = 15, w1 = 12, paid = 300;
+      const C1 = fee + perW * w1, w2 = (paid - fee) / perW;
+      const C = v('C'), w = v('w');
+      check(Number.isInteger(w2), 'Q14: the number of weeks should be a whole number');
+      return {
+        type: 'worded', keepTogether: true, src: 'TY7 Q11 (7.06, green)', topic: 'Using a formula; solving an equation',
+        text: [`A gym charges a joining fee of ${money(fee)} plus ${money(perW)} per week. The total cost, ${C} dollars, for ${w} weeks is given by the formula`,
+          `<b>${nw(`${C} = ${fee} + ${perW}${w}`)}</b>`],
+        parts: [
+          { text: `Find the total cost for ${w1} weeks.`, marks: 1, level: 'green', space: 22,
+            answer: money(C1), working: [`${C} = ${fee} + ${perW} × ${w1}`],
+            marking: [money(C1)] },
+          { text: `Jo paid ${money(paid)} altogether. Write an equation and solve it to find how many weeks Jo went to the gym.`, marks: 2, level: 'green', space: 36,
+            answer: `${num(w2)} weeks`,
+            working: [`${fee} + ${perW}${w} = ${paid}`, `${perW}${w} = ${paid - fee}`, `${w} = ${paid - fee} ÷ ${perW}`],
+            marking: [`equation ${nw(`${fee} + ${perW}${w} = ${paid}`)} (or ${perW}${w} = ${paid - fee})`, `${num(w2)} weeks`],
+            notes: `Accept a correct answer by guess and check with working shown: 2 marks.` },
+        ],
+      };
+    }),
+
+    // 15. A ladder against a wall: Pythagoras (TY2 Q8), then an angle (TY4 Q13)
     q(() => {
       const L = 5.2, d = 1.6;
       const h = leg(L, d), th = acosD(d / L);
-      const ang2 = 75, up2 = 6.5, L2 = up2 / sinD(ang2);
       const hr = round(h, 2);
       check(Math.round((Math.asin(hr / L) * 180) / Math.PI) === Math.round(th) && Math.round((Math.atan(hr / d) * 180) / Math.PI) === Math.round(th),
-        'Q12b: sin and tan with the rounded answer to part a should give the same angle');
+        'Q15b: sin and tan with the rounded answer to part a should give the same angle');
       return {
-        type: 'worded', keepTogether: true, src: 'TY2 Q8 (2.04, green), TY4 Q13 (4.07, green) and Q11 (4.06, blue)', topic: 'Ladder: Pythagoras and trigonometry',
+        type: 'worded', keepTogether: true, src: 'TY2 Q8 (2.04, green) and TY4 Q13 (4.07, green)', topic: 'Ladder: Pythagoras and trigonometry',
         text: [`A ladder ${unit(L, 'm')} long leans against a vertical wall. The foot of the ladder is ${unit(d, 'm')} from the wall, on level ground.`],
         fig: ladderFig({ L, d, size: 46 }),
         formula: [PYTH, TRIG],
         parts: [
-          { text: `Find ${v('h')}, the height the ladder reaches up the wall, correct to 2 decimal places.`, marks: 1, level: 'green', space: 34,
+          { text: `Find ${v('h')}, the height the ladder reaches up the wall, correct to 2 decimal places.`, marks: 2, level: 'green', space: 36,
             answer: unit(h, 'm', 2), working: [`${v('h')}² = ${num(L)}² − ${num(d)}² = ${num(L * L, 2)} − ${num(d * d, 2)} = ${num(L * L - d * d, 2)}`, `${v('h')} = √${num(L * L - d * d, 2)} = ${dp(h, 4)}…`],
-            marking: [`${dp(h, 2)} m`],
+            marking: [`${v('h')}² = ${num(L)}² − ${num(d)}² (= ${num(L * L - d * d, 2)})`, `${dp(h, 2)} m`],
             notes: `Common error: adding the squares, √(${num(L)}² + ${num(d)}²) = ${dp(hyp(L, d), 2)}: 0 marks.` },
-          { text: `Find the angle ${v('θ')} that the ladder makes with the ground, correct to the nearest degree.`, marks: 1, level: 'green', space: 32,
+          { text: `Find the angle ${v('θ')} that the ladder makes with the ground, correct to the nearest degree.`, marks: 2, level: 'green', space: 36,
             answer: `${Math.round(th)}°`, working: [`cos ${v('θ')} = ${frac(num(d), num(L))}`, `${v('θ')} = cos<sup>−1</sup>(${num(d)} ÷ ${num(L)}) = ${dp(th, 2)}…°`],
-            marking: [`${Math.round(th)}°`],
+            marking: [`cos ${v('θ')} = ${num(d)} ÷ ${num(L)} (or sin or tan with the answer to part a)`, `${Math.round(th)}°`],
             notes: 'Accept sin or tan with the answer to part a (follow-through): both give the same angle to the nearest degree.' },
-          { text: `For safety, a ladder should make an angle of ${ang2}° with the ground. A longer ladder is placed at ${ang2}° so that its top reaches ${unit(up2, 'm')} up the wall. How long is this ladder? Answer correct to 2 decimal places.`, marks: 1, level: 'blue', space: 46,
-            answer: unit(L2, 'm', 2), working: [`sin ${ang2}° = ${frac(num(up2), v('L'))}`, `${v('L')} = ${num(up2)} ÷ sin ${ang2}° = ${dp(L2, 4)}…`],
-            marking: [`${dp(L2, 2)} m`],
-            notes: `Common error: ${num(up2)} × sin ${ang2}° = ${dp(up2 * sinD(ang2), 2)} m (unknown treated as in the numerator): 0 marks.` },
         ],
       };
     }),

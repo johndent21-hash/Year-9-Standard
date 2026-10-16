@@ -37,11 +37,11 @@ module.exports = {
 
   // The teacher's brief. build.js compares the questions with these numbers and prints any difference.
   brief: {
-    total: 70, green: 49, blue: 21,
+    total: 72, green: 49, blue: 23,
     sections: {
-      s1: { marks: 25, mc: 5, sa: 12, worded: [4, 4], green: 17, blue: 8 },
-      s2: { marks: 24, mc: 5, sa: 11, worded: [4, 4], green: 17, blue: 7 },
-      s3: { marks: 21, mc: 5, sa: 10, worded: [3, 3], green: 15, blue: 6 },
+      s1: { marks: 17, mc: 4, sa: 3, worded: [4, 6], green: 11, blue: 6 },
+      s2: { marks: 22, mc: 4, sa: 8, worded: [5, 5], green: 12, blue: 10 },
+      s3: { marks: 33, mc: 5, sa: 18, worded: [3, 3, 4], green: 26, blue: 7 },
     },
   },
 
