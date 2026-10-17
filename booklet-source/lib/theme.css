@@ -1209,3 +1209,16 @@ ul.plain { list-style: none; padding-left: 0; }
 .four-page .set-zone .wq.fig.form .wq-top { flex-direction: column; align-items: stretch; gap: 0.4mm; }
 .four-page .set-zone .wq-top .wq-head { max-width: none; }
 .four-page .set-zone .wq-top .wq-head.short .q-text { white-space: normal; }
+
+/* Chapter 12 (chapter.parts; body class q-parts): questions in parts, two to a row on pages 1 and 2, so the pictures can
+   be wider; the answer lines name what they find (P(not red) =), so their labels get a wider column; the Medium set
+   puts each question's one-line instruction above its picture. */
+.q-parts .first-zone .wq-top .wq-fig .graph, .q-parts .drill-zone .wq-top .wq-fig .graph { width: min(var(--w), 70mm); max-height: 36mm; }
+.q-parts .fq-line { grid-template-columns: 21mm 1fr; }
+.q-parts .set-zone .wq.fig.form .wq-top { flex-direction: column; align-items: stretch; gap: 0.4mm; }
+.q-parts .set-zone .wq-top .wq-head { max-width: none; }
+.q-parts .set-zone .wq-top .wq-head.short .q-text { white-space: normal; }
+/* its answers are labelled 1a, 1b, …: one column, each wrapped line indented past its label */
+.q-parts .ans-block ul.worked { columns: 1; border: 0; background: none; padding: 0; margin: 0; }
+.q-parts .ans-block ul.worked li { padding-left: 7mm; text-indent: -7mm; margin: 0 0 0.2mm; font-size: 8.5pt; }
+.q-parts .ans-block ul.worked li b { text-indent: 0; }

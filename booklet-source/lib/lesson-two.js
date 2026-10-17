@@ -21,6 +21,9 @@
 //   drill: { hint, rounds }   a three-page lesson: a page of drill between the Easy and Medium pages
 //   drill2: { hint, rounds }  a four-page lesson: a second page of drill after the first (Year 9 standard Chapter 11)
 //   a work question may be { t, fig, form }: form adds Formula / Substitute / Answer lines (a string prints the formula)
+//   chapter.parts: true   (Year 9 standard Chapter 12) each round is one question with parts: the heading is
+//          'Question k' and its instruction, the boxes are lettered a, b, c, the Medium set numbers on from the drill, and
+//          the answers are labelled 1a, 1b, …
 //   mixed: [{ q, a, from, work? }]   optional (Year 9 standard series): a Mixed practice box at the end of the Medium
 //          page, as in the Year 7 booklets. Today's skill mixed with earlier lessons; from tags each question with
 //          its lesson code or 'Year 8'. q is text or { t, fig }; work gives the question a working box.
@@ -96,8 +99,8 @@ const mixedBox = (list) => {
 // for a skill with no formula, e.g. ['Rule', 'Working', 'Answer'] for a unit conversion (form then prints the rule).
 const isFig = (it) => typeof it === 'object' && it.fig;
 const isForm = (it) => typeof it === 'object' && it.form;
-const formLines = (form, [l1, l2, l3] = ['Formula', 'Substitute', 'Answer']) => `<div class="fq-lines"><div class="fq-line"><span>${l1}</span><i>${typeof form === 'string' ? `<em>${form}</em>` : ''}</i></div>
-    <div class="fq-line"><span>${l2}</span><i></i></div><div class="fq-line"><span>${l3}</span><i></i></div></div>`;
+// (lines may have more or fewer than three labels: Chapter 12 names each answer line, e.g. ['P(A) =', 'P(A and B) =', …])
+const formLines = (form, lines = ['Formula', 'Substitute', 'Answer']) => `<div class="fq-lines">${lines.map((l, i) => `<div class="fq-line"><span>${l}</span><i>${i === 0 && typeof form === 'string' ? `<em>${form}</em>` : ''}</i></div>`).join('')}</div>`;
 // A formula question with a picture has the picture beside its number and question, so the lines start higher.
 // A short question beside a picture ('Arc length', 'Area') stays on one line.
 const plainLen = (t) => t.replace(/<[^>]+>/g, '').length;
@@ -108,19 +111,22 @@ const tagAfter = (it) => ({ ...it, t: it.t.replace(/^(<span class="q-tag">[^<]*<
 const wq = (it, n) => (isForm(it) && isFig(it) ? `<div class="wq fig form"><div class="wq-top">${wqHead(tagAfter(it), n, true)}<div class="wq-fig">${it.fig}</div></div>
     <div class="wq-body">${formLines(it.form, it.lines)}</div></div>` : `<div class="wq${isFig(it) ? ' fig' : ''}${isForm(it) ? ' form' : ''}">${wqHead(it, n)}
     <div class="wq-body">${isFig(it) ? `<div class="wq-fig">${it.fig}</div>` : ''}${isForm(it) ? formLines(it.form, it.lines) : '<div class="wq-space"></div>'}</div>${isForm(it) ? '' : '<div class="wq-ans"><span>Answer</span><i></i></div>'}</div>`);
-const workRound = (x, k, from, head) => {
+const PART = 'abcdefghij';
+const workRound = (x, k, from, head, parts) => {
   let n = from - 1;
-  const cells = x.items.map((it) => wq(it, ++n)).join('');
+  const cells = x.items.map((it, i) => wq(it, parts && head ? PART[i] : ++n)).join('');
   const cols = x.cols || 3;
-  return `<div class="round wround" style="flex-grow:${Math.ceil(x.items.length / cols) * (x.items.some(isFig) ? 1.35 : 1)}">${head ? `<p class="round-h"><b>Round ${k}</b><span>Questions ${from}–${n}: ${x.text}</span></p>` : ''}<div class="wgrid" style="grid-template-columns: repeat(${cols}, minmax(0, 1fr))">${cells}</div></div>`;
+  const h = parts ? `<b>Question ${k}</b><span>${x.text}</span>` : `<b>Round ${k}</b><span>Questions ${from}–${n}: ${x.text}</span>`;
+  return `<div class="round wround" style="flex-grow:${Math.ceil(x.items.length / cols) * (x.items.some(isFig) ? 1.35 : 1)}">${head ? `<p class="round-h">${h}</p>` : ''}<div class="wgrid" style="grid-template-columns: repeat(${cols}, minmax(0, 1fr))">${cells}</div></div>`;
 };
-// o: { start: first question number, round: first round number, head: the YOU DO instruction, plain: no Easy/Medium tag }
+// o: { start: first question number, round: first round number, head: the YOU DO instruction, plain: no Easy/Medium tag,
+//      parts: each round is one question with lettered parts (chapter.parts) }
 // A round with short: true is quick drill: four to a row, an answer line each (no working box).
 const practiceWork = (lvl, L, o = {}) => {
   let from = o.start || 1;
-  const body = L.rounds.map((x, i) => { const k = (o.round || 1) + i; const h = x.short ? roundHtml(x, k - 1, from) : workRound(x, k, from, !L.set); from += x.items.length; return h; }).join('');
-  const what = o.head || (L.set ? 'work in order. A tag shows an earlier lesson.' : 'work down the box, one round at a time.');
-  return youDo(`${o.plain ? '' : `<b class="lvl-word l${lvl}">${LEVEL_WORD[lvl]}</b> `}${what} Show your working.<span class="count">${qn(total(L.rounds))}</span>`,
+  const body = L.rounds.map((x, i) => { const k = (o.round || 1) + i; const h = x.short ? roundHtml(x, k - 1, from) : workRound(x, k, from, !L.set, o.parts); from += x.items.length; return h; }).join('');
+  const what = o.head || (L.set ? 'work in order. A tag shows an earlier lesson.' : `work down the box, one ${o.parts ? 'question' : 'round'} at a time.`);
+  return youDo(`${o.plain ? '' : `<b class="lvl-word l${lvl}">${LEVEL_WORD[lvl]}</b> `}${what} Show your working.<span class="count">${qn(o.parts && !L.set ? L.rounds.length : total(L.rounds))}</span>`,
     `${hint(L.hint)}${body}`, `grow skill-zone work-zone${L.set ? ' set-zone' : ''}${o.zone ? ` ${o.zone}` : ''}`);
 };
 // The worded problems that finish the lesson (spec.worded: [{ q, a }]): side by side, each with room to draw and solve.
@@ -149,21 +155,26 @@ module.exports = (raw) => (chapter) => {
   // Three-page lessons (spec.drill): page 1 the Notes box, Example 1 and the first drill; page 2 more drill (numbering on
   // from page 1); page 3 Example 2, the Medium set and the worded problems. No Easy/Medium strips: the page band says it.
   const nEasy = total(spec.easy.rounds);
+  // chapter.parts: the Medium set's questions are numbered on from the last drill question (one question per round)
+  const parts = !!chapter.parts, keepGoing = `keep going, one ${parts ? 'question' : 'round'} at a time.`;
+  const drillRounds = [...spec.easy.rounds, ...(spec.drill ? spec.drill.rounds : []), ...(spec.drill2 ? spec.drill2.rounds : [])];
   const pages = spec.drill ? [
-    page('Easy', `${header(spec, true)}${notesHtmlBox}${level(1, spec.easy, { plain: true, zone: 'first-zone' })}`, true),
-    page('Easy', practiceWork(1, spec.drill, { plain: true, zone: 'drill-zone', start: nEasy + 1, round: spec.easy.rounds.length + 1, head: 'keep going, one round at a time.' })),
+    page('Easy', `${header(spec, true)}${notesHtmlBox}${level(1, spec.easy, { plain: true, zone: 'first-zone', parts })}`, true),
+    page('Easy', practiceWork(1, spec.drill, { plain: true, zone: 'drill-zone', start: nEasy + 1, round: spec.easy.rounds.length + 1, head: keepGoing, parts })),
     // a four-page lesson (spec.drill2): a second drill page, numbered on from the first
-    ...(spec.drill2 ? [page('Easy', practiceWork(1, spec.drill2, { plain: true, zone: 'drill-zone', start: nEasy + total(spec.drill.rounds) + 1, round: spec.easy.rounds.length + spec.drill.rounds.length + 1, head: 'keep going, one round at a time.' }))] : []),
-    page('Medium', `${level(2, spec.medium, { plain: true, head: 'work in order. A tag shows an earlier lesson.' })}${spec.worded ? wordedBox(spec.worded) : ''}`),
+    ...(spec.drill2 ? [page('Easy', practiceWork(1, spec.drill2, { plain: true, zone: 'drill-zone', start: nEasy + total(spec.drill.rounds) + 1, round: spec.easy.rounds.length + spec.drill.rounds.length + 1, head: keepGoing, parts }))] : []),
+    page('Medium', `${level(2, spec.medium, { plain: true, head: 'work in order. A tag shows an earlier lesson.', ...(parts ? { parts, start: drillRounds.length + 1 } : {}) })}${spec.worded ? wordedBox(spec.worded) : ''}`),
   ] : [
     page('Easy', `${header(spec, !!chapter.notesBox)}${notesHtmlBox}${level(1, spec.easy)}`, true),
     page('Medium', `${level(2, spec.medium)}${spec.mixed ? mixedBox(spec.mixed) : ''}${spec.worded ? wordedBox(spec.worded) : ''}`),
   ];
   const L = 'abcdefgh';
+  // chapter.parts: answers labelled with their question and part (1a, 1b, …; the Medium set 5, 6, …)
+  const labelled = (list) => Object.assign(list, { plain: true });
   const answers = [
     ['WE DO examples (teacher)', [...spec.easy.exAns.map((a, i) => `Ex 1${L[i]}: ${a}`), ...spec.medium.exAns.map((a, i) => `Ex 2${L[i]}: ${a}`)]],
-    ['Easy', [...spec.easy.rounds, ...(spec.drill ? spec.drill.rounds : []), ...(spec.drill2 ? spec.drill2.rounds : [])].flatMap((x) => x.ans)],
-    ['Medium', spec.medium.rounds.flatMap((x) => x.ans)],
+    ['Easy', parts ? labelled(drillRounds.flatMap((x, k) => x.ans.map((a, j) => `<b>${k + 1}${PART[j]}</b> ${a}`))) : drillRounds.flatMap((x) => x.ans)],
+    ['Medium', parts ? labelled(spec.medium.rounds.flatMap((x) => x.ans).map((a, i) => `<b>${drillRounds.length + 1 + i}</b> ${a}`)) : spec.medium.rounds.flatMap((x) => x.ans)],
     ...(spec.mixed ? [['Mixed practice', spec.mixed.map((m) => `${m.a} <span class="ans-from">(${m.from})</span>`)]] : []),
     ...(spec.worded ? [['Worded problems', spec.worded.map((w) => w.a)]] : []),
   ];

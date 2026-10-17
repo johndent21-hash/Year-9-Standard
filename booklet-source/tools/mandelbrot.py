@@ -39,6 +39,7 @@ REGIONS = {
     'gold-spiral':    dict(c=(-0.7436, 0.1316), span=0.0065, it=1400, palette='gold', page=True),  # Year 10 transition: gold spirals in Seahorse Valley
     'silver-spiral':  dict(c=(-0.7746, 0.1242), span=0.004, it=1500, palette='violet', page=True),  # Year 9 standard: a silver spiral on the west side of Seahorse Valley
     'silver-seahorse': dict(c=(-0.7453, 0.1127), span=0.004, it=1500, palette='violet', page=True),  # Year 9 standard Ch 11: seahorse tails deep in Seahorse Valley
+    'silver-jellyfish': dict(c=(-1.25066, 0.02012), span=0.0016, it=1500, palette='violet', page=True),  # Year 9 standard Ch 12: a jellyfish of spirals near the neck of the left bulb
 }
 
 STOPS = [(0.0, (190, 197, 222)), (0.45, (168, 181, 222)), (0.7, (140, 162, 232)), (0.86, (96, 128, 236)), (0.95, (60, 80, 170)), (1.0, (40, 44, 70))]
