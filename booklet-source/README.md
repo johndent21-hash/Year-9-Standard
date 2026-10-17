@@ -8,7 +8,7 @@ with each question tagged by the lesson it comes from.
 | Booklet | Folder |
 |---|---|
 | Chapter 10 Surface area and volume (New Century Maths 9) | `year9-standard/ch10-surface-area-volume` |
-| Chapter 11 Coordinate geometry and graphs (New Century Maths 9) | `year9-standard/ch11-coordinate-geometry` (slightly less scaffolding than Chapter 10: see its `chapter.js`) |
+| Chapter 11 Coordinate geometry and graphs (New Century Maths 9) | `year9-standard/ch11-coordinate-geometry`: four-page lessons (`drill2` in `lib/lesson-two.js`) on large number planes, the same question layout all through each lesson; see its `chapter.js`. Check a lesson with `PAGES=4 CH=ch11-coordinate-geometry tools/check-lesson.sh 11.1` |
 
 ## Build
 

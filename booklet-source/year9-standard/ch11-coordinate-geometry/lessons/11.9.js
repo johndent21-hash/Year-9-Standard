@@ -1,66 +1,69 @@
-// Lesson 11.9 Graphing parabolas (three pages; see ../chapter.js and lib/lesson-two.js). Textbook 11.10 (lesson codes
-// run one behind the textbook from here, because textbook 11.09 is PATH and is left out).
-const { n, formFig, mq, set } = require('../helpers');
-const { graph, table } = require('../shapes');
+// Lesson 11.9 Graphing parabolas (four pages; see ../chapter.js). Every drill question is the same: a table of values
+// for x = −2 to 2 beside a blank number plane: complete the table, graph the parabola, give its vertex and whether it is
+// concave up or down. The Medium set: a parabola drawn on a plane, its equation asked. Textbook 11.10 (lesson codes run
+// one behind the textbook from here, because textbook 11.09 is PATH and is left out).
+const { n, eq, formFig, mq, set } = require('../helpers');
+const { std, table, tableGraph, freeCorner, lineTagAt, graph } = require('../shapes');
 
-const X5 = [-2, -1, 0, 1, 2];
+const X = [-2, -1, 0, 1, 2];
 // y = ax² + c as text: para(1, 1) → 'y = x² + 1', para(-2, 0) → 'y = −2x²'
-const para = (a, c) => { const t = a === 1 ? 'x²' : a === -1 ? '−x²' : `${n(a)}x²`; return `y = ${t}${c === 0 ? '' : c < 0 ? ` − ${n(-c)}` : ` + ${n(c)}`}`; };
-const vals = (a, c) => X5.map((x) => n(a * x * x + c)).join(', ');
-// A table for x = −2 to 2 with the y row blank (title: the equation above it)
-const tab = (a, c, title = '') => [table([['x', ...X5.map(n)], ['y', ...X5.map(() => '')]], { w: 4.6, head: 5, title }), `y: ${vals(a, c)}`];
-// The parabola y = ax² + c on a numbered grid
-const pg = (a, c, { x = [-3, 3], y = [-5, 5], k = 2.1, label = false } = {}) => graph({ x, y, k, curves: [[(t) => a * t * t + c, label ? para(a, c) : '', 1.6, 'e']] });
+const para = (a, c) => { const t = a === 1 ? 'x²' : a === -1 ? '−x²' : a === 0.5 ? '½x²' : a === -0.5 ? '−½x²' : `${n(a)}x²`; return `y = ${t}${c === 0 ? '' : c < 0 ? ` − ${n(-c)}` : ` + ${n(c)}`}`; };
+const vals = (a, c) => X.map((x) => n(a * x * x + c)).join(', ');
 const vertex = (a, c) => `vertex (0, ${n(c)}), concave ${a > 0 ? 'up' : 'down'}`;
-const notesFig = () => graph({ x: [-3, 3], y: [-3, 5], k: 3.6, every: 1, curves: [[(t) => t * t, 'y = x²', 1.9, 'e'], [(t) => -t * t + 3, 'y = −x² + 3', -1.9, 'w']], pts: [[0, 0], [0, 3]] });
+// One drill question: the rule's table beside a blank plane
+const tq = (a, c) => [tableGraph(para(a, c), X), `y: ${vals(a, c)}; ${vertex(a, c)}`];
+// A Medium question: the parabola drawn, its equation asked
+const pq = (a, c) => [std('small', { curves: [[(x) => a * x * x + c]], notes: [freeCorner('small', [], 'y = ?', [(x) => a * x * x + c])] }), para(a, c)];
+const LINES = ['y-values', 'Vertex', 'Up or down'];
+const notesFig = () => graph({ x: [-3, 3], y: [-3, 5], k: 3.6, curves: [[(t) => t * t, 'y = x²', 1.9, 'e'], [(t) => -t * t + 3, 'y = −x² + 3', -1.9, 'w']], pts: [[0, 0], [0, 3]] });
 
 module.exports = {
   code: '11.9', title: 'Graphing parabolas',
   li: 'graph parabolas of the form y = ax² + c and describe their features.',
-  sc: ['complete a table of values and graph a parabola', 'find the vertex and say whether a parabola is concave up or concave down', 'describe how a and c change the shape and position of a parabola'],
+  sc: ['complete a table of values for y = ax² + c', 'plot the points and join them with a smooth curve', 'give the vertex and say whether the parabola is concave up or down'],
   notes: {
     terms: [['parabola', 'the U-shaped graph of y = ax² + c'], ['vertex', 'the turning point: (0, c) here'], ['concave up', 'opens upward (∪): a > 0'], ['concave down', 'opens downward (∩): a < 0'],
       ['axis of symmetry', 'the line x = 0: each side is a mirror image'], ['wider / narrower', 'a closer to 0 is wider']],
     formulas: ['y = ax² + c', 'vertex (0, c)', 'a > 0: concave up; a < 0: concave down', 'bigger a (ignoring the sign): narrower'],
-    steps: ['make a table for x = −2 to 2', 'square x first, then × a, then + c', 'plot the points', 'join them with a smooth curve'],
+    steps: ['square x first: (−2)² = 4', 'then × a, then + c', 'plot the points', 'join them with a smooth curve'],
     fig: notesFig(),
   },
   easy: {
-    ex: { stem: 'Complete, describe or match each parabola.', parts: [
-      { t: 'Table', fig: tab(1, 1, 'y = x² + 1')[0] }, 'Find the vertex of y = −2x². Is it concave up or down?',
-      'Which is wider: y = x² or y = 3x²?', { t: 'Equation', fig: pg(1, -3, { y: [-4, 3], k: 2.3 }) }] },
-    exAns: [`y: ${vals(1, 1)}`, vertex(-2, 0), 'y = x² (a = 1 is closer to 0 than a = 3)', 'Vertex (0, −3), concave up, same shape as y = x²: y = x² − 3'],
-    hint: 'Square x first: (−2)² = 4 · then multiply by a · then add c',
+    ex: { stem: 'For y = x² + 1:', parts: [{ t: 'Table', fig: table([['x', ...X.map(n)], ['y', ...X.map(() => '')]], { w: 4.6, head: 5, title: 'y = x² + 1' }) },
+      { t: 'Graph', fig: std('mid') }, 'Give the vertex. Is it concave up or down?', 'Which is wider: y = x² + 1 or y = 3x² + 1?'] },
+    exAns: [`y: ${vals(1, 1)}`, 'Plot (−2, 5), (−1, 2), (0, 1), (1, 2), (2, 5); join with a smooth curve', vertex(1, 1), 'y = x² + 1 (a = 1 is closer to 0 than a = 3)'],
+    hint: 'Square x first: (−2)² = 4 · then multiply by a · then add c · join the points with a smooth curve, not a ruler',
     work: true,
-    rounds: [
-      { text: 'complete each table of values.', cols: 4, ...formFig([[1, 0], [1, 2], [2, 0], [-1, 0]].map(([a, c]) => [...tab(a, c), '', para(a, c)]), true, ['Rule', 'Working', 'y-values']) },
-      { text: 'complete each table of values.', cols: 4, ...formFig([[1, -3], [-1, 4], [3, 0], [-2, 1]].map(([a, c]) => tab(a, c, para(a, c))), true, ['Square x', 'Working', 'y-values']) },
-    ],
+    rounds: [{ text: 'complete the table, graph the parabola, then describe it.', cols: 2, ...formFig([tq(1, 0), tq(1, 2)], true, LINES) }],
   },
   drill: {
-    hint: 'Vertex (0, c) · a > 0: ∪ · a < 0: ∩ · the a closer to 0 gives the wider parabola',
+    hint: 'a negative: the parabola is upside down (∩) · the vertex is (0, c)',
     rounds: [
-      { text: 'state the vertex, and whether the parabola is concave up or down.', ...formFig([[1, -2], [-1, 3], [2, 1]].map(([a, c]) => [pg(a, c), vertex(a, c)]), true, ['Vertex', 'Concave', 'Answer']) },
-      { text: 'state the vertex and the concavity from the equation.', ...formFig([[-4, 0, 'y = −4x²'], [0.5, -6, 'y = 0.5x² − 6'], [-1, 7, 'y = 7 − x²']].map(([a, c, t]) => ['', vertex(a, c), t]), true, ['Vertex', 'Concave', 'Answer']) },
-      { text: 'which parabola is wider? Give a reason.', ...formFig([['', 'y = 2x² (2 is closer to 0)', 'y = 2x² or y = 5x²'], ['', 'y = −⅓x² (⅓ is closer to 0)', 'y = −x² or y = −⅓x²'], ['', 'y = x² + 4 (a = 1 is closer to 0)', 'y = 4x² + 1 or y = x² + 4']], true, ['Compare a', 'Reason', 'Answer']) },
-      { text: 'write the equation of each parabola.', ...formFig([[1, 1], [-1, 2], [1, -4]].map(([a, c]) => [pg(a, c), para(a, c)]), true, ['Vertex', 'Concave', 'Equation']) },
+      { text: 'complete the table, graph the parabola, then describe it.', cols: 2, ...formFig([tq(1, -2), tq(-1, 0)], true, LINES) },
+      { text: 'complete the table, graph the parabola, then describe it.', cols: 2, ...formFig([tq(-1, 3), tq(1, -4)], true, LINES) },
+      { text: 'complete the table, graph the parabola, then describe it.', cols: 2, ...formFig([tq(-1, 2), tq(1, -1)], true, LINES) },
+    ],
+  },
+  drill2: {
+    hint: 'y = 2x²: square first, then double · y = ½x²: square first, then halve',
+    rounds: [
+      { text: 'complete the table, graph the parabola, then describe it.', cols: 2, ...formFig([tq(2, -3), tq(-2, 4)], true, LINES) },
+      { text: 'complete the table, graph the parabola, then describe it.', cols: 2, ...formFig([tq(0.5, 1), tq(-0.5, 2)], true, LINES) },
+      { text: 'complete the table, graph the parabola, then describe it.', cols: 2, ...formFig([tq(2, -6), tq(-1, -1)], true, LINES) },
     ],
   },
   medium: {
-    ex: { stem: 'Graph, choose or find as shown.', parts: [{ t: 'Graph y = −x² + 4', fig: graph({ x: [-3, 3], y: [-5, 5], k: 1.5 }) },
+    ex: { stem: 'Graph, choose or find as shown.', parts: [{ t: 'Graph y = −x² + 4', fig: std('mid') },
       'Which is concave up with vertex (0, 0)? y = x² − 1, y = 2x², y = −x², y = 3x² + 2', 'Does (3, 10) lie on y = x² + 1?', 'Find the x-intercepts of y = x² − 9.'] },
-    exAns: [`Table y: ${vals(-1, 4)}; vertex (0, 4), concave down`, 'y = 2x² (a > 0 and c = 0)', '3² + 1 = 10 ✓ Yes', 'x² − 9 = 0, x² = 9, so x = 3 or x = −3'],
+    exAns: [`Table y: ${vals(-1, 4)}; ${vertex(-1, 4)}`, 'y = 2x² (a > 0 and c = 0)', '3² + 1 = 10 ✓ Yes', 'x² − 9 = 0, x² = 9, so x = 3 or x = −3'],
     work: true, set: true,
     rounds: [set([
-      mq('Find the vertex of y = −3x² + 5 and say whether it is concave up or down.', vertex(-3, 5), { form: false }),
-      mq('State m and c for y = 4 − 2x.', 'm = −2, c = 4', { from: '11.5' }),
-      mq('Does (−2, 7) lie on y = 2x² − 1? Show your working.', 'Yes: 2 × (−2)² − 1 = 8 − 1 = 7', { form: false }),
-      mq('Equation', para(1, -1), { fig: pg(1, -1, { x: [-2, 2], y: [-2, 3], k: 2.2 }), form: false }),
-      mq('Solve 2x + 1 = 7.', 'x = 3', { from: '11.7', form: false }),
-      mq('Find the x-intercepts of y = x² − 16.', 'x² = 16, so x = 4 or x = −4'),
-      mq('Which is narrower: y = 0.5x² or y = 2x²? Why?', 'y = 2x²: a = 2 is further from 0', { form: false }),
-      mq('Find the y-intercept of y = 3x − 8.', '−8', { from: '11.4' }),
-      mq('The point (2, 1) lies on y = x² + c. Find c and the vertex.', '4 + c = 1, so c = −3; vertex (0, −3)'),
+      mq('Equation', pq(1, -3)[1], { fig: pq(1, -3)[0], lines: ['Vertex', 'Concave', 'Equation'] }),
+      mq('', 'm = 2, c = −1: (0, −1) and (1, 1)', { fig: std('small', { notes: [freeCorner('small', [], 'y = 2x − 1')] }), from: '11.5', lines: ['m and c', 'Two points', 'Graph'] }),
+      mq('Equation', pq(-1, 4)[1], { fig: pq(-1, 4)[0], lines: ['Vertex', 'Concave', 'Equation'] }),
+      mq('Equation', pq(1, 1)[1], { fig: pq(1, 1)[0], lines: ['Vertex', 'Concave', 'Equation'] }),
+      mq('', 'x = 3', { fig: std('small', { lines: [[{ m: 2, c: -3 }], [{ y: 3, dash: true }]], tags: [[lineTagAt(2, -3, 5), eq(2, -3)], [[[-4.4, 3], [-3, 3]], 'y = 3']] }), from: '11.7', lines: ['Equation', 'Read x', 'Check'] }),
+      mq('Equation', pq(-1, -1)[1], { fig: pq(-1, -1)[0], lines: ['Vertex', 'Concave', 'Equation'] }),
     ])],
   },
   worded: [

@@ -17,7 +17,7 @@ const cover = (chapter, built) => { const lessons = planned(chapter, built); ret
     <div class="gdc-badge"><span>Chapter</span><b>${chapter.number}</b></div>
     <p class="gdc-kicker">Year ${chapter.year} Mathematics</p>
     <h1>${chapter.title}</h1>
-    <p class="gdc-sub">${lessons.length} lessons · ${chapter.pagesPerLesson === 3 ? 'three' : 'two'} pages each · ${chapter.coverSub || 'Easy, then Medium'}</p>
+    <p class="gdc-sub">${lessons.length} lessons · ${['two', 'two', 'two', 'three', 'four'][chapter.pagesPerLesson || 2]} pages each · ${chapter.coverSub || 'Easy, then Medium'}</p>
     <div class="gdc-lessons">${lessons.map((l) => `<div><b>${l.code}</b>${l.title}</div>`).join('')}</div>
   </div>
   <div class="gdc-name"><div><span>Name</span><i></i></div><div><span>Class</span><i></i></div><div><span>Teacher</span><i></i></div></div>

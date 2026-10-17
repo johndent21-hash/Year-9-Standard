@@ -1199,3 +1199,9 @@ ul.plain { list-style: none; padding-left: 0; }
 .wq-top .wq-head.short .q-text { white-space: nowrap; }
 .nb-steps .nb-step { white-space: nowrap; }
 .theme-violet .two-page.three-page .ex-part .inline-fig .graph { width: min(var(--w), 100%); }
+
+/* Four-page lessons (Year 9 standard Chapter 11): large number planes. Drill and page-1 questions two to a row with
+   planes up to 46 mm; WE DO parts up to 34 mm; the Medium set three to a row with planes up to 34 mm. */
+.four-page .drill-zone .wq-top .wq-fig .graph, .four-page .first-zone .wq-top .wq-fig .graph { width: min(var(--w), 84mm); max-height: 48mm; }
+.four-page .set-zone .wq-top .wq-fig .graph { width: min(var(--w), 46mm); max-height: 35mm; }
+.theme-violet .two-page.four-page .ex-part .inline-fig .graph { max-height: 35mm; }

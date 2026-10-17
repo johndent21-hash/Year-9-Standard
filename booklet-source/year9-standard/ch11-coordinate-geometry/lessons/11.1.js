@@ -1,76 +1,66 @@
-// Lesson 11.1 The length of an interval (three pages: Easy with the Notes box, Easy drill, then Medium with earlier
-// work mixed in and three worded problems). See lib/lesson-two.js and ../chapter.js. Textbook 11.01.
-const { num, n, dist, lenAns, distWork, formFig, mq, set } = require('../helpers');
-const { plane, pair, askNote, cornerNote } = require('../shapes');
+// Lesson 11.1 The length of an interval (four pages: Notes, Example 1 and round 1; two drill pages; Example 2, the
+// Medium set and three worded problems). Every question is an interval AB on a number plane. See ../chapter.js.
+// Textbook 11.01.
+const { num, dist, lenAns, distWork, formFig, mq, set } = require('../helpers');
+const { std, interval, plane } = require('../shapes');
 
 const D = 'd² = (x₂−x₁)² + (y₂−y₁)²';
 const len = (a, b) => lenAns((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2);
-// A right-angled triangle on a grid (no axes): the run and rise given, the interval's length asked
-const tri = (run, rise, k = 2.2) => plane({ x: [1, run + 3], y: [1, rise + 3], k, grid: true, segs: [[[2, 2], [2 + run, 2 + rise]]],
-  steps: [[[2, 2], [2 + run, 2 + rise], n(run), n(rise)]], pts: [[2, 2], [2 + run, 2 + rise]], notes: [askNote([2, 2], [2 + run, 2 + rise], k, 'd = ?')] });
-// An interval on a numbered grid, its length asked
-const onGrid = (a, b, { x = [-5, 4], y = [-4, 4], k = 2.2, every = 2 } = {}) => plane({ x, y, k, grid: true, nums: true, every, segs: [[a, b]], pts: [a, b],
-  notes: [cornerNote(a, b, x, y, 'd = ?')] });
-const q = (a, b, o) => [pair(a, b, { ask: 'd = ?', size: 18, maxH: 9, axes: false, ...o }), len(a, b)];
-// The drill size: on axes, up to 46 mm wide and 26 mm tall
-const qd = (a, b, o) => q(a, b, { size: 30, maxH: 16, ...o });
-
+// One question: AB on a plane, its length asked. coords: write the coordinates (pages 1 and 2) or letters only
+const q = (a, b, o = {}) => [interval(a, b, { ask: 'AB = ?', ...o }), len(a, b)];
+const L3 = ['A and B', 'Substitute', 'Answer']; // pages 3 and 4: read the points off the grid first
 const notesFig = () => plane({ x: [0, 6], y: [0, 5], k: 4.6, grid: true, nums: true, segs: [[[1, 1], [5, 4]]], steps: [[[1, 1], [5, 4], 'run = 4', 'rise = 3']],
-  pts: [[1, 1, 'A(1, 1)', 'nw'], [5, 4, 'B(5, 4)', 'ne']], notes: [[2.6, 3.1, 'd = 5', { anchor: 'end', blue: true }]] });
+  pts: [[1, 1, 'A(1, 1)', 'nw'], [5, 4, 'B(5, 4)', 'ne']], notes: [[2.4, 3.3, 'AB = 5', { anchor: 'end', blue: true }]] });
 
 module.exports = {
   code: '11.1', title: 'The length of an interval',
   li: 'find the length of an interval on the number plane.',
-  sc: ['use Pythagoras’ theorem to find the length of an interval on a grid', 'use the distance formula with any two points', 'give a length as a whole number or correct to one decimal place'],
+  sc: ['read the coordinates of the endpoints of an interval', 'use the distance formula to find its length', 'give a length as a whole number or correct to one decimal place'],
   notes: {
     terms: [['interval', 'part of a line between two endpoints'], ['run', 'the change in x: x₂ − x₁'], ['rise', 'the change in y: y₂ − y₁'],
-      ['length (d)', 'the distance from one endpoint to the other'], ['(x₁, y₁), (x₂, y₂)', 'the two endpoints'], ['√', 'square root']],
-    formulas: ['d² = run² + rise²', D, 'Horizontal: d = difference in x', 'Vertical: d = difference in y'],
-    steps: ['find the run and the rise', 'square them and add', 'square root', 'round to 1 d.p.'],
+      ['length (d)', 'the distance from one endpoint to the other'], ['(x₁, y₁), (x₂, y₂)', 'the two endpoints']],
+    formulas: ['d² = run² + rise² (Pythagoras)', 'd² = (x₂ − x₁)² + (y₂ − y₁)²', 'then d = √(…)'],
+    steps: ['write the two points', 'subtract the x-values and the y-values', 'square and add', 'square root, round to 1 d.p.'],
     fig: notesFig(),
   },
   easy: {
-    ex: { stem: 'Find the length of each interval. Round to one decimal place where needed.', parts: [
-      { t: 'Length', fig: tri(3, 4, 2.4) }, { t: 'Length', fig: pair([2, 1], [8, 9], { ask: 'd = ?', size: 22, maxH: 12 }) },
-      { t: 'Length', fig: pair([-1, 2], [3, -1], { ask: 'd = ?', size: 22, maxH: 12 }) }, { t: 'Length', fig: pair([1, 2], [4, 8], { ask: 'd = ?', size: 22, maxH: 12 }) }] },
-    exAns: ['d² = 3² + 4² = 25, so d = √25 = 5', distWork([2, 1], [8, 9]), distWork([-1, 2], [3, -1]), distWork([1, 2], [4, 8])],
-    hint: 'run = across, rise = up or down · d² = run² + rise² (Pythagoras) · square root last · round to 1 d.p.',
+    ex: { stem: 'Find the length of each interval AB. Round to one decimal place where needed.', parts: [
+      { t: 'Length', fig: interval([1, 1], [4, 5], { size: 'mid' }) }, { t: 'Length', fig: interval([-2, 2], [2, -1], { size: 'mid' }) },
+      { t: 'Length', fig: interval([-1, 2], [3, -1], { size: 'mid' }) }, { t: 'Length', fig: interval([1, -2], [4, 4], { size: 'mid' }) }] },
+    exAns: [distWork([1, 1], [4, 5]), distWork([-2, 2], [2, -1]), distWork([-1, 2], [3, -1]), distWork([1, -2], [4, 4])],
+    hint: 'Subtract the x-values, subtract the y-values (same order) · square both and add · square root last',
     work: true,
-    // Small steps: the run and rise drawn and labelled, then two points with their coordinates (formula left blank).
-    rounds: [
-      { text: 'find the length of each interval.', cols: 4, ...formFig([[3, 4], [2, 3], [5, 1], [4, 4]].map(([r, s]) => [tri(r, s, 2), lenAns(r * r + s * s)]), 'c² = a² + b²') },
-      { text: 'find the length of each interval.', cols: 4, ...formFig([q([1, 2], [4, 6]), q([1, 1], [7, 9]), q([1, 4], [6, 2]), q([2, 1], [5, 7])], true) },
-    ],
+    rounds: [{ text: 'find the length of AB.', cols: 2, ...formFig([q([1, 2], [4, 6]), q([-4, -3], [2, 5])], D) }],
   },
   drill: {
-    hint: 'Subtract in the same order for x and y · a negative squared is positive.',
+    hint: 'A negative squared is positive: (−3)² = 9 · round to one decimal place at the end.',
     rounds: [
-      { text: 'use the distance formula to find each length.', ...formFig([qd([2, 3], [8, 11]), qd([1, 5], [6, -7]), qd([-3, 1], [1, 4])], D) },
-      { text: 'find each length, correct to one decimal place.', ...formFig([qd([-2, -3], [4, 1]), qd([-5, 2], [1, -4]), qd([-1, -6], [3, -2])], true) },
-      { text: 'find the length of each interval on the grid.', ...formFig([[onGrid([-3, -2], [2, 1]), len([-3, -2], [2, 1])], [onGrid([-2, 3], [3, -1]), len([-2, 3], [3, -1])], [onGrid([-4, 1], [2, -2]), len([-4, 1], [2, -2])]], true) },
-      { text: 'each interval is horizontal or vertical. Find its length.', ...formFig([qd([-3, 2], [5, 2]), qd([1, -4], [1, 3]), qd([-6, -1], [-1, -1])], true) },
+      { text: 'find the length of AB.', cols: 2, ...formFig([q([-2, 1], [1, 5]), q([-3, -4], [3, 4])], true) },
+      { text: 'find the length of AB, correct to one decimal place.', cols: 2, ...formFig([q([-4, -2], [1, 3]), q([-3, 4], [3, -1])], true) },
+      { text: 'find the length of AB, correct to one decimal place.', cols: 2, ...formFig([q([-5, -3], [2, 1]), q([-4, 5], [4, 0])], true) },
+    ],
+  },
+  drill2: {
+    hint: 'Read A and B off the grid first: across (x), then up or down (y).',
+    rounds: [
+      { text: 'read A and B, then find the length of AB.', cols: 2, ...formFig([q([-1, -2], [2, 2], { coords: false }), q([-4, 3], [4, -3], { coords: false })], true, L3) },
+      { text: 'read A and B, then find the length of AB, correct to one decimal place.', cols: 2, ...formFig([q([-5, -1], [1, 4], { coords: false }), q([-3, -5], [1, 2], { coords: false })], true, L3) },
+      { text: 'read A and B, then find the length of AB.', cols: 2, ...formFig([q([-5, 2], [4, 2], { coords: false }), q([3, -5], [3, 3], { coords: false })], true, L3) },
     ],
   },
   medium: {
-    ex: { stem: 'Give lengths correct to one decimal place where needed.', parts: [
-      { t: 'Length', fig: pair([-2, 5], [4, -3], { ask: 'd = ?', size: 22, maxH: 12 }) },
-      { t: 'Length', fig: onGrid([-3, -2], [3, 1], { x: [-4, 4], y: [-3, 3], k: 2.4 }) },
-      { t: 'Perimeter', fig: plane({ x: [-1, 5], y: [-1, 4], k: 3, poly: [[0, 0], [4, 0], [0, 3]], pts: [[4, 0, '(4, 0)', 's'], [0, 3, '(0, 3)', 'e']], notes: [[1.3, 0.8, 'P = ?']] }) },
-      { t: 'Isosceles?', fig: plane({ x: [0, 6], y: [0, 6], k: 2.6, axes: false, poly: [[1, 1], [5, 1], [3, 5]], pts: [[1, 1, 'P(1, 1)', 's'], [5, 1, 'Q(5, 1)', 's'], [3, 5, 'R(3, 5)', 'e']] }) }] },
-    exAns: [distWork([-2, 5], [4, -3]), distWork([-3, -2], [3, 1]), 'AB = √(4² + 3²) = 5, so P = 4 + 3 + 5 = 12',
-      `PR = √(2² + 4²) = √20 and QR = √((−2)² + 4²) = √20, so PR = QR: isosceles`],
+    ex: { stem: 'Read the points, then find each length. Round to one decimal place where needed.', parts: [
+      { t: 'Length', fig: interval([-4, -1], [4, 5], { size: 'mid', coords: false }) }, { t: 'Length', fig: interval([-2, -3], [3, 2], { size: 'mid', coords: false }) },
+      { t: 'Length', fig: interval([-5, 4], [1, -4], { size: 'mid', coords: false }) }, { t: 'Length', fig: interval([2, -4], [-3, 3], { size: 'mid', coords: false }) }] },
+    exAns: [distWork([-4, -1], [4, 5]), distWork([-2, -3], [3, 2]), distWork([-5, 4], [1, -4]), distWork([2, -4], [-3, 3])],
     work: true, set: true,
-    // Less scaffolding than Chapter 10: no Remember hint, and most questions are words for students to set out.
     rounds: [set([
-      mq('Find the length of the interval joining (3, −2) and (9, 6).', len([3, -2], [9, 6])),
-      mq('Find the hypotenuse of a right-angled triangle with shorter sides 9 cm and 12 cm.', '15 cm', { from: 'Ch 2' }),
-      mq('Find the distance between A(−4, 1) and B(2, −7).', len([-4, 1], [2, -7])),
-      mq('Length', len([-3, -1], [3, 2]), { fig: pair([-3, -1], [3, 2], { ask: 'd = ?', size: 22, maxH: 7, axes: false }) }),
-      mq('Solve 3x − 7 = 14.', 'x = 7', { from: 'Ch 7', form: false }),
-      mq('Find the perimeter of the triangle with vertices (0, 0), (6, 0) and (6, 8).', `6 + 8 + 10 = 24 units`),
-      mq('Which point is closer to the origin: A(5, −3) or B(−4, 4)?', `OA = ${len([0, 0], [5, -3])}, OB = ${len([0, 0], [-4, 4])}, so B`, { form: false }),
-      mq('Find the volume of a cylinder with radius 3 cm and height 10 cm, correct to one decimal place.', `V = π × 3² × 10 = ${num(Math.PI * 90, 1)} cm³`, { from: '10.10' }),
-      mq('The interval from (1, 2) to (k, 6) is 5 units long, and k > 1. Find k.', '(k − 1)² + 4² = 25, so k − 1 = 3 and k = 4', { form: false }),
+      mq('Length', len([-4, -3], [4, 3]), { fig: interval([-4, -3], [4, 3], { size: 'small', coords: false }), lines: L3 }),
+      mq('', 'P(−3, 2), Q(4, −1)', { fig: std('small', { pts: [[-3, 2, 'P', 'nw'], [4, -1, 'Q', 'se']] }), from: 'Year 8', lines: ['P', 'Q', 'Check'] }),
+      mq('Length', len([-5, 1], [2, -3]), { fig: interval([-5, 1], [2, -3], { size: 'small', coords: false }), lines: L3 }),
+      mq('Length', len([-1, -4], [4, 4]), { fig: interval([-1, -4], [4, 4], { size: 'small', coords: false }), lines: L3 }),
+      mq('', '6 × 4 = 24 square units', { fig: std('small', { poly: [[-3, -2], [3, -2], [3, 2], [-3, 2]] }), from: '10.4', lines: ['Length', 'Width', 'Area'] }),
+      mq('Length', len([3, -2], [-3, 4]), { fig: interval([3, -2], [-3, 4], { size: 'small', coords: false }), lines: L3 }),
     ])],
   },
   worded: [

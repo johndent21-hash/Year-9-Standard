@@ -9,8 +9,8 @@ for v in "$code" "$code-teacher"; do
 done
 mkdir -p "$R" && rm -f "$R"/*.png
 for v in "$code" "$code-teacher"; do echo "== build $v"; node build.js year9-standard/preview/$v 2>&1 | grep -v "written$" | tail -5; done
-echo "== students' copy"; node "$T/fit.js" year9-standard/preview/$code/Preview-$code.html; s1=$?
-echo "== teacher's copy"; node "$T/fit.js" year9-standard/preview/$code-teacher/Preview-$code-Teacher.html | tail -n +7; s2=$?
+echo "== students' copy"; node "$T/fit.js" year9-standard/preview/$code/Preview-$code.html ${PAGES:-3}; s1=$?
+echo "== teacher's copy"; node "$T/fit.js" year9-standard/preview/$code-teacher/Preview-$code-Teacher.html ${PAGES:-3} | tail -n +7; s2=$?
 pdftoppm -r 160 -png year9-standard/preview/$code/Preview-$code.pdf "$R/student"
 pdftoppm -r 160 -png year9-standard/preview/$code-teacher/Preview-$code-Teacher.pdf "$R/teacher"
 pdftoppm -r 110 -png year9-standard/preview/$code/Preview-$code-Answers.pdf "$R/answers"

@@ -1,8 +1,10 @@
-// Year 9 standard, Chapter 11 Coordinate geometry and graphs (New Century Maths 9, Chapter 11): ten three-page lessons
-// (lib/lesson-two.js) in the format of the Chapter 10 booklet (see ../ch10-surface-area-volume/chapter.js and
-// docs/THREE-PAGE-FORMAT.md). The teacher asked for slightly less scaffolding than Chapter 10: only the first YOU DO
-// round of a new skill prints its formula (later rounds leave the Formula line blank), the Medium page has no Remember
-// hint, and more Medium questions are in words for students to set out themselves.
+// Year 9 standard, Chapter 11 Coordinate geometry and graphs (New Century Maths 9, Chapter 11): ten four-page lessons
+// (lib/lesson-two.js with drill2) in the style of the Chapter 10 booklet. The teacher's brief for this chapter:
+//   page 1 Notes, WE DO Example 1 and the first round; pages 2 and 3 drill on large number planes (two to a row);
+//   page 4 WE DO Example 2, a Medium set on smaller planes (two tagged questions from earlier lessons) and three worded
+//   problems. Questions look the same all through a lesson (the same plane, the same layout; only the numbers change):
+//   points carry their coordinates on pages 1 and 2, letters only on pages 3 and 4. Only page 1 prints the formula.
+//   Diagrams are classic textbook number planes (shapes.js).
 // Textbook 11.09 (direct variation) is PATH and is left out, so lessons 11.9 and 11.10 are textbook 11.10 and 11.11.
 //   node build.js year9-standard/ch11-coordinate-geometry          the students' booklet and the answers
 //   node build.js year9-standard/ch11-coordinate-geometry-teacher  the teacher's copy (Notes boxes filled in)
@@ -22,10 +24,10 @@ const chapter = {
   year: 9, number: 11, title: 'Coordinate geometry and graphs', series: 'Year 9 standard',
   fileName: 'Year9-Standard-Ch11-Coordinate-Geometry-and-Graphs', art: 'silver-seahorse', accent: '#3a1d5e', bodyClass: 'theme-mb theme-gold theme-violet',
   homework: false,
-  coverSub: 'Easy drill, then Medium and worded problems',
-  pagesPerLesson: 3,
+  coverSub: 'Easy drill on number planes, then Medium and worded problems',
+  pagesPerLesson: 4,
   notesBox: 49.5,
-  howto: front.HOWTO_THREE,
+  howto: front.HOWTO_THREE.replace('<b>three pages</b>', '<b>four pages</b>').replace('Pages 1 and 2 are', 'Pages 1, 2 and 3 are').replace('Page 3 is', 'Page 4 is').replace('<b>10.2</b>', '<b>11.2</b>').replace(' Answers with π: <b>one decimal place</b> unless the question says otherwise.', ' Lengths: <b>one decimal place</b> unless the question says otherwise.'),
   plan,
   goals: ['find the length, midpoint and gradient of an interval on the number plane', 'graph straight lines from a table of values, from intercepts and from y = mx + c',
     'find the equation of a straight line from its graph or from two points', 'solve linear equations by reading a graph',

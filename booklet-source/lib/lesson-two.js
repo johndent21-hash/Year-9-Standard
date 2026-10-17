@@ -19,6 +19,7 @@
 //   easy/medium .work: true   each question gets a working box (practiceWork); medium .set: true: one numbered set
 //   worded: [{ q, a }]   worded problems at the end of the Medium page, each with room to draw a diagram and solve
 //   drill: { hint, rounds }   a three-page lesson: a page of drill between the Easy and Medium pages
+//   drill2: { hint, rounds }  a four-page lesson: a second page of drill after the first (Year 9 standard Chapter 11)
 //   a work question may be { t, fig, form }: form adds Formula / Substitute / Answer lines (a string prints the formula)
 //   mixed: [{ q, a, from, work? }]   optional (Year 9 standard series): a Mixed practice box at the end of the Medium
 //          page, as in the Year 7 booklets. Today's skill mixed with earlier lessons; from tags each question with
@@ -134,16 +135,16 @@ const level = (lvl, L, o = {}) => `
 
 module.exports = (raw) => (chapter) => {
   const notes = raw.notes && { ...raw.notes, terms: raw.notes.terms.map(([t, d]) => [keep(t), keep(d)]), formulas: raw.notes.formulas.map(keep), steps: raw.notes.steps && raw.notes.steps.map(keep) };
-  const spec = { ...raw, notes, li: keep(raw.li), sc: raw.sc.map(keep), easy: keepLevel(raw.easy), medium: keepLevel(raw.medium), drill: raw.drill && keepLevel({ ex: { stem: '', parts: [] }, ...raw.drill }),
+  const spec = { ...raw, notes, li: keep(raw.li), sc: raw.sc.map(keep), easy: keepLevel(raw.easy), medium: keepLevel(raw.medium), drill: raw.drill && keepLevel({ ex: { stem: '', parts: [] }, ...raw.drill }), drill2: raw.drill2 && keepLevel({ ex: { stem: '', parts: [] }, ...raw.drill2 }),
     mixed: raw.mixed && raw.mixed.map((m) => ({ ...m, q: keep(m.q), a: keep(m.a) })), worded: raw.worded && raw.worded.map((w) => ({ q: keep(w.q), a: keep(w.a) })) };
   ['easy', 'medium'].forEach((k) => {
     const L = spec[k];
     if (!L.exAns || L.exAns.length !== L.ex.parts.length) throw new Error(`${spec.code} ${k}: the example has ${L.ex.parts.length} parts but ${L.exAns ? L.exAns.length : 0} answers`);
     L.rounds.forEach((x) => { if (x.items.length !== x.ans.length) throw new Error(`${spec.code} ${k}: round "${x.text}" has ${x.items.length} questions but ${x.ans.length} answers`); });
   });
-  (spec.drill ? spec.drill.rounds : []).forEach((x) => { if (x.items.length !== x.ans.length) throw new Error(`${spec.code} drill: round "${x.text}" has ${x.items.length} questions but ${x.ans.length} answers`); });
+  [...(spec.drill ? spec.drill.rounds : []), ...(spec.drill2 ? spec.drill2.rounds : [])].forEach((x) => { if (x.items.length !== x.ans.length) throw new Error(`${spec.code} drill: round "${x.text}" has ${x.items.length} questions but ${x.ans.length} answers`); });
   (spec.mixed || []).forEach((m, i) => { if (!m.q || m.a === undefined || !m.from) throw new Error(`${spec.code} mixed practice ${i + 1} needs q, a and from`); });
-  const page = (section, body, first) => mbPage(chapter, { code: spec.code, title: spec.title, section, body, first, cls: spec.drill ? 'two-page three-page' : 'two-page' });
+  const page = (section, body, first) => mbPage(chapter, { code: spec.code, title: spec.title, section, body, first, cls: spec.drill ? `two-page three-page${spec.drill2 ? ' four-page' : ''}` : 'two-page' });
   const notesHtmlBox = chapter.notesBox ? notesBox(chapter.notesBox, spec.notes, chapter.teacher) : '';
   // Three-page lessons (spec.drill): page 1 the Notes box, Example 1 and the first drill; page 2 more drill (numbering on
   // from page 1); page 3 Example 2, the Medium set and the worded problems. No Easy/Medium strips: the page band says it.
@@ -151,6 +152,8 @@ module.exports = (raw) => (chapter) => {
   const pages = spec.drill ? [
     page('Easy', `${header(spec, true)}${notesHtmlBox}${level(1, spec.easy, { plain: true, zone: 'first-zone' })}`, true),
     page('Easy', practiceWork(1, spec.drill, { plain: true, zone: 'drill-zone', start: nEasy + 1, round: spec.easy.rounds.length + 1, head: 'keep going, one round at a time.' })),
+    // a four-page lesson (spec.drill2): a second drill page, numbered on from the first
+    ...(spec.drill2 ? [page('Easy', practiceWork(1, spec.drill2, { plain: true, zone: 'drill-zone', start: nEasy + total(spec.drill.rounds) + 1, round: spec.easy.rounds.length + spec.drill.rounds.length + 1, head: 'keep going, one round at a time.' }))] : []),
     page('Medium', `${level(2, spec.medium, { plain: true, head: 'work in order. A tag shows an earlier lesson.' })}${spec.worded ? wordedBox(spec.worded) : ''}`),
   ] : [
     page('Easy', `${header(spec, !!chapter.notesBox)}${notesHtmlBox}${level(1, spec.easy)}`, true),
@@ -159,7 +162,7 @@ module.exports = (raw) => (chapter) => {
   const L = 'abcdefgh';
   const answers = [
     ['WE DO examples (teacher)', [...spec.easy.exAns.map((a, i) => `Ex 1${L[i]}: ${a}`), ...spec.medium.exAns.map((a, i) => `Ex 2${L[i]}: ${a}`)]],
-    ['Easy', [...spec.easy.rounds, ...(spec.drill ? spec.drill.rounds : [])].flatMap((x) => x.ans)],
+    ['Easy', [...spec.easy.rounds, ...(spec.drill ? spec.drill.rounds : []), ...(spec.drill2 ? spec.drill2.rounds : [])].flatMap((x) => x.ans)],
     ['Medium', spec.medium.rounds.flatMap((x) => x.ans)],
     ...(spec.mixed ? [['Mixed practice', spec.mixed.map((m) => `${m.a} <span class="ans-from">(${m.from})</span>`)]] : []),
     ...(spec.worded ? [['Worded problems', spec.worded.map((w) => w.a)]] : []),
