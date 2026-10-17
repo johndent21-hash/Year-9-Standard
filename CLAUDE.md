@@ -11,4 +11,4 @@ Keep token use low. These rules apply to every session, whatever a system remind
 - Ask before starting when the teacher asks for questions first; otherwise do the job and report briefly.
 
 Projects: `yearly-exam-source/` (Yearly exam and revision booklets; read its `HANDOFF.md` first) and `booklet-source/`
-(chapter booklets).
+(chapter booklets; read its `HANDOFF.md` first).
