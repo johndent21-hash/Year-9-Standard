@@ -8,7 +8,7 @@ const D = 'd² = (x₂−x₁)² + (y₂−y₁)²';
 const len = (a, b) => lenAns((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2);
 // One question: AB on a plane, its length asked. coords: write the coordinates (pages 1 and 2) or letters only
 const q = (a, b, o = {}) => [interval(a, b, { ask: 'AB = ?', ...o }), len(a, b)];
-const L3 = ['A and B', 'Substitute', 'Answer']; // pages 3 and 4: read the points off the grid first
+const L1 = ['Formula', 'Substitute', 'AB ='], L3 = ['A and B', 'Substitute', 'AB =']; // pages 3 and 4: read the points off the grid first
 const notesFig = () => plane({ x: [0, 6], y: [0, 5], k: 4.6, grid: true, nums: true, segs: [[[1, 1], [5, 4]]], steps: [[[1, 1], [5, 4], 'run = 4', 'rise = 3']],
   pts: [[1, 1, 'A(1, 1)', 'nw'], [5, 4, 'B(5, 4)', 'ne']], notes: [[2.4, 3.3, 'AB = 5', { anchor: 'end', blue: true }]] });
 
@@ -30,22 +30,22 @@ module.exports = {
     exAns: [distWork([1, 1], [4, 5]), distWork([-2, 2], [2, -1]), distWork([-1, 2], [3, -1]), distWork([1, -2], [4, 4])],
     hint: 'Subtract the x-values, subtract the y-values (same order) · square both and add · square root last',
     work: true,
-    rounds: [{ text: 'find the length of AB.', cols: 2, ...formFig([q([1, 2], [4, 6]), q([-4, -3], [2, 5])], D) }],
+    rounds: [{ text: 'find the length of AB. Substitute A and B into the formula.', cols: 2, ...formFig([q([1, 2], [4, 6]), q([-4, -3], [2, 5])], D, L1) }],
   },
   drill: {
     hint: 'A negative squared is positive: (−3)² = 9 · round to one decimal place at the end.',
     rounds: [
-      { text: 'find the length of AB.', cols: 2, ...formFig([q([-2, 1], [1, 5]), q([-3, -4], [3, 4])], true) },
-      { text: 'find the length of AB, correct to one decimal place.', cols: 2, ...formFig([q([-4, -2], [1, 3]), q([-3, 4], [3, -1])], true) },
-      { text: 'find the length of AB, correct to one decimal place.', cols: 2, ...formFig([q([-5, -3], [2, 1]), q([-4, 5], [4, 0])], true) },
+      { text: 'find the length of AB. Substitute A and B into the formula.', cols: 2, ...formFig([q([-2, 1], [1, 5]), q([-3, -4], [3, 4])], true, L1) },
+      { text: 'find the length of AB to one decimal place. Substitute A and B into the formula.', cols: 2, ...formFig([q([-4, -2], [1, 3]), q([-3, 4], [3, -1])], true, L1) },
+      { text: 'find the length of AB to one decimal place. Substitute A and B into the formula.', cols: 2, ...formFig([q([-5, -3], [2, 1]), q([-4, 5], [4, 0])], true, L1) },
     ],
   },
   drill2: {
     hint: 'Read A and B off the grid first: across (x), then up or down (y).',
     rounds: [
-      { text: 'read A and B, then find the length of AB.', cols: 2, ...formFig([q([-1, -2], [2, 2], { coords: false }), q([-4, 3], [4, -3], { coords: false })], true, L3) },
-      { text: 'read A and B, then find the length of AB, correct to one decimal place.', cols: 2, ...formFig([q([-5, -1], [1, 4], { coords: false }), q([-3, -5], [1, 2], { coords: false })], true, L3) },
-      { text: 'read A and B, then find the length of AB.', cols: 2, ...formFig([q([-5, 2], [4, 2], { coords: false }), q([3, -5], [3, 3], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, then find the length of AB.', cols: 2, ...formFig([q([-1, -2], [2, 2], { coords: false }), q([-4, 3], [4, -3], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, then find AB to one decimal place.', cols: 2, ...formFig([q([-5, -1], [1, 4], { coords: false }), q([-3, -5], [1, 2], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, then find the length of AB.', cols: 2, ...formFig([q([-5, 2], [4, 2], { coords: false }), q([3, -5], [3, 3], { coords: false })], true, L3) },
     ],
   },
   medium: {
@@ -55,12 +55,12 @@ module.exports = {
     exAns: [distWork([-4, -1], [4, 5]), distWork([-2, -3], [3, 2]), distWork([-5, 4], [1, -4]), distWork([2, -4], [-3, 3])],
     work: true, set: true,
     rounds: [set([
-      mq('Length', len([-4, -3], [4, 3]), { fig: interval([-4, -3], [4, 3], { size: 'small', coords: false }), lines: L3 }),
-      mq('', 'P(−3, 2), Q(4, −1)', { fig: std('small', { pts: [[-3, 2, 'P', 'nw'], [4, -1, 'Q', 'se']] }), from: 'Year 8', lines: ['P', 'Q', 'Check'] }),
-      mq('Length', len([-5, 1], [2, -3]), { fig: interval([-5, 1], [2, -3], { size: 'small', coords: false }), lines: L3 }),
-      mq('Length', len([-1, -4], [4, 4]), { fig: interval([-1, -4], [4, 4], { size: 'small', coords: false }), lines: L3 }),
-      mq('', '6 × 4 = 24 square units', { fig: std('small', { poly: [[-3, -2], [3, -2], [3, 2], [-3, 2]] }), from: '10.4', lines: ['Length', 'Width', 'Area'] }),
-      mq('Length', len([3, -2], [-3, 4]), { fig: interval([3, -2], [-3, 4], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the length of AB.', len([-4, -3], [4, 3]), { fig: interval([-4, -3], [4, 3], { size: 'small', coords: false }), lines: L3 }),
+      mq('Write P and Q.', 'P(−3, 2), Q(4, −1)', { fig: std('small', { pts: [[-3, 2, 'P', 'nw'], [4, -1, 'Q', 'se']] }), from: 'Year 8', lines: ['P', 'Q', 'Check'] }),
+      mq('Find the length of AB.', len([-5, 1], [2, -3]), { fig: interval([-5, 1], [2, -3], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the length of AB.', len([-1, -4], [4, 4]), { fig: interval([-1, -4], [4, 4], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the area.', '6 × 4 = 24 square units', { fig: std('small', { poly: [[-3, -2], [3, -2], [3, 2], [-3, 2]] }), from: '10.4', lines: ['Length', 'Width', 'Area'] }),
+      mq('Find the length of AB.', len([3, -2], [-3, 4]), { fig: interval([3, -2], [-3, 4], { size: 'small', coords: false }), lines: L3 }),
     ])],
   },
   worded: [

@@ -1205,3 +1205,7 @@ ul.plain { list-style: none; padding-left: 0; }
 .four-page .drill-zone .wq-top .wq-fig .graph, .four-page .first-zone .wq-top .wq-fig .graph { width: min(var(--w), 84mm); max-height: 48mm; }
 .four-page .set-zone .wq-top .wq-fig .graph { width: min(var(--w), 46mm); max-height: 35mm; }
 .theme-violet .two-page.four-page .ex-part .inline-fig .graph { max-height: 35mm; }
+.four-page .wp { --wp-h: 39mm; }
+.four-page .set-zone .wq.fig.form .wq-top { flex-direction: column; align-items: stretch; gap: 0.4mm; }
+.four-page .set-zone .wq-top .wq-head { max-width: none; }
+.four-page .set-zone .wq-top .wq-head.short .q-text { white-space: normal; }

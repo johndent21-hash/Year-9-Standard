@@ -25,22 +25,22 @@ module.exports = {
     exAns: ['m = 3, c = 1', 'y = −x + 8: m = −1, c = 8', 'm = ⅕, c = 4', 'Plot (0, −3); go across 1, up 2 to (1, −1); rule the line'],
     hint: 'm is the number in front of x (with its sign) · c is the number on its own · start at (0, c), then across 1 and up m',
     work: true,
-    rounds: [{ text: 'state m and c, then graph the line.', cols: 2, ...formFig([gq('y = 2x + 1', 2, 1), gq('y = −x + 4', -1, 4)], 'y = mx + c', L1) }],
+    rounds: [{ text: 'write m and c, plot (0, c), then go across 1 and up (or down) m. Rule the line.', cols: 2, ...formFig([gq('y = 2x + 1', 2, 1), gq('y = −x + 4', -1, 4)], 'y = mx + c', L1) }],
   },
   drill: {
     hint: 'A negative m: go across 1 and down · m = ½: go across 2 and up 1.',
     rounds: [
-      { text: 'state m and c, then graph the line.', cols: 2, ...formFig([gq('y = 3x − 2', 3, -2), gq('y = −2x + 3', -2, 3)], true, L1) },
-      { text: 'state m and c, then graph the line.', cols: 2, ...formFig([gq('y = x − 4', 1, -4), gq('y = ½x + 2', [1, 2], 2)], true, L1) },
-      { text: 'state m and c, then graph the line.', cols: 2, ...formFig([gq('y = −x − 1', -1, -1), gq('y = 2x', 2, 0)], true, L1) },
+      { text: 'write m and c, plot (0, c), then go across 1 and up (or down) m. Rule the line.', cols: 2, ...formFig([gq('y = 3x − 2', 3, -2), gq('y = −2x + 3', -2, 3)], true, L1) },
+      { text: 'write m and c, plot (0, c), then go across 1 and up (or down) m. Rule the line.', cols: 2, ...formFig([gq('y = x − 4', 1, -4), gq('y = ½x + 2', [1, 2], 2)], true, L1) },
+      { text: 'write m and c, plot (0, c), then go across 1 and up (or down) m. Rule the line.', cols: 2, ...formFig([gq('y = −x − 1', -1, -1), gq('y = 2x', 2, 0)], true, L1) },
     ],
   },
   drill2: {
     hint: 'Get y on its own first: move the x-term, then divide every term.',
     rounds: [
-      { text: 'rearrange into y = mx + c, then graph the line.', cols: 2, ...formFig([gq('2x + y = 4', -2, 4), gq('y − 3x = 1', 3, 1)], true, L2) },
-      { text: 'rearrange into y = mx + c, then graph the line.', cols: 2, ...formFig([gq('x + y = −2', -1, -2), gq('2y = x + 4', [1, 2], 2)], true, L2) },
-      { text: 'rearrange into y = mx + c, then graph the line.', cols: 2, ...formFig([gq('4x + 2y = 6', -2, 3), gq('y + 2 = x', 1, -2)], true, L2) },
+      { text: 'rearrange into y = mx + c, write m and c, then graph the line.', cols: 2, ...formFig([gq('2x + y = 4', -2, 4), gq('y − 3x = 1', 3, 1)], true, L2) },
+      { text: 'rearrange into y = mx + c, write m and c, then graph the line.', cols: 2, ...formFig([gq('x + y = −2', -1, -2), gq('2y = x + 4', [1, 2], 2)], true, L2) },
+      { text: 'rearrange into y = mx + c, write m and c, then graph the line.', cols: 2, ...formFig([gq('4x + 2y = 6', -2, 3), gq('y + 2 = x', 1, -2)], true, L2) },
     ],
   },
   medium: {
@@ -49,12 +49,12 @@ module.exports = {
     exAns: ['2y = −3x + 12, so y = −1.5x + 6: m = −1.5, c = 6', 'Plot (0, 4); go across 1, down 2 to (1, 2); rule the line', eq(-3, 5), `Parallel, so m = 4: ${eq(4, 3)}`],
     work: true, set: true,
     rounds: [set([
-      mq('y = −3x + 2', gq('', -3, 2)[1], { fig: std('small', { k: 2.2 }), lines: L2 }),
-      mq('', '(2, 0) and (0, 4)', { fig: std('small', { lines: [[{ m: -2, c: 4 }]], notes: [freeCorner('small', [], 'y = −2x + 4', [(x) => -2 * x + 4])] }), from: '11.4', lines: ['x-intercept', 'y-intercept', 'Check'] }),
-      mq('2x + y = −1', gq('', -2, -1)[1], { fig: std('small', { k: 2.2 }), lines: L2 }),
-      mq('y = −½x + 1', gq('', [-1, 2], 1)[1], { fig: std('small', { k: 2.2 }), lines: L2 }),
-      mq('', frac(4, 8), { fig: interval([-4, -1], [4, 3], { size: 'small', coords: false, ask: 'm = ?' }), from: '11.3', lines: ['A and B', 'Substitute', 'Answer'] }),
-      mq('3x − y = 2', gq('', 3, -2)[1], { fig: std('small', { k: 2.2 }), lines: L2 }),
+      mq('Graph y = −3x + 2.', gq('', -3, 2)[1], { fig: std('small', { k: 2.05 }), lines: L2 }),
+      mq('Find the intercepts.', '(2, 0) and (0, 4)', { fig: std('small', { lines: [[{ m: -2, c: 4 }]], notes: [freeCorner('small', [], 'y = −2x + 4', [(x) => -2 * x + 4])] }), from: '11.4', lines: ['x-intercept', 'y-intercept', 'Check'] }),
+      mq('Graph 2x + y = −1.', gq('', -2, -1)[1], { fig: std('small', { k: 2.05 }), lines: L2 }),
+      mq('Graph y = −½x + 1.', gq('', [-1, 2], 1)[1], { fig: std('small', { k: 2.05 }), lines: L2 }),
+      mq('Find the gradient.', frac(4, 8), { fig: interval([-4, -1], [4, 3], { size: 'small', coords: false, ask: 'm = ?' }), from: '11.3', lines: ['A and B', 'Substitute', 'Answer'] }),
+      mq('Graph 3x − y = 2.', gq('', 3, -2)[1], { fig: std('small', { k: 2.05 }), lines: L2 }),
     ])],
   },
   worded: [

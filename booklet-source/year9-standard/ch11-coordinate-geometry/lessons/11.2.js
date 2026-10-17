@@ -5,7 +5,7 @@ const { std, interval, plane } = require('../shapes');
 
 const MF = 'M = ((x₁+x₂)÷2, (y₁+y₂)÷2)';
 const q = (a, b, o = {}) => [interval(a, b, { ask: 'M = ?', ...o }), P(mid(a, b))];
-const L3 = ['A and B', 'Substitute', 'Answer'];
+const L1 = ['Formula', 'Substitute', 'M ='], L3 = ['A and B', 'Substitute', 'M =']
 const notesFig = () => plane({ x: [0, 7], y: [0, 6], k: 4.2, grid: true, nums: true, segs: [[[1, 1], [5, 5]]],
   pts: [[1, 1, 'A(1, 1)', 'e'], [5, 5, 'B(5, 5)', 'w'], [3, 3]], notes: [[3.3, 2.6, 'M(3, 3)', { anchor: 'start', blue: true }]] });
 
@@ -26,22 +26,22 @@ module.exports = {
     exAns: [midWork([1, 1], [5, 3]), midWork([-4, 3], [2, -1]), midWork([-3, -4], [3, 2]), midWork([-1, 4], [4, -3])],
     hint: 'Add the two x-values and halve · add the two y-values and halve · write the answer as a point',
     work: true,
-    rounds: [{ text: 'find the midpoint M of AB.', cols: 2, ...formFig([q([2, 1], [4, 5]), q([-4, -2], [2, 4])], MF) }],
+    rounds: [{ text: 'find the midpoint M of AB: average the x-values, then average the y-values.', cols: 2, ...formFig([q([2, 1], [4, 5]), q([-4, -2], [2, 4])], MF, L1) }],
   },
   drill: {
     hint: 'Watch the signs: (−5 + 1) ÷ 2 = −2 · a midpoint can be a decimal, like 0.5.',
     rounds: [
-      { text: 'find the midpoint M of AB.', cols: 2, ...formFig([q([-3, 1], [1, 5]), q([-5, -3], [1, -1])], true) },
-      { text: 'find the midpoint M of AB. The answers have halves.', cols: 2, ...formFig([q([-2, -3], [3, 2]), q([-4, 4], [1, -1])], true) },
-      { text: 'find the midpoint M of AB.', cols: 2, ...formFig([q([-5, 2], [4, -4]), q([-3, -5], [4, 3])], true) },
+      { text: 'find the midpoint M of AB: average the x-values, then average the y-values.', cols: 2, ...formFig([q([-3, 1], [1, 5]), q([-5, -3], [1, -1])], true, L1) },
+      { text: 'find the midpoint M of AB. Halves are fine, like 0.5 or −1.5.', cols: 2, ...formFig([q([-2, -3], [3, 2]), q([-4, 4], [1, -1])], true, L1) },
+      { text: 'find the midpoint M of AB: average the x-values, then average the y-values.', cols: 2, ...formFig([q([-5, 2], [4, -4]), q([-3, -5], [4, 3])], true, L1) },
     ],
   },
   drill2: {
     hint: 'Read A and B off the grid first: across (x), then up or down (y).',
     rounds: [
-      { text: 'read A and B, then find the midpoint M.', cols: 2, ...formFig([q([-4, -4], [2, 2], { coords: false }), q([-3, 5], [5, -1], { coords: false })], true, L3) },
-      { text: 'read A and B, then find the midpoint M.', cols: 2, ...formFig([q([-5, -1], [2, 4], { coords: false }), q([1, -5], [4, 4], { coords: false })], true, L3) },
-      { text: 'read A and B, then find the midpoint M.', cols: 2, ...formFig([q([-4, 1], [4, 1], { coords: false }), q([2, -5], [2, 3], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, then find the midpoint M of AB.', cols: 2, ...formFig([q([-4, -4], [2, 2], { coords: false }), q([-3, 5], [5, -1], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, then find the midpoint M of AB.', cols: 2, ...formFig([q([-5, -1], [2, 4], { coords: false }), q([1, -5], [4, 4], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, then find the midpoint M of AB.', cols: 2, ...formFig([q([-4, 1], [4, 1], { coords: false }), q([2, -5], [2, 3], { coords: false })], true, L3) },
     ],
   },
   medium: {
@@ -51,12 +51,12 @@ module.exports = {
     exAns: [midWork([-4, -1], [4, 5]), midWork([-3, 3], [4, -4]), midWork([-5, -2], [1, 4]), 'x: 2 × 1 − (−3) = 5, y: 2 × (−1) − 2 = −4, so B = (5, −4)'],
     work: true, set: true,
     rounds: [set([
-      mq('Midpoint', P(mid([-4, -3], [2, 3])), { fig: interval([-4, -3], [2, 3], { size: 'small', coords: false }), lines: L3 }),
-      mq('', lenAns(25), { fig: interval([-2, -3], [1, 1], { size: 'small', coords: false, ask: 'AB = ?' }), from: '11.1', lines: L3 }),
-      mq('Midpoint', P(mid([-4, 4], [3, -2])), { fig: interval([-4, 4], [3, -2], { size: 'small', coords: false }), lines: L3 }),
-      mq('Midpoint', P(mid([-3, -4], [4, 2])), { fig: interval([-3, -4], [4, 2], { size: 'small', coords: false }), lines: L3 }),
-      mq('', '2 × (6 + 5) = 22 units', { fig: std('small', { poly: [[-4, -2], [2, -2], [2, 3], [-4, 3]] }), from: '10.4', lines: ['Length', 'Width', 'Perimeter'] }),
-      mq('Midpoint', P(mid([1, -4], [-4, 3])), { fig: interval([1, -4], [-4, 3], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the midpoint M.', P(mid([-4, -3], [2, 3])), { fig: interval([-4, -3], [2, 3], { size: 'small', coords: false }), lines: L3 }),
+      mq('How long is AB?', lenAns(25), { fig: interval([-2, -3], [1, 1], { size: 'small', coords: false, ask: 'AB = ?' }), from: '11.1', lines: L3 }),
+      mq('Find the midpoint M.', P(mid([-4, 4], [3, -2])), { fig: interval([-4, 4], [3, -2], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the midpoint M.', P(mid([-3, -4], [4, 2])), { fig: interval([-3, -4], [4, 2], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the perimeter.', '2 × (6 + 5) = 22 units', { fig: std('small', { poly: [[-4, -2], [2, -2], [2, 3], [-4, 3]] }), from: '10.4', lines: ['Length', 'Width', 'Perimeter'] }),
+      mq('Find the midpoint M.', P(mid([1, -4], [-4, 3])), { fig: interval([1, -4], [-4, 3], { size: 'small', coords: false }), lines: L3 }),
     ])],
   },
   worded: [

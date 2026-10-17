@@ -10,7 +10,7 @@ const ans = (m, c) => `y: ${X.map((x) => n(m * x + c)).join(', ')}; x-intercept 
 // One drill question: the rule's table beside a blank plane
 const tq = (m, c) => [tableGraph(eq(m, c), X), ans(m, c)];
 // A Medium question: the line drawn, its equation in a free corner, the intercepts asked
-const iq = (m, c, label = eq(m, c)) => [std('small', { k: 2.2, lines: [[{ m, c }]], notes: [freeCorner('small', [], label, [(x) => m * x + c])] }), `(${n(-c / m)}, 0) and (0, ${n(c)})`];
+const iq = (m, c, label = eq(m, c)) => [std('small', { k: 1.95, lines: [[{ m, c }]], notes: [freeCorner('small', [], label, [(x) => m * x + c])] }), `(${n(-c / m)}, 0) and (0, ${n(c)})`];
 const notesFig = () => graph({ x: [-2, 4], y: [-3, 4], k: 4, lines: [[{ m: 2, c: -2 }, 'y = 2x − 2', 2.8, 'w']], pts: [[1, 0, '(1, 0)', 'se'], [0, -2, '(0, −2)', 'w']] });
 
 module.exports = {
@@ -30,22 +30,22 @@ module.exports = {
     exAns: [`y: ${X.map((x) => n(2 * x + 1)).join(', ')}`, 'Plot (−2, −3), (−1, −1), (0, 1), (1, 3), (2, 5) and rule a line', 'y = 0: 2x + 1 = 0, x = −½ → (−½, 0); x = 0: y = 1 → (0, 1)', '2 × 3 + 1 = 7 ✓ Yes'],
     hint: 'Substitute each x into the rule · brackets for negatives: 2 × (−2) + 1 = −3 · plot every point, then rule the line',
     work: true,
-    rounds: [{ text: 'complete the table, graph the line, then give both intercepts.', cols: 2, ...formFig([tq(1, 2), tq(-1, 3)], true, LINES) }],
+    rounds: [{ text: 'fill in the y-values, plot the points, rule the line, then write both intercepts.', cols: 2, ...formFig([tq(1, 2), tq(-1, 3)], true, LINES) }],
   },
   drill: {
     hint: 'x-intercept: where the line crosses the x-axis (y = 0) · y-intercept: where it crosses the y-axis (x = 0)',
     rounds: [
-      { text: 'complete the table, graph the line, then give both intercepts.', cols: 2, ...formFig([tq(2, -2), tq(1, -2)], true, LINES) },
-      { text: 'complete the table, graph the line, then give both intercepts.', cols: 2, ...formFig([tq(-2, 2), tq(3, 0)], true, LINES) },
-      { text: 'complete the table, graph the line, then give both intercepts.', cols: 2, ...formFig([tq(1, 3), tq(-1, -2)], true, LINES) },
+      { text: 'fill in the y-values, plot the points, rule the line, then write both intercepts.', cols: 2, ...formFig([tq(2, -2), tq(1, -2)], true, LINES) },
+      { text: 'fill in the y-values, plot the points, rule the line, then write both intercepts.', cols: 2, ...formFig([tq(-2, 2), tq(3, 0)], true, LINES) },
+      { text: 'fill in the y-values, plot the points, rule the line, then write both intercepts.', cols: 2, ...formFig([tq(1, 3), tq(-1, -2)], true, LINES) },
     ],
   },
   drill2: {
     hint: 'A fraction rule: ½ × (−2) = −1 · a negative gradient: the line goes down to the right.',
     rounds: [
-      { text: 'complete the table, graph the line, then give both intercepts.', cols: 2, ...formFig([tq(0.5, 1), tq(-0.5, 2)], true, LINES) },
-      { text: 'complete the table, graph the line, then give both intercepts.', cols: 2, ...formFig([tq(2, -4), tq(-3, 0)], true, LINES) },
-      { text: 'complete the table, graph the line, then give both intercepts.', cols: 2, ...formFig([tq(-2, -2), tq(1, -3)], true, LINES) },
+      { text: 'fill in the y-values, plot the points, rule the line, then write both intercepts.', cols: 2, ...formFig([tq(0.5, 1), tq(-0.5, 2)], true, LINES) },
+      { text: 'fill in the y-values, plot the points, rule the line, then write both intercepts.', cols: 2, ...formFig([tq(2, -4), tq(-3, 0)], true, LINES) },
+      { text: 'fill in the y-values, plot the points, rule the line, then write both intercepts.', cols: 2, ...formFig([tq(-2, -2), tq(1, -3)], true, LINES) },
     ],
   },
   medium: {
@@ -54,12 +54,12 @@ module.exports = {
     exAns: ['Table y: 7, 5, 3, 1, −1 (x = −2 to 2); plot and rule the line', 'y = 0: −2x + 3 = 0, x = 1.5 → (1.5, 0); x = 0: (0, 3)', 'y = 0: 3x = 6, x = 2 → (2, 0); x = 0: 2y = 6, y = 3 → (0, 3)', 'x = −2: a vertical line through −2 on the x-axis; y = 3: a horizontal line through 3 on the y-axis'],
     work: true, set: true,
     rounds: [set([
-      mq('Intercepts', iq(2, -4)[1], { fig: iq(2, -4)[0], lines: ['x-intercept', 'y-intercept', 'Check'] }),
-      mq('', frac(6, 4), { fig: interval([-3, -2], [1, 4], { size: 'small', coords: false, ask: 'm = ?', k: 2.2 }), from: '11.3', lines: ['A and B', 'Substitute', 'Answer'] }),
-      mq('Intercepts', iq(-1, 3)[1], { fig: iq(-1, 3)[0], lines: ['x-intercept', 'y-intercept', 'Check'] }),
-      mq('Intercepts', iq(0.5, 2)[1], { fig: iq(0.5, 2)[0], lines: ['x-intercept', 'y-intercept', 'Check'] }),
-      mq('', lenAns(25), { fig: interval([-2, -1], [2, 2], { size: 'small', coords: false, ask: 'AB = ?', k: 2.2 }), from: '11.1', lines: ['A and B', 'Substitute', 'Answer'] }),
-      mq('Intercepts', iq(-1, -3, 'x + y = −3')[1], { fig: iq(-1, -3, 'x + y = −3')[0], lines: ['x-intercept', 'y-intercept', 'Check'] }),
+      mq('Find both intercepts.', iq(2, -4)[1], { fig: iq(2, -4)[0], lines: ['x-intercept', 'y-intercept', 'Check'] }),
+      mq('Find the gradient.', frac(6, 4), { fig: interval([-3, -2], [1, 4], { size: 'small', coords: false, ask: 'm = ?', k: 1.95 }), from: '11.3', lines: ['A and B', 'Substitute', 'Answer'] }),
+      mq('Find both intercepts.', iq(-1, 3)[1], { fig: iq(-1, 3)[0], lines: ['x-intercept', 'y-intercept', 'Check'] }),
+      mq('Find both intercepts.', iq(0.5, 2)[1], { fig: iq(0.5, 2)[0], lines: ['x-intercept', 'y-intercept', 'Check'] }),
+      mq('How long is AB?', lenAns(25), { fig: interval([-2, -1], [2, 2], { size: 'small', coords: false, ask: 'AB = ?', k: 1.95 }), from: '11.1', lines: ['A and B', 'Substitute', 'Answer'] }),
+      mq('Find both intercepts.', iq(-1, -3, 'x + y = −3')[1], { fig: iq(-1, -3, 'x + y = −3')[0], lines: ['x-intercept', 'y-intercept', 'Check'] }),
     ])],
   },
   worded: [

@@ -27,22 +27,22 @@ module.exports = {
     exAns: [`c = 2, m = 2 ÷ 2 = 1: ${eq(1, 2)}`, `c = 3, m = −4 ÷ 2 = −2: ${eq(-2, 3)}`, `c = −1, m = 2 ÷ 4 = ½: ${eq([1, 2], -1)}`, `c = 1, m = −3 ÷ 3 = −1: ${eq(-1, 1)}`],
     hint: 'c: where the line crosses the y-axis · m = rise ÷ run from A to B · then write y = mx + c',
     work: true,
-    rounds: [{ text: 'find the equation of the line.', cols: 2, ...formFig([lq(2, 1, 1, [0, 1], [2, 5]), lq(-1, 1, 3, [0, 3], [4, -1])], 'y = mx + c', L1) }],
+    rounds: [{ text: 'find m from A to B and read c on the y-axis, then write y = mx + c.', cols: 2, ...formFig([lq(2, 1, 1, [0, 1], [2, 5]), lq(-1, 1, 3, [0, 3], [4, -1])], 'y = mx + c', L1) }],
   },
   drill: {
     hint: 'Check your equation: substitute B’s x-value and you should get B’s y-value.',
     rounds: [
-      { text: 'find the equation of the line.', cols: 2, ...formFig([lq(3, 1, -2, [0, -2], [2, 4]), lq(-2, 1, 1, [0, 1], [2, -3])], true, L1) },
-      { text: 'find the equation of the line.', cols: 2, ...formFig([lq(1, 2, 1, [0, 1], [4, 3]), lq(1, 1, -3, [0, -3], [4, 1])], true, L1) },
-      { text: 'find the equation of the line.', cols: 2, ...formFig([lq(-1, 2, 2, [0, 2], [-4, 4]), lq(2, 1, 3, [0, 3], [-2, -1])], true, L1) },
+      { text: 'find m from A to B and read c on the y-axis, then write y = mx + c.', cols: 2, ...formFig([lq(3, 1, -2, [0, -2], [2, 4]), lq(-2, 1, 1, [0, 1], [2, -3])], true, L1) },
+      { text: 'find m from A to B and read c on the y-axis, then write y = mx + c.', cols: 2, ...formFig([lq(1, 2, 1, [0, 1], [4, 3]), lq(1, 1, -3, [0, -3], [4, 1])], true, L1) },
+      { text: 'find m from A to B and read c on the y-axis, then write y = mx + c.', cols: 2, ...formFig([lq(-1, 2, 2, [0, 2], [-4, 4]), lq(2, 1, 3, [0, 3], [-2, -1])], true, L1) },
     ],
   },
   drill2: {
     hint: 'Read A and B off the grid · read c where the line crosses the y-axis.',
     rounds: [
-      { text: 'read A and B, then find the equation of the line.', cols: 2, ...formFig([lq(2, 1, -1, [-1, -3], [2, 3], { coords: false }), lq(-1, 1, 2, [-2, 4], [3, -1], { coords: false })], true, L3) },
-      { text: 'read A and B, then find the equation of the line.', cols: 2, ...formFig([lq(1, 2, -1, [-2, -2], [4, 1], { coords: false }), lq(-3, 1, 2, [-1, 5], [1, -1], { coords: false })], true, L3) },
-      { text: 'read A and B, then find the equation of the line.', cols: 2, ...formFig([lq(1, 1, 1, [-4, -3], [2, 3], { coords: false }), lq(-2, 1, -2, [-3, 4], [1, -4], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, find m and c, then write y = mx + c.', cols: 2, ...formFig([lq(2, 1, -1, [-1, -3], [2, 3], { coords: false }), lq(-1, 1, 2, [-2, 4], [3, -1], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, find m and c, then write y = mx + c.', cols: 2, ...formFig([lq(1, 2, -1, [-2, -2], [4, 1], { coords: false }), lq(-3, 1, 2, [-1, 5], [1, -1], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, find m and c, then write y = mx + c.', cols: 2, ...formFig([lq(1, 1, 1, [-4, -3], [2, 3], { coords: false }), lq(-2, 1, -2, [-3, 4], [1, -4], { coords: false })], true, L3) },
     ],
   },
   medium: {
@@ -52,12 +52,12 @@ module.exports = {
     exAns: [`m = −4 ÷ 6 = −⅔, c = 2: ${eq([-2, 3], 2)}`, `m = 6 ÷ 2 = 3; −1 = 3 × 1 + c, c = −4: ${eq(3, -4)}`, `m = −5 ÷ 5 = −1, c = 1: ${eq(-1, 1)}`, `m = 2 ÷ 8 = ¼, c = 2: ${eq([1, 4], 2)}`],
     work: true, set: true,
     rounds: [set([
-      mq('Equation', lq(4, 1, -3, [0, -3], [2, 5])[1], { fig: lineAB(4, -3, [0, -3], [2, 5], { size: 'small', coords: false }), lines: L3 }),
-      mq('', 'm = −2, c = 3: (0, 3) and (1, 1)', { fig: std('small', { notes: [freeCorner('small', [], 'y = 3 − 2x')] }), from: '11.5', lines: ['m and c', 'Two points', 'Graph'] }),
-      mq('Equation', lq(-1, 2, 3, [-2, 4], [4, 1])[1], { fig: lineAB(-0.5, 3, [-2, 4], [4, 1], { size: 'small', coords: false }), lines: L3 }),
-      mq('Equation', lq(3, 4, 0, [-4, -3], [4, 3])[1], { fig: lineAB(0.75, 0, [-4, -3], [4, 3], { size: 'small', coords: false }), lines: L3 }),
-      mq('', '(4, 0) and (0, −4)', { fig: std('small', { lines: [[{ m: 1, c: -4 }]], notes: [freeCorner('small', [], 'y = x − 4', [(x) => x - 4])] }), from: '11.4', lines: ['x-intercept', 'y-intercept', 'Check'] }),
-      mq('Equation', lq(-3, 1, -1, [-2, 5], [1, -4])[1], { fig: lineAB(-3, -1, [-2, 5], [1, -4], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the equation.', lq(4, 1, -3, [0, -3], [2, 5])[1], { fig: lineAB(4, -3, [0, -3], [2, 5], { size: 'small', coords: false }), lines: L3 }),
+      mq('Graph y = 3 − 2x.', 'm = −2, c = 3: (0, 3) and (1, 1)', { fig: std('small', { notes: [freeCorner('small', [], 'y = 3 − 2x')] }), from: '11.5', lines: ['m and c', 'Two points', 'Graph'] }),
+      mq('Find the equation.', lq(-1, 2, 3, [-2, 4], [4, 1])[1], { fig: lineAB(-0.5, 3, [-2, 4], [4, 1], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the equation.', lq(3, 4, 0, [-4, -3], [4, 3])[1], { fig: lineAB(0.75, 0, [-4, -3], [4, 3], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the intercepts.', '(4, 0) and (0, −4)', { fig: std('small', { lines: [[{ m: 1, c: -4 }]], notes: [freeCorner('small', [], 'y = x − 4', [(x) => x - 4])] }), from: '11.4', lines: ['x-intercept', 'y-intercept', 'Check'] }),
+      mq('Find the equation.', lq(-3, 1, -1, [-2, 5], [1, -4])[1], { fig: lineAB(-3, -1, [-2, 5], [1, -4], { size: 'small', coords: false }), lines: L3 }),
     ])],
   },
   worded: [

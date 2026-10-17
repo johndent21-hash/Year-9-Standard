@@ -18,7 +18,7 @@ const cross = (l1, l2, size = 'small', label = true) => {
   const X = (l2[1] - l1[1]) / (l1[0] - l2[0]), Y = l1[0] * X + l1[1];
   return [std(size, { lines: [[{ m: l1[0], c: l1[1] }], [{ m: l2[0], c: l2[1] }]], tags: label ? [tagFor(size, ...l1, eq(...l1), 1), tagFor(size, ...l2, eq(...l2), -1)] : [] }), `(${n(X)}, ${n(Y)})`];
 };
-const L1 = ['Read x', 'Check', 'Answer'], L3 = ['Draw y =', 'Read x', 'Check'];
+const L1 = ['Meet at', 'Check', 'x ='], L3 = ['Draw y =', 'Check', 'x =']
 const notesFig = () => graph({ x: [-1, 4], y: [-4, 6], k: 3, lines: [[{ m: 3, c: -4 }, 'y = 3x − 4', 1.2, 'w'], [{ y: 5 }, 'y = 5', 0.2, 'n']], pts: [[3, 5, '(3, 5)', 'e']] });
 
 module.exports = {
@@ -38,22 +38,22 @@ module.exports = {
     exAns: ['The lines meet at x = 2. Check: 2 × 2 + 1 = 5 ✓', 'x = −2. Check: 2 × (−2) + 1 = −3 ✓', 'x = 3. Check: −3 + 4 = 1 ✓', 'x = 4. Check: ½ × 4 + 2 = 4 ✓'],
     hint: 'Find where the dashed line meets the other line · read x straight down (or up) to the x-axis · check by substituting',
     work: true,
-    rounds: [{ text: 'read x where the lines meet, then check.', cols: 2, ...formFig([sq(2, 1, 5), sq(-1, 3, 5)], true, L1) }],
+    rounds: [{ text: 'find where the two lines meet. Read the x-value there, then check it.', cols: 2, ...formFig([sq(2, 1, 5), sq(-1, 3, 5)], true, L1) }],
   },
   drill: {
     hint: 'The answer is the x-value of the meeting point, not the y-value.',
     rounds: [
-      { text: 'read x where the lines meet, then check.', cols: 2, ...formFig([sq(2, -1, 3), sq(1, 2, -1)], true, L1) },
-      { text: 'read x where the lines meet, then check.', cols: 2, ...formFig([sq(-2, 1, -3), sq(0.5, 1, 3)], true, L1) },
-      { text: 'read x where the lines meet, then check.', cols: 2, ...formFig([sq(-1, -2, 2), sq(3, 1, -5)], true, L1) },
+      { text: 'find where the two lines meet. Read the x-value there, then check it.', cols: 2, ...formFig([sq(2, -1, 3), sq(1, 2, -1)], true, L1) },
+      { text: 'find where the two lines meet. Read the x-value there, then check it.', cols: 2, ...formFig([sq(-2, 1, -3), sq(0.5, 1, 3)], true, L1) },
+      { text: 'find where the two lines meet. Read the x-value there, then check it.', cols: 2, ...formFig([sq(-1, -2, 2), sq(3, 1, -5)], true, L1) },
     ],
   },
   drill2: {
     hint: 'To solve 2x − 3 = 1, draw the dashed line y = 1 across the plane first.',
     rounds: [
-      { text: 'draw the line y = k, then solve.', cols: 2, ...formFig([sq(2, -3, 1, { drawK: false }), sq(-1, 2, 5, { drawK: false })], true, L3) },
-      { text: 'draw the line y = k, then solve.', cols: 2, ...formFig([sq(0.5, -1, 1, { drawK: false }), sq(3, 2, -4, { drawK: false })], true, L3) },
-      { text: 'draw the line y = k, then solve.', cols: 2, ...formFig([sq(-2, -1, 3, { drawK: false }), sq(1, -4, 0, { drawK: false })], true, L3) },
+      { text: 'draw the dashed line y = k across the grid, then read x where the lines meet.', cols: 2, ...formFig([sq(2, -3, 1, { drawK: false }), sq(-1, 2, 5, { drawK: false })], true, L3) },
+      { text: 'draw the dashed line y = k across the grid, then read x where the lines meet.', cols: 2, ...formFig([sq(0.5, -1, 1, { drawK: false }), sq(3, 2, -4, { drawK: false })], true, L3) },
+      { text: 'draw the dashed line y = k across the grid, then read x where the lines meet.', cols: 2, ...formFig([sq(-2, -1, 3, { drawK: false }), sq(1, -4, 0, { drawK: false })], true, L3) },
     ],
   },
   medium: {
@@ -63,12 +63,12 @@ module.exports = {
     exAns: ['(2, 3). Check: 2 × 2 − 1 = 3 ✓ and −2 + 5 = 3 ✓', '(1, 4), so x + 3 = −2x + 6 has solution x = 1', '(2, 0)', '(−2, 0)'],
     work: true, set: true,
     rounds: [set([
-      mq('', cross([1, 1], [-1, 3])[1], { fig: cross([1, 1], [-1, 3])[0], lines: ['Read x', 'Read y', 'Point'] }),
-      mq('', 'm = 2, c = −1: y = 2x − 1', { fig: lineAB(2, -1, [-1, -3], [2, 3], { size: 'small', coords: false }), from: '11.6', lines: ['A and B', 'm and c', 'Equation'] }),
-      mq('', cross([2, -2], [-1, 4])[1], { fig: cross([2, -2], [-1, 4])[0], lines: ['Read x', 'Read y', 'Point'] }),
-      mq('', cross([-2, 4], [1, -2])[1], { fig: cross([-2, 4], [1, -2])[0], lines: ['Read x', 'Read y', 'Point'] }),
-      mq('', '(3, 0) and (0, 3)', { fig: std('small', { lines: [[{ m: -1, c: 3 }]], notes: [freeCorner('small', [], 'y = −x + 3', [(x) => 3 - x])] }), from: '11.4', lines: ['x-intercept', 'y-intercept', 'Check'] }),
-      mq('', cross([1, 3], [-1, -1])[1], { fig: cross([1, 3], [-1, -1])[0], lines: ['Read x', 'Read y', 'Point'] }),
+      mq('Where do the lines cross?', cross([1, 1], [-1, 3])[1], { fig: cross([1, 1], [-1, 3])[0], lines: ['Read x', 'Read y', 'Point'] }),
+      mq('Find the equation.', 'm = 2, c = −1: y = 2x − 1', { fig: lineAB(2, -1, [-1, -3], [2, 3], { size: 'small', coords: false }), from: '11.6', lines: ['A and B', 'm and c', 'Equation'] }),
+      mq('Where do the lines cross?', cross([2, -2], [-1, 4])[1], { fig: cross([2, -2], [-1, 4])[0], lines: ['Read x', 'Read y', 'Point'] }),
+      mq('Where do the lines cross?', cross([-2, 4], [1, -2])[1], { fig: cross([-2, 4], [1, -2])[0], lines: ['Read x', 'Read y', 'Point'] }),
+      mq('Find the intercepts.', '(3, 0) and (0, 3)', { fig: std('small', { lines: [[{ m: -1, c: 3 }]], notes: [freeCorner('small', [], 'y = −x + 3', [(x) => 3 - x])] }), from: '11.4', lines: ['x-intercept', 'y-intercept', 'Check'] }),
+      mq('Where do the lines cross?', cross([1, 3], [-1, -1])[1], { fig: cross([1, 3], [-1, -1])[0], lines: ['Read x', 'Read y', 'Point'] }),
     ])],
   },
   worded: [

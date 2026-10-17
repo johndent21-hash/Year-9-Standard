@@ -106,7 +106,7 @@ const graph = (o) => plane({ grid: true, nums: true, every: 1, ...o });
 
 // Standard number planes, the same in every question of a kind: 'big' (−6 to 6, about 46 mm: drill and page 1),
 // 'mid' (−5 to 5, about 31 mm: WE DO examples) and 'small' (−5 to 5, about 30 mm: the Medium set)
-const SIZE = { big: { R: 6, k: 3.4 }, mid: { R: 5, k: 2.55 }, small: { R: 5, k: 2.45 } };
+const SIZE = { big: { R: 6, k: 3.4 }, mid: { R: 5, k: 2.55 }, small: { R: 5, k: 2.15 } };
 const std = (size, o = {}) => { const { R, k } = SIZE[size]; return graph({ x: [-R, R], y: [-R, R], k, numSize: size === 'big' ? 2.3 : 2.1, ...o }); };
 // A free corner of the plane for the ? (a corner with no point or line near it), as a note for plane()
 const freeCorner = (size, pts, text, fns = []) => {

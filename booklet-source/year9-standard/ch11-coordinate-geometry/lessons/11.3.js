@@ -6,7 +6,7 @@ const { interval, plane } = require('../shapes');
 const MF = 'm = (y₂−y₁) ÷ (x₂−x₁)';
 const m = (a, b) => (a[0] === b[0] ? 'undefined (vertical)' : frac(b[1] - a[1], b[0] - a[0]));
 const q = (a, b, o = {}) => [interval(a, b, { ask: 'm = ?', ...o }), m(a, b)];
-const L3 = ['A and B', 'Substitute', 'Answer'];
+const L1 = ['Formula', 'Substitute', 'm ='], L3 = ['A and B', 'Substitute', 'm =']
 const notesFig = () => plane({ x: [0, 7], y: [0, 5], k: 4.4, grid: true, nums: true, segs: [[[1, 1], [5, 3]]], pts: [[1, 1], [5, 3]],
   steps: [[[1, 1], [5, 3], 'run = 4', 'rise = 2']], notes: [[2.4, 3.3, 'm = 2 ÷ 4 = ½', { anchor: 'middle', blue: true }]] });
 
@@ -28,22 +28,22 @@ module.exports = {
     exAns: [gradWork([1, 1], [3, 5]), gradWork([-2, 3], [2, 1]), gradWork([-3, -4], [1, 4]), 'm = 0 ÷ 8 = 0 (horizontal)'],
     hint: 'm = rise ÷ run · subtract the y-values, then the x-values, in the same order · simplify',
     work: true,
-    rounds: [{ text: 'find the gradient of AB.', cols: 2, ...formFig([q([1, 2], [3, 6]), q([-3, 4], [1, -4])], MF) }],
+    rounds: [{ text: 'find the gradient of AB: m = rise ÷ run, using the coordinates of A and B.', cols: 2, ...formFig([q([1, 2], [3, 6]), q([-3, 4], [1, -4])], MF, L1) }],
   },
   drill: {
     hint: 'Up to the right: positive · down to the right: negative · a negative ÷ a positive is negative.',
     rounds: [
-      { text: 'find the gradient of AB.', cols: 2, ...formFig([q([-2, -1], [2, 3]), q([-4, 5], [2, -1])], true) },
-      { text: 'find the gradient of AB. Simplify the fraction.', cols: 2, ...formFig([q([-4, -3], [2, 0]), q([-3, 2], [3, -1])], true) },
-      { text: 'find the gradient of AB.', cols: 2, ...formFig([q([-2, -5], [1, 4]), q([-5, 3], [3, -3])], true) },
+      { text: 'find the gradient of AB: m = rise ÷ run, using the coordinates of A and B.', cols: 2, ...formFig([q([-2, -1], [2, 3]), q([-4, 5], [2, -1])], true, L1) },
+      { text: 'find the gradient of AB, then simplify the fraction.', cols: 2, ...formFig([q([-4, -3], [2, 0]), q([-3, 2], [3, -1])], true, L1) },
+      { text: 'find the gradient of AB: m = rise ÷ run, using the coordinates of A and B.', cols: 2, ...formFig([q([-2, -5], [1, 4]), q([-5, 3], [3, -3])], true, L1) },
     ],
   },
   drill2: {
     hint: 'Read A and B off the grid first · horizontal: m = 0 · vertical: m is undefined.',
     rounds: [
-      { text: 'read A and B, then find the gradient of AB.', cols: 2, ...formFig([q([-1, -3], [2, 3], { coords: false }), q([-4, 1], [4, -3], { coords: false })], true, L3) },
-      { text: 'read A and B, then find the gradient of AB.', cols: 2, ...formFig([q([-5, -4], [3, 2], { coords: false }), q([-3, 5], [1, -3], { coords: false })], true, L3) },
-      { text: 'read A and B. Is the gradient zero or undefined?', cols: 2, ...formFig([q([-4, -2], [4, -2], { coords: false }), q([2, -4], [2, 5], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, then find the gradient of AB.', cols: 2, ...formFig([q([-1, -3], [2, 3], { coords: false }), q([-4, 1], [4, -3], { coords: false })], true, L3) },
+      { text: 'write down A and B from the grid, then find the gradient of AB.', cols: 2, ...formFig([q([-5, -4], [3, 2], { coords: false }), q([-3, 5], [1, -3], { coords: false })], true, L3) },
+      { text: 'write down A and B. Is the gradient zero (flat) or undefined (vertical)?', cols: 2, ...formFig([q([-4, -2], [4, -2], { coords: false }), q([2, -4], [2, 5], { coords: false })], true, L3) },
     ],
   },
   medium: {
@@ -53,12 +53,12 @@ module.exports = {
     exAns: [gradWork([-4, -3], [4, 3]), gradWork([-2, 4], [2, -4]), gradWork([-5, -1], [5, 3]), 'run = 2 − 2 = 0: the gradient is undefined (vertical)'],
     work: true, set: true,
     rounds: [set([
-      mq('Gradient', m([-4, -4], [2, 2]), { fig: interval([-4, -4], [2, 2], { size: 'small', coords: false }), lines: L3 }),
-      mq('', P(mid([-3, -2], [3, 4])), { fig: interval([-3, -2], [3, 4], { size: 'small', coords: false, ask: 'M = ?' }), from: '11.2', lines: L3 }),
-      mq('Gradient', m([-3, 4], [3, -2]), { fig: interval([-3, 4], [3, -2], { size: 'small', coords: false }), lines: L3 }),
-      mq('Gradient', m([-4, -1], [4, 3]), { fig: interval([-4, -1], [4, 3], { size: 'small', coords: false }), lines: L3 }),
-      mq('', lenAns(25), { fig: interval([-3, -2], [1, 1], { size: 'small', coords: false, ask: 'AB = ?' }), from: '11.1', lines: L3 }),
-      mq('Gradient', m([-1, -4], [2, 4]), { fig: interval([-1, -4], [2, 4], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the gradient of AB.', m([-4, -4], [2, 2]), { fig: interval([-4, -4], [2, 2], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the midpoint M.', P(mid([-3, -2], [3, 4])), { fig: interval([-3, -2], [3, 4], { size: 'small', coords: false, ask: 'M = ?' }), from: '11.2', lines: L3 }),
+      mq('Find the gradient of AB.', m([-3, 4], [3, -2]), { fig: interval([-3, 4], [3, -2], { size: 'small', coords: false }), lines: L3 }),
+      mq('Find the gradient of AB.', m([-4, -1], [4, 3]), { fig: interval([-4, -1], [4, 3], { size: 'small', coords: false }), lines: L3 }),
+      mq('How long is AB?', lenAns(25), { fig: interval([-3, -2], [1, 1], { size: 'small', coords: false, ask: 'AB = ?' }), from: '11.1', lines: L3 }),
+      mq('Find the gradient of AB.', m([-1, -4], [2, 4]), { fig: interval([-1, -4], [2, 4], { size: 'small', coords: false }), lines: L3 }),
     ])],
   },
   worded: [
