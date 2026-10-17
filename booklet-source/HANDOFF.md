@@ -3,146 +3,197 @@
 Read this, then follow `/CLAUDE.md`: no workflows or subagents, read only the files you change, and grep long files.
 Work on branch `claude/affectionate-gates-exjv9d` and push there. `$S` below means your scratchpad folder.
 
-## Next job: Chapter 12 Probability booklet, three pages per lesson
+Done: Chapter 12 Probability (17 Oct 2026): `year9-standard/ch12-probability`, PDFs in `Chapter 12 Probability booklet/`.
 
-Make the Year 9 Standard Chapter 12 booklet in the same style, layout and colours as Chapters 10 and 11:
-student copy, teacher copy and answers. The cover uses a different part of the Mandelbrot set, in the same violet
-colours.
+## Next job: Chapter 13 Similar figures booklet, three pages per lesson
+
+Make the Year 9 Standard Chapter 13 booklet in the same style, layout and colours as Chapter 12: student copy,
+teacher copy and answers. **Chapter 12 is the model:** copy its files and change them. The cover uses a different part
+of the Mandelbrot set, in the same violet colours.
 
 ### The teacher's decisions (17 Oct 2026)
 
-- **Three pages per lesson, like Chapter 10:**
+- **Four lessons, three pages each, exactly like Chapter 12:**
   - Page 1: notes, the WE DO example and Question 1.
-  - Page 2: the Easy drill.
-  - Page 3: the Medium example, a set of six (two of them review questions) and three worded problems.
-- **Five lessons, one per Test Yourself section.** Leave out 12.04 (two-way tables, a PATH section), just as
-  Chapter 11 left out 11.09. From 12.4 on, the lesson numbers are one behind the textbook's:
-
-  | Lesson | Textbook | Test Yourself | Every drill question has the same shape |
-  |---|---|---|---|
-  | 12.1 | 12.01 | Q1, Q2 | coloured counters in a bag or jar, or a set of cards: find P(colour) and P(not colour) |
-  | 12.2 | 12.02 | Q3 | a table of results: observed (experimental) and theoretical probability |
-  | 12.3 | 12.03 | Q4 | a Venn diagram with counts: P(A), P(A and B), P(A or B), P(neither) |
-  | 12.4 | 12.05 | Q6 | a two-step tree diagram: list the outcomes, then find probabilities |
-  | 12.5 | 12.06 | Q7 | a table of outcomes for two dice or spinners: complete it, then find probabilities |
-
-- **Answers are fractions in simplest form.** Use decimals or percentages only when a question asks for them (Test
-  Yourself Q3 asks for decimals). Work out and simplify every answer in code from the question's numbers.
-- **Support is the same as Chapter 11:**
+  - Page 2: the Easy drill (Questions 2 to 4).
+  - Page 3: the Medium example, a set of six (two of them review questions, in places 2 and 5) and three worded
+    problems.
+- **The same question style as Chapter 12** (`chapter.parts: true`, already in `lib/lesson-two.js`):
+  - Questions are numbered Question 1, 2, 3 … with parts a, b.
   - Each question has a one-line, step-by-step instruction.
-  - Each answer line names what is being found, e.g. `P(red) =`.
-  - Every question in a lesson has the same shape.
-  - The last drill question gives less help: the students draw the tree or complete the table themselves.
-- **Number the questions Question 1, 2, 3 … with parts a, b, c.** Do not use "Round 1 / Questions 1–2" (see step 6).
-- **Real situations use their own letters, not x and y** (the Chapter 11 rule).
+  - Each answer line names what is being found, e.g. `Scale factor =`, `x =`.
+  - Every drill question in a lesson has the same shape.
+  - The last drill question gives less help.
+- **Enlargements are drawn on a printed grid** in the question box, with room on the same grid for the image.
+  Scale factors 2, 3 and 1/2.
 
-### Test Yourself 12 (the source)
+| Lesson | Textbook | Test Yourself | Every drill question has the same shape |
+|---|---|---|---|
+| 13.1 Similar figures | 13.01 | Q1, Q2 | two similar figures, vertices lettered (the second may be turned or flipped), one pair of matching sides with lengths: name the matching side, then scale factor = image side ÷ original side |
+| 13.2 Enlargements | 13.01 | Q3 | a shape on a grid and a scale factor: write the image's lengths (in squares), then draw the image on the same grid |
+| 13.3 Finding unknown sides | 13.02 | Q4, Q5 | two similar figures with one unknown side x: the scale factor from a known pair of matching sides, then x |
+| 13.4 Shadows and scale drawings | 13.03 | Q6, Q7 | a small known object and a large one (a stick and a flagpole; a plan and the real house): the scale factor, then the real length, with units |
 
-To see the exact wording, extract pages 25 and 26:
+A suggested shape for each lesson's drill (change it if a page will not fit):
+
+- **13.1:**
+  - Questions 1 and 2: matching sides marked with ticks and matching angles with arcs, lengths given.
+  - Question 3: both figures on a light grid, so students count squares instead of measuring (Test Yourself Q2 says
+    "by measurement").
+  - Question 4 (less help): no marks. Students write the similarity statement (`ABC ||| PQR`) first.
+  - Example 1 and the Medium set cover Test Yourself Q1: list the matching sides and angles, then write the
+    statement.
+- **13.2:**
+  - Questions 1 to 3: rectangles, then right-angled triangles, then L-shapes. Lines: `Original lengths`,
+    `Image lengths`.
+  - Question 4 (less help): an irregular shape like Test Yourself Q3 at scale factor 1/2, with only `Image lengths`.
+  - The answers list the image's side lengths in squares.
+- **13.3:**
+  - Every drill part: lines `Scale factor =`, `x =`.
+  - Question 4 (less help): the matching sides are not marked.
+  - Testing for similarity (Test Yourself Q4: are the ratios of all the matching sides equal?) goes in Example 2 and
+    the Medium set.
+- **13.4:**
+  - Questions 1 and 2: shadows (stick and pole, person and tree).
+  - Question 3: plans and maps at a scale like 1 : 200, with the plan lengths printed (a printed plan cannot be
+    measured reliably).
+  - Question 4 (less help): the shadow problem in words. Students draw the diagram.
+
+**Answers:**
+- Scale factors are whole numbers or fractions in simplest form (Chapter 12's `fs`).
+- Lengths carry their units, to one decimal place where needed.
+- Convert cm to m in 13.4.
+- Work out every answer in code from the question's numbers.
+
+**Similar** is written `|||` as in the textbook (`FECD ||| TRMP`). Test Yourself Q1c says "congruency statement" but
+means the similarity statement.
+
+**Real situations** use their own letters, not x and y (h for a height, d for a distance).
+
+**Review questions** (Medium places 2 and 5) come from Chapter 12 or Year 8. Year 8 ratio skills fit well:
+simplifying ratios and dividing in a ratio.
+
+### Test Yourself 13 (the source)
+
+To see the exact wording, extract pages 27 and 28:
 
 ```
-git show "origin/main:Year 9 Test Yourself Chapter 1-13.pdf" > $S/ty.pdf && pdftotext -f 25 -l 26 -layout $S/ty.pdf -
+git show "origin/main:Year 9 Test Yourself Chapter 1-13.pdf" > $S/ty.pdf && pdftotext -f 27 -l 28 -layout $S/ty.pdf -
 ```
 
-To see the diagrams, run `pdftoppm -f 25 -l 26 -r 50 -png`. The questions in short:
+To see the diagrams, run `pdftoppm -f 27 -l 28 -r 50 -png`. The questions in short:
 
-1. (12.01) A jar holds only red and yellow marbles, and P(red) is given. Part b: with 40 marbles, how many are red?
-2. (12.01) A card is drawn from a standard deck: find the probability of simple events.
-3. (12.02) A spinner's red sector is twice the size of each other sector, and a table gives the results of many
-   spins. Find the observed and theoretical probabilities as decimals.
-4. (12.03) Of 30 teenagers, 21 like music, 18 like TV and 4 like neither. How many like both (13)? Complete the
-   Venn diagram, then find probabilities.
-5. (12.04, PATH, left out) A two-way table of men and women working full-time or part-time.
-6. (12.05) Cards A, B, C and D; two are drawn without replacement. List the outcomes, complete the tree diagram, then
-   find probabilities.
-7. (12.06) Two dice are rolled and the difference of the numbers is found. Complete the 6 × 6 table, then find P(0),
-   P(at least 2) and P(4 or 5).
+1. (13.01) FECD and TRMP are similar quadrilaterals. List the matching sides and the matching angles, then write the
+   statement.
+2. (13.01) By measurement, find the scale factor for three pairs of similar figures (rectangles, triangles, quadrilaterals).
+3. (13.01) Copy an L-shaped figure onto graph paper and draw its image for scale factor 3 and for scale factor 1/2.
+4. (13.02) Test whether each pair is similar: rectangles 20 × 12 mm and 29 × 18 mm; triangles 8, 7, 10 cm and 6, 7.5,
+   5.25 cm.
+5. (13.02) Find the unknown sides in two pairs of similar figures (triangles 15, 12, y and 8, 7, p cm; quadrilaterals in mm).
+6. (13.03) A flagpole's shadow is 20 m long. A stick 60 cm tall casts a shadow 150 cm long. Find the height h (8 m).
+7. (13.03) A floor plan drawn to a scale of 1 : 200: find the actual lengths AB and CD.
 
-### How to build it (copy Chapter 11 and leave out its page 4)
+### How to build it (copy Chapter 12)
 
 All paths below are under `booklet-source/`.
 
 1. **Folders.**
-   - `year9-standard/ch12-probability/` holds `chapter.js`, `helpers.js`, `shapes.js` and
-     `lessons/12.1.js` to `12.5.js`.
-   - `year9-standard/ch12-probability-teacher/chapter.js` is
-     `module.exports = require('../ch12-probability/chapter.js').teacherCopy();`.
-2. **chapter.js.** Copy Chapter 11's file, then change it:
-   - Set `pagesPerLesson: 3`, the five-lesson plan and a new `art`.
-   - Set `howto` to HOWTO_THREE from `lib/gold-front.js`, changing "round" to "question". Lines 32, 42 and 52 there
-     say "one round at a time".
-3. **Lessons.** Use Chapter 11's lesson shape without `drill2`:
+   - `year9-standard/ch13-similar-figures/` holds `chapter.js`, `helpers.js`, `shapes.js` and `lessons/13.1.js` to
+     `13.4.js`.
+   - `year9-standard/ch13-similar-figures-teacher/chapter.js` is
+     `module.exports = require('../ch13-similar-figures/chapter.js').teacherCopy();`.
+2. **chapter.js.** Copy Chapter 12's file, then change it:
+   - Set number 13, the title, `fileName: 'Year9-Standard-Ch13-Similar-Figures'`, the four-lesson plan, the goals
+     and a new `art`.
+   - Keep `pagesPerLesson: 3`, `parts: true`, `notesBox: 49.5` and the `q-parts` body class. Every Chapter 12 rule
+     in `lib/theme.css` hangs on that class: wider pictures on pages 1 and 2, the answer-line label column, the
+     Medium set's heading above its picture, and the labelled answers.
+   - In `howto`, change the last sentence (fractions in simplest form) to the Chapter 13 rule for scale factors and
+     lengths. Change the example tag `11.2` to `12.2`.
+3. **Lessons.** Use Chapter 12's lesson shape:
    - `easy`: Example 1 with 4 parts, then Question 1 with 2 parts.
    - `drill`: Questions 2 to 4, with 2 parts each.
-   - `medium`: Example 2, then a set of 6 with review questions in positions 2 and 5.
+   - `medium`: Example 2, then a set of 6 with review questions in places 2 and 5.
    - `worded`: 3 problems.
 
-   Chapter 10's `lessons/10.1.js` is the three-page reference.
-4. **Helpers.**
-   - Keep `num, n, formFig, mq, set` from Chapter 11's `helpers.js`.
-   - Add a fraction type that simplifies with the gcd, and a display for fractions such as 5/36. Chapter 11's
-     `frac` was only for halves, so check how it renders first.
-   - Chapter 11's `P` formats points, so give the probability helper a different name.
-5. **Diagrams (`shapes.js`).** Draw SVG in mm, as Chapters 10 and 11 do.
+   `ch12-probability/lessons/12.3.js` is a compact model:
+   - a `part()` builder that returns [picture, answer, lines, words]
+   - the `parts()` helper for each question
+   - a `said()` builder for the less-help question
+4. **Helpers.** `require('../ch12-probability/helpers')` gives `num, n, fs, fr, pw, parts, mq, set`. Add only what
+   Chapter 13 needs, such as a scale factor shown as a whole number or fraction, or a length with its unit.
+5. **Diagrams (`shapes.js`).** Draw SVG in mm, as Chapters 10 to 12 do.
    - Reuse the building blocks in `require('../ch10-surface-area-volume/shapes.js').parts`
-     (`C, f, T, svg, seg, dashed, poly, dot, arcD, …`).
-   - From Chapter 11's `shapes.js`, reuse `table` and the colours in its `parts` (`GRID, BLUE, INK, LINE`).
+     (`C, f, T, svg, seg, poly, dot, rightMark, sideLabel, arcD, …`).
+   - Chapter 11's `plane({ x, y, k, grid: true, axes: false, poly })` draws a squared grid with a shaded shape. Use it
+     for the grid questions.
+   - Chapter 12's `side()` puts two pictures side by side, and its `parts` has `halo` and `tall`.
    - New diagrams to write:
-     - a spinner, with sectors that can be unequal
-     - counters in a jar or bag, or a row of coloured circles
-     - a row of playing cards
-     - a Venn diagram: two circles in a rectangle with the total, and a count in each region
-     - a two-stage tree diagram with labels at the branch ends
-     - a 6 × 6 table of outcomes, partly filled in
+     - a pair of similar figures drawn to scale from vertex coordinates and a scale factor, the image turned or flipped
+       on request, with vertex letters, side lengths (an unknown as `x`), tick marks on matching sides and arcs on
+       matching angles
+     - a shape on a grid sized to hold its image (for scale factor 3, three times as wide), with blank grid to draw in
+     - shadows: a stick and its shadow beside a pole or tree and its shadow, dashed sun rays, right angles, h marked
+     - a floor plan with lettered corners, the plan lengths printed and the scale written under it
    - Draw in a classic textbook style: thin lines, nothing bubbly. Give labels a white halo and don't let anything
      overlap.
-   - The figure size limits for three-page lessons are the `.three-page` rules in `lib/theme.css`. The
-     `.four-page` block is Chapter 11's.
-6. **Question and part labels.** Change `lib/lesson-two.js`, but only behind a chapter option (e.g.
-   `chapter.parts: true`), so Chapters 10 and 11 stay the same:
-   - The `workRound` heading becomes `<b>Question ${k}</b><span>${x.text}</span>`. It no longer says
-     `Round ${k}` or `Questions ${from}–${n}:`.
-   - The item numbers become a, b, c …. These are the `q-num` in `wqHead`.
-   - Each Medium set question gets its own number (Question 5, 6 …), because each has its own instruction.
-   - The answers are labelled 1a, 1b ….
-   - The YOU DO line "one round at a time" becomes "one question at a time".
-7. **Cover.**
-   - Add a region to `tools/mandelbrot.py`: copy the `'silver-seahorse'` line, keep palette 'violet' and
-     `page=True`, and change the c and span.
-   - Run it to make `<name>-band.jpg` and `<name>-page.jpg`, then look at the band image once.
+6. **Cover.**
+   - Add a region to `tools/mandelbrot.py`: copy the `'silver-jellyfish'` line, keep palette 'violet' and `page=True`.
+   - A suggestion: `'silver-minibrot'` with `c=(-1.7549, 0.0), span=0.04`, a small copy of the whole set on its
+     antenna. The set is self-similar, which suits this chapter.
+   - Run it (about 30 s, in the background). Keep only `<name>-band.jpg` and `<name>-page.jpg`; delete the `-cover`
+     and `-hw` images. Look at the band image once.
    - Add an ART entry in `lib/blend-front.js`.
-8. **README.md.** Add a Chapter 12 row, copying the Chapter 11 row.
+7. **README.md.** Add a Chapter 13 row, copying the Chapter 12 row.
+
+### Figure size limits (learned on Chapter 12)
+
+- Pages 1 and 2 pictures: up to 70 mm wide × 36 mm tall. If the part has words (`t`), they take 45% of the box and
+  the picture gets about 44 mm.
+- WE DO example parts: about 33 mm wide × 21 mm tall. A picture too big for that, like a 12-branch tree, is left out
+  and the part is text only. Don't use `ex.fig`: its layout is untested in these lessons.
+- Medium set: 34 mm wide × 15 mm tall, the one-line instruction above the picture.
+- Notes picture (teacher copy): a column about 37 mm wide × 34 mm tall.
+- If an enlargement grid needs more room than 70 × 36 mm, try `cols: 1` on that question (one part per row) before
+  adding a `.q-parts` CSS rule.
 
 ### Checks (in this order; stop at the first failure)
 
 - **Check one lesson first:**
-  - Run `PAGES=3 CH=ch12-probability RENDER_DIR=$S/r1 bash tools/check-lesson.sh 12.1` and expect PASS.
+  - Run `PAGES=3 CH=ch13-similar-figures RENDER_DIR=$S/r1 bash tools/check-lesson.sh 13.1` and expect PASS on both
+    copies.
   - That script hides build errors, so also run
-    `node build.js year9-standard/ch12-probability 2>&1 | grep -i "error\|problem"`.
+    `node build.js year9-standard/preview/13.1 2>&1 | grep -i "error\|problem"`.
   - `fit.js` checks for:
     - no OVER, EDGE or PAGE problems
     - GAP of at least 0.9 mm
     - SCALE of at least 93% in YOU DO and 90% in WE DO
-  - The builder also flags any picture under 12 mm tall. Pad such pictures, as Chapter 11's `tall()` does.
+  - Its "blank working space" figures are wrong for `q-parts` answer lines (they use `display: contents`). Ignore
+    them.
 - **Look at pages only after a PASS,** using one contact sheet per lesson (the `montage` line in CLAUDE.md).
 - **Then check the whole book:**
-  - Build `ch12-probability` and `ch12-probability-teacher`, and expect "Layout check: no problems found".
-  - Run `node tools/fit.js <html> 17` and expect PASS. The book is 2 front pages + 5 lessons × 3 pages.
-- **If `git status` shows Chapter 10 or 11 outputs as changed,** restore them with `git checkout -- <path>`.
+  - Build `ch13-similar-figures` and `ch13-similar-figures-teacher`, and expect "Layout check: no problems found".
+  - Run `node tools/fit.js <html> 14` on both and expect PASS. The book is 2 front pages + 4 lessons × 3 pages.
+- **If `git status` shows Chapter 10, 11 or 12 outputs as changed,** restore them with `git checkout -- <path>`.
 
 ### Finish
 
-- Copy the PDFs into `Chapter 12 Probability booklet/` at the repo root:
-  - `Year9-Standard-Ch12-Probability-Student-copy.pdf`
-  - `Year9-Standard-Ch12-Probability-Teacher-copy.pdf`
-  - `Year9-Standard-Ch12-Probability-Answers.pdf`
+- Copy the PDFs into `Chapter 13 Similar figures booklet/` at the repo root:
+  - `Year9-Standard-Ch13-Similar-Figures-Student-copy.pdf`
+  - `Year9-Standard-Ch13-Similar-Figures-Teacher-copy.pdf`
+  - `Year9-Standard-Ch13-Similar-Figures-Answers.pdf`
 - Commit, ending the message with the attribution lines your session gives you. Push to
   `claude/affectionate-gates-exjv9d`.
 - Send the teacher the three PDFs and a report of a few lines.
 
-### Pitfalls from Chapters 10 and 11
+### Pitfalls from Chapters 10 to 12
 
 - The rm safety check blocks `rm -f $S/*.png`. Use a fresh folder or `"${S:?}"`.
 - Start long jobs with the Bash tool's `run_in_background`, not `&`.
-- Keep Medium instructions to one line and question headings to about 85 characters, or the page overflows.
-- When SCALE fails, shrink the diagram (its k or w) before cutting text.
+- Keep Medium instructions to one line (about 40 characters) and question headings to about 85 characters, or the
+  page overflows.
+- When SCALE fails, shrink the diagram (its k, w or r) before cutting text.
+- The teacher's Notes box overflows easily. Keep it to 6 short key terms, 4 short formulas and 4 short steps.
+- Text drawn rotated (an upright label) does not grow the picture's frame. Add invisible placeholders at its ends, as
+  Chapter 12's `outcomes()` does.
+- Show the teacher the first lesson before making the rest if they ask for it.
