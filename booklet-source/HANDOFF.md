@@ -4,6 +4,8 @@ Read this, then follow `/CLAUDE.md`: no workflows or subagents, read only the fi
 Work on branch `claude/affectionate-gates-exjv9d` and push there. `$S` below means your scratchpad folder.
 
 Done: Chapter 12 Probability (17 Oct 2026): `year9-standard/ch12-probability`, PDFs in `Chapter 12 Probability booklet/`.
+Done: Chapter 13 Similar figures (17 Oct 2026): `year9-standard/ch13-similar-figures`, PDFs in `Chapter 13 Similar figures booklet/`.
+The Chapter 13 brief below is kept as a record of the teacher's decisions; the next job is not set yet.
 
 ## Next job: Chapter 13 Similar figures booklet, three pages per lesson
 

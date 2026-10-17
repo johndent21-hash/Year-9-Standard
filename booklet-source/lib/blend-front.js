@@ -21,6 +21,7 @@ const ART = {
   'silver-spiral': 'a silver spiral on the western edge of Seahorse Valley, coloured in purple and silver',
   'silver-seahorse': 'silver seahorse tails deep in Seahorse Valley, coloured in purple and silver',
   'silver-jellyfish': 'a silver jellyfish of spirals near the neck of the left bulb, coloured in purple and silver',
+  'silver-minibrot': 'a small copy of the whole Mandelbrot set on its antenna (the set is self-similar), coloured in purple and silver',
 };
 
 // Worksheet booklet cover, in the style of the revision booklets: the charcoal band with the title and name box,
