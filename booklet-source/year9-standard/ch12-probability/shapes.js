@@ -104,4 +104,136 @@ const probScale = () => {
   return svg(f(x + 18), f(y0 + 1.5), b);
 };
 
-module.exports = { jar, bag, cards, deck, probScale, counter, mix, table, parts: { C, f, T, T0, svg, seg, poly, path, rect, circ, tall, halo, COL, SUIT, RED, BLACK, GRID, BLUE, INK, LINE } };
+// ---------------------------------------------------------------- tables
+// A grid of cells: m[i][j] the text in row i, column j ('' a blank cell for students), ws the column widths, h the row
+// height; the header row and/or column shaded, in bold
+const cellGrid = (m, ws, h, { headRow = false, headCol = true, z = 2.6, x0 = 0.5, y0 = 0.5 } = {}) => {
+  let body = '';
+  m.forEach((row, i) => row.forEach((t, j) => {
+    const x = x0 + ws.slice(0, j).reduce((a, b) => a + b, 0), y = y0 + i * h, head = (headRow && i === 0) || (headCol && j === 0);
+    body += rect(x, y, ws[j], h, head ? '#eceef4' : '#fff', { w: 0.25 }) + T0(x + ws[j] / 2, y + h / 2 + z * 0.36, t === '' ? '' : String(t), { size: z, weight: head ? 600 : 400, fill: INK });
+  }));
+  return { body, W: ws.reduce((a, b) => a + b, 0), H: m.length * h };
+};
+const wd = (s, z) => String(s).length * z * 0.6;
+// A table of results: the outcomes across the top and their frequencies under them ('' leaves a cell blank for
+// students). o.tally adds a blank Tally row; o.down stands it upright (Outcome and Frequency columns)
+const results = (outs, freqs, o = {}) => {
+  const z = o.size || 2.6, h = o.h || z * 1.7;
+  let g;
+  if (o.down) {
+    const w1 = Math.max(wd('Outcome', z), ...outs.map((x) => wd(x, z))) + 2, w2 = wd('Frequency', z) + 2;
+    g = cellGrid([['Outcome', 'Frequency'], ...outs.map((x, i) => [x, freqs[i]])], [w1, w2], h, { headRow: true, headCol: false, z });
+  } else {
+    const rows = [['Outcome', ...outs], ...(o.tally ? [['Tally', ...outs.map(() => '')]] : []), ['Frequency', ...freqs]];
+    g = cellGrid(rows, [wd('Frequency', z) + 2, ...outs.map(() => o.w || Math.max(z * 2.3, ...freqs.map((x) => wd(x, z) + 1.6)))], h, { z });
+  }
+  return svg(f(g.W + 1), f(g.H + 1), g.body + tall((g.W + 1) / 2, g.H + 1));
+};
+// Two pictures side by side as one picture (a spinner and its table), their middles level
+const side = (pics, gap = 2.5) => {
+  const box = (s) => ({ v: s.match(/viewBox="([^"]+)"/)[1].split(' ').map(Number), inner: s.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '') });
+  const P = pics.map(box), H = Math.max(...P.map((p) => p.v[3]));
+  let x = 0; const g = P.map((p) => { const s = `<g transform="translate(${f(x - p.v[0])},${f((H - p.v[3]) / 2 - p.v[1])})">${p.inner}</g>`; x += p.v[2] + gap; return s; }).join('');
+  const W = f(x - gap);
+  return `<svg class="graph" viewBox="0 0 ${W} ${f(H)}" xmlns="http://www.w3.org/2000/svg" style="aspect-ratio:${W}/${f(H)}; --w:${W}mm; --ar:${W}/${f(H)}">${g}</svg>`;
+};
+
+// ---------------------------------------------------------------- spinners and dice
+const TINT = { red: '#f4a9a9', blue: '#b3c3ef', yellow: '#f8e596', green: '#addab4', purple: '#cdbbe7', white: '#ffffff', orange: '#f9c9a0' };
+const LETTER = Object.fromEntries(Object.entries(COL).map(([k, v]) => [v[1], k])); // 'R' → 'red'
+// A spinner: its sectors clockwise from the top, each a label or [label, size] (sizes in equal parts: [['R', 2], 'B', 'G']
+// makes red twice each other sector). A colour's letter (R, B, G, Y, P) fills its sector in that colour; numbers are on
+// white. r: the radius. The pointer is short, so it never reaches a label.
+const spinner = (sectors, o = {}) => {
+  const S = sectors.map((s) => (Array.isArray(s) ? s : [s, 1])), tot = S.reduce((a, s) => a + s[1], 0), r = o.r || 9, z = o.size || 2.8, c = [r + 0.6, r + 0.6];
+  const at = (deg, k = r) => [c[0] + k * Math.sin((deg * Math.PI) / 180), c[1] - k * Math.cos((deg * Math.PI) / 180)];
+  let a = 0, b = '', lab = '';
+  S.forEach(([l, k]) => {
+    const a1 = a + (360 * k) / tot, p0 = at(a), p1 = at(a1), m = at((a + a1) / 2, r * (o.lr || 0.62));
+    b += path(`M${f(c[0])},${f(c[1])} L${f(p0[0])},${f(p0[1])} A${f(r)},${f(r)} 0 ${a1 - a > 180 ? 1 : 0} 1 ${f(p1[0])},${f(p1[1])} Z`, LETTER[l] ? TINT[LETTER[l]] : '#fff', { w: 0.3 });
+    lab += T(m[0], m[1] + z * 0.36, l, { size: z, weight: 700 });
+    a = a1;
+  });
+  const th = ((o.arrow ?? 28) * Math.PI) / 180, tip = at(o.arrow ?? 28, r * 0.42), bk = at(o.arrow ?? 28, r * 0.42 - 1.4), px = Math.cos(th) * 0.65, py = Math.sin(th) * 0.65;
+  b += circ(c, r, 'none', { w: 0.4 }) + seg(c, bk, { stroke: INK, w: 0.45 }) + `<polygon points="${f(tip[0])},${f(tip[1])} ${f(bk[0] + px)},${f(bk[1] + py)} ${f(bk[0] - px)},${f(bk[1] - py)}" fill="${INK}"/>` + circ(c, 0.7, INK, { w: 0.1 });
+  return svg(f(2 * r + 1.2), f(2 * r + 1.2), b + lab);
+};
+const PIP = { 1: [[0.5, 0.5]], 2: [[0.28, 0.28], [0.72, 0.72]], 3: [[0.28, 0.28], [0.5, 0.5], [0.72, 0.72]], 4: [[0.28, 0.28], [0.72, 0.28], [0.28, 0.72], [0.72, 0.72]],
+  5: [[0.28, 0.28], [0.72, 0.28], [0.5, 0.5], [0.28, 0.72], [0.72, 0.72]], 6: [[0.28, 0.25], [0.72, 0.25], [0.28, 0.5], [0.72, 0.5], [0.28, 0.75], [0.72, 0.75]] };
+// A die: a cube in perspective with v pips on its front, s mm across the front
+const die = (v = 5, s = 10) => {
+  const d = s * 0.32, x = 0.5, y = 0.5 + d;
+  let b = poly([[x, y], [x + d, y - d], [x + s + d, y - d], [x + s, y]], '#f1f2f7', { w: 0.35 }) + poly([[x + s, y], [x + s + d, y - d], [x + s + d, y + s - d], [x + s, y + s]], '#dfe3ec', { w: 0.35 });
+  b += rect(x, y, s, s, '#fff', { w: 0.4 }) + PIP[v].map(([px, py]) => circ([x + px * s, y + py * s], s * 0.085, INK, { w: 0.1 })).join('');
+  return svg(f(s + d + 1), f(s + d + 1), b);
+};
+
+// ---------------------------------------------------------------- Venn diagrams
+// Two circles named names[0] and names[1] in a rectangle, a count in each region: n = [first only, both, second only,
+// neither] ('' leaves a region blank). shade: 'a', 'and', 'or' or 'neither' shades that event's regions (the examples)
+const venn = (names, n, o = {}) => {
+  const W = o.w || 42, H = o.h || W * 0.58, r = o.r || H * 0.36, d = r * 1.1, x0 = 0.5, y0 = 0.5, cx = x0 + W / 2, cy = y0 + H / 2 + H * 0.03, z = o.size || 3;
+  const A = [cx - d / 2, cy], B = [cx + d / 2, cy], SH = '#bccaee', s = o.shade, hh = Math.sqrt(r * r - (d / 2) ** 2);
+  let b = rect(x0, y0, W, H, s === 'neither' ? SH : '#fff', { w: 0.4 });
+  if (!s) b += `<circle cx="${f(A[0])}" cy="${f(cy)}" r="${f(r)}" fill="#dfe6f8" fill-opacity="0.8"/><circle cx="${f(B[0])}" cy="${f(cy)}" r="${f(r)}" fill="#f6e3c8" fill-opacity="0.7"/>`;
+  else if (s === 'neither') b += circ(A, r, '#fff', { w: 0 }) + circ(B, r, '#fff', { w: 0 });
+  else if (s === 'and') b += `<path d="M${f(cx)},${f(cy - hh)} A${f(r)},${f(r)} 0 0 1 ${f(cx)},${f(cy + hh)} A${f(r)},${f(r)} 0 0 1 ${f(cx)},${f(cy - hh)} Z" fill="${SH}"/>`;
+  else b += circ(A, r, SH, { w: 0 }) + (s === 'or' ? circ(B, r, SH, { w: 0 }) : '');
+  b += circ(A, r, 'none', { w: 0.4 }) + circ(B, r, 'none', { w: 0.4 });
+  b += T(A[0] - r * 0.78, cy - r * 0.8, names[0], { size: z, weight: 700, anchor: 'end' }) + T(B[0] + r * 0.78, cy - r * 0.8, names[1], { size: z, weight: 700, anchor: 'start' });
+  const num = (x, y, t, anchor = 'middle') => (t === '' ? '' : T(x, y + z * 0.36, String(t), { size: z, weight: 600, anchor }));
+  b += num(A[0] - r * 0.42, cy, n[0]) + num(cx, cy, n[1]) + num(B[0] + r * 0.42, cy, n[2]) + num(x0 + W - 1.6, y0 + H - 1.6 - z * 0.36, n[3], 'end');
+  return svg(f(W + 1), f(H + 1), b);
+};
+
+// ---------------------------------------------------------------- tree diagrams
+// A two-step tree diagram: first, the first step's outcomes; second, the second step's (an array: the same after each
+// first outcome; or a function of the first: without replacement). o.ends writes each outcome at the end of its branch
+// ('HT'), otherwise a line is left for students; a label '' is left as a short line to fill in. o.heads names the steps.
+const tree = (first, second, o = {}) => {
+  const z = o.size || 2.7, dy = o.dy || 3.6, gx = o.gap || 13, gg = o.gg ?? 0.8, sec = (a) => (typeof second === 'function' ? second(a) : second);
+  const [h1, h2] = o.heads || ['1st', '2nd'], top = o.top || 5.6, pair = o.pair || ((a, s) => `${a}${s}`);
+  const x0 = 1, x1 = x0 + gx, x2 = x1 + gx, x3 = x2 + Math.max(...first.flatMap((a) => sec(a).map((s) => wd(s, z) / 2)), wd(h2, 2.4) / 2 - 1) + 2.4;
+  const node = (x, y, l) => (l === '' ? seg([x - 1.8, y + 1], [x + 1.8, y + 1], { stroke: C.grey, w: 0.3 }) : T(x, y + z * 0.36, l, { size: z, weight: 600 }));
+  const off = (l) => Math.max(1.8, wd(l, z) / 2 + 0.8);
+  let b = '', lab = '', i = 0;
+  const ones = first.map((a, k) => {
+    const ss = sec(a), ys = ss.map(() => top + (i++) * dy + k * gg), y1 = (ys[0] + ys[ys.length - 1]) / 2;
+    ss.forEach((s, j) => {
+      b += seg([x1 + off(a), y1], [x2 - off(s), ys[j]], { stroke: INK, w: 0.3 });
+      lab += node(x2, ys[j], s) + (o.ends ? T(x3, ys[j] + z * 0.36, pair(a, s), { size: z, anchor: 'start' }) : seg([x3, ys[j] + 1], [x3 + 8, ys[j] + 1], { stroke: C.grey, w: 0.25 }));
+    });
+    return [a, y1];
+  });
+  const yr = (ones[0][1] + ones[ones.length - 1][1]) / 2;
+  ones.forEach(([a, y]) => { b += seg([x0, yr], [x1 - off(a), y], { stroke: INK, w: 0.3 }); lab += node(x1, y, a); });
+  b += circ([x0, yr], 0.55, INK, { w: 0.1 });
+  const g = { size: 2.4, fill: C.grey, weight: 600 };
+  lab += T(x1, top - 3.2, h1, g) + T(x2, top - 3.2, h2, g) + T(x3, top - 3.2, 'Outcome', { ...g, anchor: 'start' });
+  return svg(f(x3 + 9), f(top + (i - 1) * dy + (first.length - 1) * gg + 2), b + lab);
+};
+// The frame for a tree the students draw: the steps' names over the columns and the starting dot
+const treeFrame = (heads = ['1st', '2nd'], gx = 12, h = 32) => {
+  const g = { size: 2.4, fill: C.grey, weight: 600 }, x1 = 1 + gx, x2 = x1 + gx, x3 = x2 + Math.max(1, wd(heads[1], 2.4) / 2 - 1) + 2.4;
+  return svg(f(x3 + 9), f(h), circ([1, h / 2 + 1.5], 0.55, INK, { w: 0.1 }) + T(x1, 2.4, heads[0], g) + T(x2, 2.4, heads[1], g) + T(x3, 2.4, 'Outcome', { ...g, anchor: 'start' }));
+};
+
+// ---------------------------------------------------------------- tables of outcomes
+// A table of outcomes for two steps: across (the top) and down (the side), cell(a, d) the result in each cell;
+// show(i, j) picks the cells filled in (the rest are left blank; default all). names: [across, down] ('Die 1', 'Die 2');
+// op: the sign in the corner ('+', '−', '×')
+const outcomes = (across, down, cell, o = {}) => {
+  const z = o.size || 2.6, w = o.w || 5.4, h = o.h || 4.2, show = o.show || (() => true), [na, nd] = o.names || ['', ''];
+  const lx = nd ? z + 1.8 : 0.5, ty = na ? z + 1.8 : 0.5;
+  const m = [[o.op || '', ...across], ...down.map((dn, i) => [dn, ...across.map((a, j) => (show(i, j) ? cell(a, dn) : ''))])];
+  const g = cellGrid(m, m[0].map(() => w), h, { headRow: true, headCol: true, z, x0: lx, y0: ty });
+  let b = g.body;
+  if (na) b += T(lx + w + (across.length * w) / 2, ty - 1.2, na, { size: z, weight: 600 });
+  // the side name, turned upright; the frame grows to hold it when it is longer than the table is tall
+  if (nd) { const x = lx - 1.3, y = ty + h + (down.length * h) / 2, half = wd(nd, z) / 2; b += T0(x, y - half + 0.6, ' ', { size: 1 }) + T0(x, y + half + 0.6, ' ', { size: 1 }) + halo(`<text x="${f(x)}" y="${f(y)}" font-size="${z}" text-anchor="middle" font-weight="600" fill="${INK}" transform="rotate(-90 ${f(x)} ${f(y)})">${nd}</text>`); }
+  return svg(f(lx + g.W + 0.5), f(ty + g.H + 0.5), b + tall((lx + g.W) / 2, ty + g.H + 0.5));
+};
+
+module.exports = { jar, bag, cards, deck, probScale, counter, mix, table, results, side, spinner, die, venn, tree, treeFrame, outcomes, cellGrid,
+  parts: { C, f, T, T0, svg, seg, poly, path, rect, circ, tall, halo, wd, COL, TINT, LETTER, SUIT, RED, BLACK, GRID, BLUE, INK, LINE } };

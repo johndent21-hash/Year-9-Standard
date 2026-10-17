@@ -9,6 +9,7 @@ with each question tagged by the lesson it comes from.
 |---|---|
 | Chapter 10 Surface area and volume (New Century Maths 9) | `year9-standard/ch10-surface-area-volume` |
 | Chapter 11 Coordinate geometry and graphs (New Century Maths 9) | `year9-standard/ch11-coordinate-geometry`: four-page lessons (`drill2` in `lib/lesson-two.js`) on large number planes, the same question layout all through each lesson; see its `chapter.js`. Check a lesson with `PAGES=4 CH=ch11-coordinate-geometry tools/check-lesson.sh 11.1` |
+| Chapter 12 Probability (New Century Maths 9) | `year9-standard/ch12-probability`: three-page lessons as numbered questions with parts a, b (`chapter.parts` in `lib/lesson-two.js`), every drill question in a lesson the same shape, answer lines that name what they find; see its `chapter.js`. Check a lesson with `PAGES=3 CH=ch12-probability tools/check-lesson.sh 12.1` |
 
 ## Build
 
