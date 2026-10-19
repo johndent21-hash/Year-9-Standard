@@ -70,8 +70,8 @@ const questions = (b) => [
   }),
 
   sec('Section 2: Surface area and volume', [
-    `1 kL = 1000 L, 1 L = 1000 mL, 1 L = 1000 cm³, 1 m³ = 1000 L. Absolute error = ½ × precision`,
-    `Parallelogram ${nw(`${v('A')} = ${v('bh')}`)}; kite and rhombus ${nw(`${v('A')} = ½${v('xy')}`)}; trapezium ${nw(`${v('A')} = ½${v('h')}(${v('a')} + ${v('b')})`)}; triangle ${nw(`${v('A')} = ½${v('bh')}`)}`,
+    `1 kL = 1000 L, 1 L = 1000 mL, 1 L = 1000 cm³, 1 m³ = 1000 L`,
+    `Parallelogram ${nw(`${v('A')} = ${v('bh')}`)}; kite and rhombus ${nw(`${v('A')} = ½${v('xy')}`)}; trapezium ${nw(`${v('A')} = ½${v('h')}(${v('a')} + ${v('b')})`)}`,
     `Circle ${nw(`${v('C')} = 2π${v('r')}`)}, ${nw(`${v('A')} = π${v('r')}²`)}; cylinder ${nw(`${v('V')} = π${v('r')}²${v('h')}`)}, ${nw(`${v('SA')} = 2π${v('r')}² + 2π${v('rh')}`)}; rectangular prism ${nw(`${v('V')} = ${v('lwh')}`)}`,
   ]),
   q('Convert:', {
@@ -79,10 +79,11 @@ const questions = (b) => [
       ['2.4 kL to L', '3750 mL to L', '0.6 L to mL', '8200 L to kL', '4000 cm³ to L', '2.5 m³ to L'],
       ['5.3 kL to L', '1250 mL to L', '3.75 L to mL', '640 L to kL', '7500 cm³ to L', '0.8 m³ to L']),
   }),
-  q('For each measuring instrument, state (i) the precision and (ii) the absolute error.', {
-    cols: 2, parts: pick(b,
-      ['a ruler marked in millimetres', 'a measuring jug marked every 25 mL', 'kitchen scales marked every 0.1 kg', 'a thermometer marked every 2°C'],
-      ['a tape measure marked in centimetres', 'a measuring cylinder marked every 50 mL', 'bathroom scales marked every 0.5 kg', 'a speedometer marked every 10 km/h']),
+  // the exam asks students to choose the triangle formula (its formula is left out of the box above)
+  q(`Which formula gives the area of a triangle: ${pick(b, [`bh`, `½bh`, `2bh`, `½(b + h)`], [`2bh`, `½(b + h)`, `½bh`, `bh`]).map((x) => nw(`${v('A')} = ${x.replace(/[bh]/g, (c) => v(c))}`)).join(', ').replace(/, ([^,]*)$/, ' or $1')}? Use it to find the area of each triangle.`, {
+    figs: pick(b,
+      [F.triangle({ b: 12, h: 7, a: 4, unit: 'cm', size: 30, maxH: 20 }), F.triangle({ b: 9, h: 10, a: 2, unit: 'm', size: 30, maxH: 27 }), F.triangle({ b: 15, h: 6.4, a: 4.5, unit: 'mm', size: 32, maxH: 18 })],
+      [F.triangle({ b: 14, h: 9, a: 5, unit: 'm', size: 30, maxH: 20 }), F.triangle({ b: 8, h: 11, a: 1.8, unit: 'cm', size: 30, maxH: 28 }), F.triangle({ b: 20, h: 7.5, a: 6, unit: 'mm', size: 32, maxH: 18 })]),
   }),
   q('Find the area of each shape.', {
     figs: pick(b,
