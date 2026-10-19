@@ -26,7 +26,7 @@ module.exports = {
   },
   easy: {
     ex: { stem: 'A rideshare costs $3.50 flagfall plus $2.25 for each kilometre.', parts: [
-      { t: 'Table', fig: table([['d (km)', 0, 1, 2, 3], ['C ($)', '', '', '', '']], { w: 6, head: 10 }) }, { t: 'Graph', fig: model((d) => 2.25 * d + 3.5, { x1: 6, y1: 20, gy: 5, everyY: 5, xl: 'd', yl: 'C', w: 26 }) },
+      { t: 'Table', fig: table([['d (km)', 0, 1, 2, 3], ['C ($)', '', '', '', '']], { w: 6, head: 10 }) }, { t: 'Graph', fig: model((d) => 2.25 * d + 3.5, { x1: 6, y1: 20, gy: 5, everyY: 5, xl: 'd', yl: 'C', w: 22 }) },
       'Write the rule for the cost C of a d km trip.', 'Find the cost of a 12 km trip.'] },
     exAns: ['C: 3.50, 5.75, 8.00, 10.25', 'Plot the points and rule the line from (0, 3.5)', 'C = 2.25d + 3.5', `C = 2.25 × 12 + 3.5 = ${money(2.25 * 12 + 3.5)}`],
     hint: 'Go up from the marked value to the line, then across to read it · substitute into the rule to check',

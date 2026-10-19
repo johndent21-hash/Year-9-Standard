@@ -1209,6 +1209,24 @@ ul.plain { list-style: none; padding-left: 0; }
 .four-page .set-zone .wq.fig.form .wq-top { flex-direction: column; align-items: stretch; gap: 0.4mm; }
 .four-page .set-zone .wq-top .wq-head { max-width: none; }
 .four-page .set-zone .wq-top .wq-head.short .q-text { white-space: normal; }
+/* page 1 of a four-page lesson: the tall Notes box (chapter.notesBox 74.25 mm) takes its room from a slimmer learning
+   intention and success criteria strip (one line per criterion; the criteria card is as wide as its longest line), a
+   slightly smaller WE DO and YOU DO padding, and the spare space under the first two questions' answer lines */
+.four-page.lesson-first .content { gap: 1.8mm; }
+.theme-violet .four-page .li-sc.two.compact { grid-template-columns: minmax(0, 1fr) max-content; gap: 2.5mm; }
+.theme-violet .four-page .li-sc.two.compact .card { padding: 0.8mm 2.5mm 0.9mm; column-gap: 2mm; border-top-width: 0.7mm; }
+.theme-violet .four-page .li-sc.two.compact .card > b { font-size: 6.8pt; line-height: 1.2; width: 11.5mm; }
+.theme-violet .four-page .li-sc.two.compact p, .theme-violet .four-page .li-sc.two.compact li { font-size: 7.2pt; line-height: 1.22; }
+.theme-violet .four-page .li-sc.two.compact li { padding-left: 4mm; white-space: nowrap; }
+.theme-violet .four-page .li-sc.two.compact .ticks li::before { top: 0.2mm; width: 2.2mm; height: 2.2mm; border-width: 0.3mm; }
+.four-page.lesson-first .zone.we, .four-page.lesson-first .first-zone { padding-bottom: 1.8mm; gap: 1.4mm; }
+.theme-violet .two-page.four-page.lesson-first .ex-part .inline-fig .graph { max-height: 29.5mm; }
+.theme-violet .four-page.lesson-first .ex-part .box.teacher { height: 20mm; }
+/* the Lesson tile (chapter.lessonTile) on a lesson's first page, and a larger title beside it */
+.mb-lesson { flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 11.5mm; min-width: 21mm; padding: 0 2.5mm; border-radius: 1.6mm; background: #fff; color: var(--gd-deep, var(--charcoal)); box-shadow: 0 0 0 0.6mm var(--gd-gold, var(--accent)); line-height: 1; }
+.mb-lesson span { font-size: 6pt; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gd-green, var(--accent)); margin-left: 0.22em; }
+.mb-lesson b { font-size: 19pt; font-weight: 700; margin-top: 0.6mm; letter-spacing: 0.01em; }
+.mb-band:has(.mb-lesson) .mb-title { font-size: 14pt; font-weight: 700; }
 
 /* Chapter 12 (chapter.parts; body class q-parts): questions in parts, two to a row on pages 1 and 2, so the pictures can
    be wider; the answer lines name what they find (P(not red) =), so each box's labels get a column as wide as the

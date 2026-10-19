@@ -50,16 +50,17 @@ const split = (a, b, cls = '') => `<div class="split ${cls}">${a}${b}</div>`;
 
 // Mandelbrot-theme page: a charcoal header band with the logo and a Mandelbrot detail in the booklet's colour.
 // {{ASSETSREL}} is replaced by the build with the path to the assets folder.
-const mbPage = (chapter, { code, title, section, body, first = false, cls = '' }) => `
+// chapter.lessonTile: a lesson's first page shows its code in a large Lesson tile, so a new lesson is easy to find.
+const mbPage = (chapter, { code, title, section, body, first = false, cls = '' }) => { const tile = chapter.lessonTile && first && code; return `
 <section class="page mb${first ? ' lesson-first' : ''}${cls ? ` ${cls}` : ''}">
   <header class="mb-band">
     <img class="mb-logo" src="{{ASSETSREL}}/kingscliff-logo.png" alt="Kingscliff High School">
-    <div class="mb-titles"><span class="mb-kicker">Mathematics · Year ${chapter.year} · Chapter ${chapter.number}</span><span class="mb-title">${code ? `<b>${code}</b> ` : ''}${title}</span></div>
+    ${tile ? `<div class="mb-lesson"><span>Lesson</span><b>${code}</b></div>` : ''}<div class="mb-titles"><span class="mb-kicker">Mathematics · Year ${chapter.year} · Chapter ${chapter.number}</span><span class="mb-title">${code && !tile ? `<b>${code}</b> ` : ''}${title}</span></div>
     <span class="mb-sec">${section}</span>
   </header>
   <div class="content">${body}</div>
   <footer class="page-foot"><span>Kingscliff High School · Year ${chapter.year} Mathematics</span><span class="pn">{{PN}}</span><span>Chapter ${chapter.number} · ${chapter.title}</span></footer>
-</section>`;
+</section>`; };
 
 // Learning intentions, success criteria and key terms of each lesson, recorded when its intro is built.
 const lessonMeta = {};

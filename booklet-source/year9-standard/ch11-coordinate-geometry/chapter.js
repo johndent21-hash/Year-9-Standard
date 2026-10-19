@@ -26,7 +26,10 @@ const chapter = {
   homework: false,
   coverSub: 'Easy drill on number planes, then Medium and worded problems',
   pagesPerLesson: 4,
-  notesBox: 49.5,
+  // a tall Notes box (1.5 × the old 49.5 mm) for students' notes; page 1 makes room with a slimmer learning intention
+  // and success criteria strip (lib/theme.css, 'Four-page lessons'), and a large Lesson tile marks each new lesson
+  notesBox: 74.25,
+  lessonTile: true,
   howto: front.HOWTO_THREE.replace('<b>three pages</b>', '<b>four pages</b>').replace('Pages 1 and 2 are', 'Pages 1, 2 and 3 are').replace('Page 3 is', 'Page 4 is').replace('<b>10.2</b>', '<b>11.2</b>').replace(' Answers with π: <b>one decimal place</b> unless the question says otherwise.', ' Lengths: <b>one decimal place</b> unless the question says otherwise.'),
   plan,
   goals: ['find the length, midpoint and gradient of an interval on the number plane', 'graph straight lines from a table of values, from intercepts and from y = mx + c',
