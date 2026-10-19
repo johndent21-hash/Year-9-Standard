@@ -48,7 +48,7 @@ Numbering restarts in each section: MC first, then short answer, then worded.
   - Q5 mean (2) and median (1) from a stem-and-leaf plot.
   - Worded: Q6 sport column graph: difference, total, percentage (green); Q7 netball back-to-back: medians (2), which scores more (1), ranges and consistency (3) (blue).
 - **S2:**
-  - MC 1 kL to L; MC 2 absolute error; MC 3 parallelogram; MC 4 kite.
+  - MC 1 kL to L; MC 2 choosing the triangle area formula (replaced absolute error, October 2026); MC 3 parallelogram; MC 4 kite.
   - Q5 right-angled triangle, perimeter and area (green); Q6 circle, circumference and area (blue, TY10 Q7); Q7 closed cylinder V and SA, radius given (blue).
   - Worded: Q8 L-shaped lawn, every side labelled: perimeter 1, area 3, cost 1 (green); Q9 closed storage box: volume (blue), litres (green), SA 3 (blue).
 - **S3:**

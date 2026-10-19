@@ -5,40 +5,15 @@
 // 2 steps is worth 2 marks, 3 steps 3 marks.
 //
 // Every question is a NEW question in the style of a GREEN (Foundation) or BLUE (Standard) Test yourself 10
-// question (src names it). Chapter 10 has no PATH sections. Green types: 10.01 metric units, 10.02 precision and
-// absolute error, 10.04 composite perimeter and area, 10.05 areas of quadrilaterals. Blue types: 10.06 circles,
+// question (src names it). Chapter 10 has no PATH sections. Green types: 10.01 metric units, 10.04 perimeter and
+// area (the triangle formula included), 10.05 areas of quadrilaterals. Blue types: 10.06 circles,
 // 10.07 surface area of prisms, 10.08 surface area of cylinders, 10.09 volumes of prisms and cylinders.
 'use strict';
 const { num, unit, money, nw, pi, PI, HALF, q } = require('../lib/helpers');
 const F = require('../lib/figs');
 
-const { reset, T, seg, poly, pline, svg, FILL } = F.parts;
 const it = (s) => `<i>${s}</i>`;
 const sq = (x) => `${num(x)}²`;
-const PM = '±';
-
-// ---------------------------------------------------------------- one-off figures
-
-// A measuring cylinder with a scale from 0 to `max` mL: a mark every `step` mL and a
-// label every `labelEvery` mL, filled to `level` mL. `mmPer100` is the drawn height of 100 mL.
-const jug = ({ max = 500, step = 50, labelEvery = 100, level = 350, mmPer100 = 7.2, width = 13 }) => {
-  reset();
-  const k = mmPer100 / 100;
-  const x0 = 2, x1 = x0 + width, bot = 3.5 + (max + 40) * k, top = bot - (max + 40) * k;
-  const y = (mL) => bot - mL * k;
-  let b = '';
-  // water, then the glass (open at the top, with a lip and a base plate)
-  b += poly([[x0, y(level)], [x1, y(level)], [x1, bot], [x0, bot]], FILL, { w: 0.3 });
-  b += pline([[x0 - 1, top], [x0, top + 1], [x0, bot], [x1, bot], [x1, top + 1], [x1 + 1, top]], { w: 0.45 });
-  b += poly([[x0 - 3, bot], [x1 + 3, bot], [x1 + 3, bot + 1.6], [x0 - 3, bot + 1.6]], '#d7dde5', { w: 0.35 });
-  // marks on the right-hand wall, labels outside it
-  for (let mL = step; mL <= max; mL += step) {
-    const major = mL % labelEvery === 0;
-    b += seg([x1 - (major ? 5 : 3), y(mL)], [x1, y(mL)], { w: major ? 0.4 : 0.32 });
-    if (major) b += T(x1 + 1.8, y(mL), `${num(mL)} mL`, { anchor: 'start', size: 3.2 });
-  }
-  return svg(x1 + 3.4, bot + 1.6, b);
-};
 
 module.exports = {
   id: 's2',
@@ -58,21 +33,15 @@ module.exports = {
       };
     }),
 
-    // Q2. Precision and absolute error read from a scale (TY10 Q2: thermometer, speedometer).
-    q(() => {
-      const step = 50, abs = step / 2;
-      return {
-        type: 'mc', level: 'green', src: 'TY10 Q2 (10.02, green)', topic: 'Precision and absolute error',
-        text: [
-          'The scale on this measuring cylinder is shown.',
-          'What is the absolute error of a reading taken with this measuring cylinder?',
-        ],
-        formula: `absolute error = ${HALF} × precision (the smallest marked unit on the scale)`,
-        fig: jug({ max: 500, step, labelEvery: 100, level: 350 }), figPos: 'right',
-        options: [`${PM}${num(abs)} mL`, `${PM}${num(step)} mL`, `${PM}${num(2 * step)} mL`, `${PM}0.5 mL`], answer: 0,
-        why: `The marks are ${step} mL apart, so the precision is ${step} mL and the absolute error is ${HALF} × ${step} = ${PM}${abs} mL. B is the precision, C the gap between the numbered marks, D half of 1 mL.`,
-      };
-    }),
+    // Q2. Choosing the formula for the area of a triangle (TY10 Q5: area). Replaces precision and absolute error.
+    q(() => ({
+      type: 'mc', level: 'green', src: 'TY10 Q5 (10.04, green)', topic: 'Formula for the area of a triangle',
+      text: 'Select the correct formula for the area of a triangle.',
+      formula: `${it('b')} is the base and ${it('h')} is the perpendicular height`,
+      fig: F.triangle({ b: 10, h: 8, a: 3, labels: { b: it('b'), h: it('h') }, size: 30, maxH: 26 }), figPos: 'right',
+      options: [`${it('A')} = 2${it('bh')}`, `${it('A')} = ${it('bh')}`, `${it('A')} = ${HALF}${it('bh')}`, `${it('A')} = ${HALF}(${it('b')} + ${it('h')})`].map(nw), answer: 2,
+      why: `A triangle is half of a parallelogram with the same base and height, so ${it('A')} = ${HALF}${it('bh')}. A doubles instead of halving, B is the parallelogram formula, D adds ${it('b')} and ${it('h')} instead of multiplying.`,
+    })),
 
     // Q3. Area of a parallelogram, A = bh, with the sloping side as a distractor (TY10 Q6a).
     q(() => {

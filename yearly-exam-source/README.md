@@ -60,7 +60,7 @@ each one is modelled on (TY9 Q4 = Test yourself 9, question 4).
 | Q | Type | Marks | Level | Topic | Modelled on |
 |---|---|---|---|---|---|
 | 1 | MC | 1 | green | Capacity: kL to L | TY10 Q1i (10.01) |
-| 2 | MC | 1 | green | Precision and absolute error (scale) | TY10 Q2 (10.02) |
+| 2 | MC | 1 | green | Formula for the area of a triangle | TY10 Q5 (10.04) |
 | 3 | MC | 1 | green | Area of a parallelogram | TY10 Q6a (10.05) |
 | 4 | MC | 1 | green | Area of a kite | TY10 Q6b (10.05) |
 | 5 | MC | 1 | green | Composite area: a frame | TY10 Q5b (10.04) |
