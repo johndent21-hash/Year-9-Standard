@@ -5,6 +5,9 @@ Work on branch `claude/affectionate-gates-exjv9d` and push there. `$S` below mea
 
 Done: Chapter 12 Probability (17 Oct 2026): `year9-standard/ch12-probability`, PDFs in `Chapter 12 Probability booklet/`.
 Done: Chapter 13 Similar figures (17 Oct 2026): `year9-standard/ch13-similar-figures`, PDFs in `Chapter 13 Similar figures booklet/`.
+Done: Chapter 10 extension booklet for fast finishers (20 Oct 2026): `year9-standard/ch10-extension`, PDFs in
+`Chapter 10 Surface area and volume booklet/`. Six cards a page (more left too little working space); no 10.2 or 10.3
+questions (precision and error), as the teacher asked. Build it, then run its `check.js` (OVER, ROOM, SCALE).
 The Chapter 13 brief below is kept as a record of the teacher's decisions; the next job is not set yet.
 
 ## Next job: Chapter 13 Similar figures booklet, three pages per lesson

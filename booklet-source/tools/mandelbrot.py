@@ -12,7 +12,7 @@ its region with `art`). For each region it writes, in assets/mandelbrot/:
   <region>-page.jpg   (regions with page=True) a full A4 portrait picture for a full-bleed cover
 
 A region can name another colour scheme with palette= (PALETTES below): 'gold' is the gold-and-green scheme of the
-Year 10 transition booklets; 'violet' is the purple-and-silver scheme of the Year 9 standard booklets.
+Year 10 transition booklets; 'violet' is the purple-and-silver scheme of the Year 9 standard booklets; 'silver' is its reverse, for the extension booklets.
 """
 import numpy as np
 from PIL import Image
@@ -41,6 +41,7 @@ REGIONS = {
     'silver-seahorse': dict(c=(-0.7453, 0.1127), span=0.004, it=1500, palette='violet', page=True),  # Year 9 standard Ch 11: seahorse tails deep in Seahorse Valley
     'silver-jellyfish': dict(c=(-1.25066, 0.02012), span=0.0016, it=1500, palette='violet', page=True),  # Year 9 standard Ch 12: a jellyfish of spirals near the neck of the left bulb
     'silver-minibrot': dict(c=(-1.7680, 0.0188), span=0.07, it=1500, palette='violet', page=True, band=(-1.84, 0.0, 0.24)),  # Year 9 standard Ch 13: a small copy of the whole set on its antenna (the set is self-similar)
+    'platinum-spiral': dict(c=(-0.7746, 0.1242), span=0.004, it=1500, palette='silver', page=True),  # Year 9 standard Ch 10 extension: the Chapter 10 spiral in silver
 }
 
 STOPS = [(0.0, (190, 197, 222)), (0.45, (168, 181, 222)), (0.7, (140, 162, 232)), (0.86, (96, 128, 236)), (0.95, (60, 80, 170)), (1.0, (40, 44, 70))]
@@ -49,6 +50,8 @@ INSIDE = (50, 49, 45)
 PALETTES = {
     'blue': (STOPS, INSIDE),
     'violet': ([(0.0, (22, 9, 38)), (0.5, (44, 20, 74)), (0.7, (78, 42, 122)), (0.82, (128, 96, 170)), (0.9, (186, 172, 214)), (0.96, (226, 222, 240)), (1.0, (252, 251, 255))], (14, 6, 26)),
+    # silver: bright silver filaments on a graphite field, the set itself violet (extension booklets)
+    'silver': ([(0.0, (46, 46, 58)), (0.45, (80, 82, 98)), (0.64, (124, 128, 146)), (0.78, (174, 178, 194)), (0.88, (214, 217, 229)), (0.95, (241, 242, 247)), (1.0, (255, 255, 255))], (58, 28, 100)),
     'gold': ([(0.0, (3, 24, 19)), (0.5, (9, 54, 40)), (0.7, (20, 92, 63)), (0.82, (104, 136, 58)), (0.9, (204, 164, 48)), (0.96, (245, 214, 118)), (1.0, (255, 246, 210))], (4, 18, 14)),
 }
 

@@ -181,7 +181,7 @@ const assemble = (front, lessons) => {
 
 const doc = (dir, title, body, extraCss = '') => `<!doctype html>
 <html lang="en-AU"><head><meta charset="utf-8"><title>${title}</title>
-<style>${cssFor(dir)}:root { --accent: ${chapter.accent || '#7d3c98'}; --mb-dark: url(${assetsFor(dir)}/mandelbrot/${chapter.art || 'whole-set'}-band.jpg); }${extraCss}</style></head><body class="${chapter.bodyClass || (chapter.theme === 'mandelbrot' ? 'theme-mb' : chapter.theme ? `theme-${chapter.theme}` : '')}">${body.replaceAll('{{ASSETSREL}}', assetsFor(dir))}</body></html>`;
+<style>${cssFor(dir)}:root { --accent: ${chapter.accent || '#7d3c98'}; --mb-dark: url(${assetsFor(dir)}/mandelbrot/${chapter.art || 'whole-set'}-band.jpg); }${(chapter.css || '').replaceAll('{{ASSETS}}', assetsFor(dir))}${extraCss}</style></head><body class="${chapter.bodyClass || (chapter.theme === 'mandelbrot' ? 'theme-mb' : chapter.theme ? `theme-${chapter.theme}` : '')}">${body.replaceAll('{{ASSETSREL}}', assetsFor(dir))}</body></html>`;
 
 const answersCss = `
   @page { size: A4; margin: 12mm 12mm 14mm; }
@@ -215,7 +215,8 @@ const jobs = []; // { dir, name, html, check }
   assetsRel = assetsFor(chapterDir);
   const lessons = chapter.lessons.map((make) => make(chapter));
   const MB = chapter.theme === 'mandelbrot' ? require('./lib/blend-front') : null;
-  // A chapter may bring its own front pages: chapter.front = [cover, inside cover], each (chapter, lessons) => html.
+  // A chapter may bring its own front pages: chapter.front = [cover, inside cover], each (chapter, lessons) => html,
+  // and its own styles (chapter.css, added after lib/theme.css in the booklet and the answers).
   const pages = chapter.front ? assemble(chapter.front.map((f) => () => f(chapter, lessons)), lessons) : MB ? assemble([() => (chapter.format === 'worksheet' ? MB.worksheetCover : MB.cover)(chapter, lessons), () => MB.insideCover(chapter, lessons)], lessons)
     : assemble([() => cover(lessons), () => insideCover(lessons)], lessons);
   if (MB && chapter.homework !== false) {
