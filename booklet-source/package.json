@@ -1,0 +1,13 @@
+{
+  "name": "kingscliff-maths-booklets-year9",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Builds the Year 9 standard maths lesson booklets (PDF): two-page Easy and Medium lessons with Mixed practice.",
+  "scripts": {
+    "setup": "npm install && npx playwright install chromium",
+    "build": "node build.js year9-standard/ch10-surface-area-volume"
+  },
+  "dependencies": {
+    "playwright": "^1.56.0"
+  }
+}

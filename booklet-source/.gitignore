@@ -1,0 +1,4 @@
+node_modules/
+year9-standard/preview/*/
+# the teacher's copy build repeats the answers; the students' build already has them
+year9-standard/*-teacher/*-Answers.*
