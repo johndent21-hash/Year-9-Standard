@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Year 9 5.2 Revision Help Sheet and Answers</title>
+<style>
+  @page { size: A4; margin: 14mm 14mm 16mm 14mm; }
+  :root { --navy: #1f3864; --blue: #2e75b6; --pale: #eaf2fb; --line: #c9d6e6; --ink: #1a1a1a; --muted: #555; }
+  * { box-sizing: border-box; }
+  body { font-family: "DejaVu Serif", Georgia, serif; font-size: 9.6pt; line-height: 1.38; color: var(--ink); background: #fff; margin: 0; }
+  h1 { font-size: 21pt; color: var(--navy); margin: 0 0 2px; }
+  h1 + .sub { font-size: 12.5pt; color: var(--blue); font-weight: bold; margin-bottom: 6px; }
+  .rule { border-top: 3px solid var(--navy); margin: 6px 0 10px; }
+  h2 { background: var(--navy); color: #fff; font-size: 12pt; padding: 5px 10px; margin: 12px 0 8px; break-after: avoid; }
+  h3 { color: var(--navy); font-size: 10.6pt; margin: 9px 0 4px; border-bottom: 1px solid var(--line); padding-bottom: 2px; break-after: avoid; }
+  p { margin: 3px 0; }
+  ul { margin: 3px 0 3px 18px; padding: 0; }
+  li { margin: 1px 0; }
+  .page-break { break-before: page; }
+  .intro { color: var(--muted); font-size: 9.2pt; }
+  .box { border: 1.5px solid var(--blue); background: var(--pale); padding: 6px 10px; margin: 6px 0; break-inside: avoid; }
+  .box b.t { color: var(--navy); }
+  .eg { border-left: 3px solid var(--blue); padding: 3px 0 3px 9px; margin: 6px 0; break-inside: avoid; }
+  .eg .lbl { font-weight: bold; color: var(--blue); }
+  .tip { background: #fff7e0; border: 1px solid #e3c770; padding: 4px 9px; margin: 6px 0; break-inside: avoid; }
+  .tip b { color: #8a5a00; }
+  .cols2 { column-count: 2; column-gap: 16px; }
+  .cols2 > * { break-inside: avoid; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px 14px; }
+  .flex { display: flex; gap: 14px; align-items: flex-start; }
+  .flex > .grow { flex: 1; }
+  table.t { border-collapse: collapse; margin: 4px 0; font-size: 9.2pt; }
+  table.t th, table.t td { border: 1px solid var(--line); padding: 2px 7px; text-align: left; vertical-align: top; }
+  table.t th { background: var(--pale); color: var(--navy); }
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: 0.92em; line-height: 1.1; margin: 0 1px; }
+  .fr > span:first-child { border-bottom: 1px solid currentColor; padding: 0 2px; }
+  .fr > span:last-child { padding: 0 2px; }
+  i.v { font-style: italic; }
+  /* Answer key */
+  .q { display: flex; gap: 8px; padding: 5px 0 6px; border-bottom: 1px solid var(--line); break-inside: avoid; }
+  .q .n { flex: 0 0 auto; background: var(--blue); color: #fff; font-weight: bold; border-radius: 3px; min-width: 22px; height: 20px; text-align: center; font-size: 9.4pt; line-height: 20px; padding: 0 3px; margin-top: 1px; }
+  .q .body { flex: 1; }
+  .q .topic { color: var(--muted); font-size: 8.8pt; font-style: italic; }
+  .pt { margin: 1px 0; }
+  .pt > b:first-child { color: var(--navy); display: inline-block; min-width: 14px; }
+  .ans { font-weight: bold; color: #0b5a2a; }
+  .w { color: #333; }
+  .footer-note { color: var(--muted); font-size: 8.6pt; margin-top: 6px; }
+  .toc td { padding: 1px 10px 1px 0; vertical-align: top; } .toc td:first-child { white-space: nowrap; }
+  svg text { font-family: "DejaVu Serif", Georgia, serif; }
+</style>
+</head>
+<body>
+
+<h1>Year 9 5.2 Yearly Exam Revision</h1>
+<div class="sub">Help sheet and answer key for Revision Booklets A and B</div>
+<div class="rule"></div>
+
+<p class="intro">Use this document in two stages. First read the <b>help sheet</b> for the topic you are revising and try the questions in Booklet A or B on your own. Then check your work against the <b>worked solutions</b> at the back. If an answer is different, compare your working line by line to find where it went wrong.</p>
+
+<table class="toc" style="margin:6px 0 4px">
+  <tr><td><b>Part 1</b></td><td>Help sheet: key ideas and formulas for every yearly exam topic</td></tr>
+  <tr><td></td><td>1 Financial mathematics · 2 Surface area and volume · 3 Algebraic techniques and indices · 4 Pythagoras and trigonometry · 5 Data analysis · 6 Equations · 7 Linear relationships</td></tr>
+  <tr><td><b>Part 2</b></td><td>Worked solutions: Booklet A</td></tr>
+  <tr><td><b>Part 3</b></td><td>Worked solutions: Booklet B</td></tr>
+</table>
+
+<h2>Part 1 · Help sheet</h2>
+
+<!-- ============ 1 FINANCIAL ============ -->
+<h3>1 Financial mathematics</h3>
+<div class="cols2">
+  <div>
+    <p><b>Ways of being paid</b></p>
+    <ul>
+      <li><b>Wage:</b> paid per hour. Pay = hourly rate × hours.</li>
+      <li><b>Salary:</b> a fixed amount per year, paid in equal parts.</li>
+      <li><b>Commission:</b> a percentage of sales. Sometimes paid on top of a <b>retainer</b> (a fixed weekly amount).</li>
+      <li><b>Overtime:</b> time-and-a-half = rate × 1.5; double time = rate × 2.</li>
+    </ul>
+  </div>
+  <div class="box">
+    <b class="t">Time conversions for pay</b><br>
+    1 year = 52 weeks = 26 fortnights = 12 months<br>
+    Weekly pay = salary ÷ 52<br>
+    Fortnightly pay = salary ÷ 26<br>
+    Monthly pay = salary ÷ 12
+  </div>
+</div>
+<div class="eg"><span class="lbl">Example:</span> $25/h for 38 h, then 4 h at time-and-a-half.<br>
+Normal: 25 × 38 = $950. Overtime: 4 × 25 × 1.5 = $150. Total = <b>$1100</b>.</div>
+
+<div class="cols2">
+  <div>
+    <p><b>Tax and deductions</b></p>
+    <ul>
+      <li><b>Gross pay</b> = total earned before anything is taken out.</li>
+      <li><b>Net pay</b> = gross pay − deductions (tax, super, union fees …).</li>
+      <li><b>Taxable income</b> = gross income − allowable tax deductions (work-related costs).</li>
+    </ul>
+  </div>
+  <div>
+    <p><b>Buying and selling</b></p>
+    <ul>
+      <li>Profit = selling price − cost price</li>
+      <li>% profit = <span class="fr"><span>profit</span><span>cost price</span></span> × 100%</li>
+      <li>Discount = marked price × rate</li>
+      <li>Sale price = marked price − discount<br>(or marked price × (100% − rate))</li>
+      <li>GST is 10%: price with GST = price × 1.1</li>
+    </ul>
+  </div>
+</div>
+
+<div class="box"><b class="t">Simple interest:</b> &nbsp; <i class="v">I</i> = <i class="v">Prn</i> &nbsp;&nbsp; <i class="v">P</i> = principal (amount invested), <i class="v">r</i> = interest rate per year as a decimal, <i class="v">n</i> = number of years.<br>
+Months → years: divide by 12 (e.g. 30 months = 2.5 years). &nbsp; Total value = <i class="v">P</i> + <i class="v">I</i>.</div>
+<div class="eg"><span class="lbl">Example:</span> $4000 at 3% p.a. for 18 months. &nbsp; <i class="v">I</i> = 4000 × 0.03 × 1.5 = <b>$180</b>.</div>
+<div class="tip"><b>Watch out:</b> change the % into a decimal (3.5% = 0.035) and the time into years before you use <i class="v">I</i> = <i class="v">Prn</i>.</div>
+
+<!-- ============ 2 SA & VOLUME ============ -->
+<h3>2 Surface area and volume (including measurement)</h3>
+<div class="cols2">
+  <div class="box">
+    <b class="t">Units</b><br>
+    mm → cm → m → km: ×10, ×100, ×1000 (divide to go the other way)<br>
+    1 kL = 1000 L &nbsp; 1 L = 1000 mL<br>
+    1 cm³ = 1 mL &nbsp; 1 L = 1000 cm³<br>
+    1 m³ = 1000 L<br>
+    Area: 1 m² = 10 000 cm², 1 cm² = 100 mm²
+  </div>
+  <div>
+    <p><b>Precision and error</b></p>
+    <ul>
+      <li><b>Precision</b> = the smallest unit marked on the instrument.</li>
+      <li><b>Absolute error</b> = ½ × precision.</li>
+      <li>A measurement of 15 cm (to the nearest cm) lies between 14.5 cm and 15.5 cm.</li>
+      <li>% error = <span class="fr"><span>absolute error</span><span>measurement</span></span> × 100%</li>
+    </ul>
+  </div>
+</div>
+
+<table class="t" style="width:100%">
+  <tr><th style="width:24%">Shape</th><th style="width:38%">Area / perimeter</th><th>Notes</th></tr>
+  <tr><td>Rectangle</td><td><i class="v">A</i> = <i class="v">lb</i></td><td>Perimeter = add up all the sides</td></tr>
+  <tr><td>Triangle</td><td><i class="v">A</i> = ½<i class="v">bh</i></td><td>height is perpendicular to the base</td></tr>
+  <tr><td>Parallelogram</td><td><i class="v">A</i> = <i class="v">bh</i></td><td>use the perpendicular height, not the slanted side</td></tr>
+  <tr><td>Trapezium</td><td><i class="v">A</i> = ½<i class="v">h</i>(<i class="v">a</i> + <i class="v">b</i>)</td><td><i class="v">a</i>, <i class="v">b</i> are the parallel sides</td></tr>
+  <tr><td>Kite and rhombus</td><td><i class="v">A</i> = ½<i class="v">xy</i></td><td><i class="v">x</i>, <i class="v">y</i> are the diagonals</td></tr>
+  <tr><td>Circle</td><td><i class="v">C</i> = 2π<i class="v">r</i> = π<i class="v">d</i>, &nbsp; <i class="v">A</i> = π<i class="v">r</i>²</td><td>if given the diameter, halve it to get <i class="v">r</i></td></tr>
+  <tr><td>Composite shape</td><td>split into simple shapes, or big shape − cut-out</td><td>find any missing side lengths first</td></tr>
+</table>
+
+<table class="t" style="width:100%">
+  <tr><th style="width:24%">Solid</th><th style="width:38%">Volume</th><th>Surface area (closed)</th></tr>
+  <tr><td>Any prism</td><td><i class="v">V</i> = <i class="v">Ah</i> (area of cross-section × height)</td><td>add the areas of all faces (draw the net)</td></tr>
+  <tr><td>Rectangular prism</td><td><i class="v">V</i> = <i class="v">lwh</i></td><td><i class="v">SA</i> = 2(<i class="v">lw</i> + <i class="v">lh</i> + <i class="v">wh</i>)</td></tr>
+  <tr><td>Cylinder</td><td><i class="v">V</i> = π<i class="v">r</i>²<i class="v">h</i></td><td><i class="v">SA</i> = 2π<i class="v">r</i>² + 2π<i class="v">rh</i> (two circles + curved surface)</td></tr>
+</table>
+<div class="eg"><span class="lbl">Example:</span> Cylinder <i class="v">r</i> = 3 cm, <i class="v">h</i> = 10 cm. &nbsp; <i class="v">V</i> = π × 3² × 10 = 282.7 cm³ = 282.7 mL. &nbsp; <i class="v">SA</i> = 2π(3²) + 2π(3)(10) = 56.5 + 188.5 = 245.0 cm².</div>
+<div class="tip"><b>Watch out:</b> area is in square units (cm²), volume in cubic units (cm³). An open container has one less face, so leave out the missing top.</div>
+
+<!-- ============ 3 ALGEBRA ============ -->
+<h3>3 Algebraic techniques and indices</h3>
+<div class="cols2">
+  <div>
+    <p><b>Simplifying</b></p>
+    <ul>
+      <li><b>Like terms</b> have the same pronumerals with the same powers: 3<i class="v">x</i> and −5<i class="v">x</i> are like terms; 3<i class="v">x</i> and 3<i class="v">x</i>² are not.</li>
+      <li>Only add or subtract like terms: 7<i class="v">x</i> + 2<i class="v">y</i> − 3<i class="v">x</i> = 4<i class="v">x</i> + 2<i class="v">y</i>.</li>
+      <li>Multiply: numbers × numbers, letters × letters: 6<i class="v">m</i> × 4<i class="v">n</i> = 24<i class="v">mn</i>.</li>
+      <li>Divide: write as a fraction and cancel: 20<i class="v">ab</i> ÷ 5<i class="v">a</i> = 4<i class="v">b</i>.</li>
+      <li>Substitution: replace each letter with its value in brackets, then use BODMAS. If <i class="v">q</i> = 3, 3<i class="v">q</i>² = 3 × 3² = 27 (square <i>first</i>).</li>
+    </ul>
+  </div>
+  <div>
+    <p><b>Expanding (removing brackets)</b></p>
+    <ul>
+      <li>Multiply every term inside by the term outside: 4(3<i class="v">x</i> − 2) = 12<i class="v">x</i> − 8.</li>
+      <li>A negative outside changes every sign: −3(4<i class="v">k</i> − 7) = −12<i class="v">k</i> + 21.</li>
+      <li>Expand each bracket, then collect like terms.</li>
+    </ul>
+    <p><b>Factorising (putting brackets back)</b></p>
+    <ul>
+      <li>Find the highest common factor (HCF) of the numbers <i>and</i> the letters, and put it outside.</li>
+      <li>12<i class="v">y</i>² − 18<i class="v">y</i> = 6<i class="v">y</i>(2<i class="v">y</i> − 3).</li>
+      <li>Check by expanding your answer.</li>
+    </ul>
+  </div>
+</div>
+<div class="box"><b class="t">Index laws</b>
+  <div class="grid3" style="margin-top:3px">
+    <div><i class="v">a</i><sup>m</sup> × <i class="v">a</i><sup>n</sup> = <i class="v">a</i><sup>m+n</sup></div>
+    <div><i class="v">a</i><sup>m</sup> ÷ <i class="v">a</i><sup>n</sup> = <i class="v">a</i><sup>m−n</sup></div>
+    <div>(<i class="v">a</i><sup>m</sup>)<sup>n</sup> = <i class="v">a</i><sup>mn</sup></div>
+    <div><i class="v">a</i><sup>0</sup> = 1</div>
+    <div><i class="v">a</i><sup>−n</sup> = <span class="fr"><span>1</span><span><i class="v">a</i><sup>n</sup></span></span></div>
+    <div>(<i class="v">ab</i>)<sup>n</sup> = <i class="v">a</i><sup>n</sup><i class="v">b</i><sup>n</sup></div>
+  </div>
+</div>
+<div class="eg"><span class="lbl">Example:</span> 2<i class="v">a</i>³<i class="v">b</i> × 6<i class="v">ab</i>² = (2 × 6) × <i class="v">a</i><sup>3+1</sup> × <i class="v">b</i><sup>1+2</sup> = <b>12<i class="v">a</i>⁴<i class="v">b</i>³</b>. &nbsp; 12<i class="v">y</i>⁹ ÷ 4<i class="v">y</i>³ = (12 ÷ 4)<i class="v">y</i><sup>9−3</sup> = <b>3<i class="v">y</i>⁶</b>.</div>
+<div class="tip"><b>Watch out:</b> multiply the coefficients (the numbers) but <i>add</i> the indices. A letter on its own has index 1 (<i class="v">a</i> = <i class="v">a</i>¹).</div>
+
+<!-- ============ 4 TRIG ============ -->
+<h3>4 Pythagoras’ theorem and trigonometry</h3>
+<div class="flex">
+  <div class="grow">
+    <div class="box"><b class="t">Pythagoras’ theorem</b> (right-angled triangles only)<br>
+      <i class="v">c</i>² = <i class="v">a</i>² + <i class="v">b</i>², where <i class="v">c</i> is the <b>hypotenuse</b>: the longest side, opposite the right angle.<br>
+      Finding the hypotenuse: <i class="v">c</i> = √(<i class="v">a</i>² + <i class="v">b</i>²) &nbsp;(<b>add</b> the squares)<br>
+      Finding a shorter side: <i class="v">a</i> = √(<i class="v">c</i>² − <i class="v">b</i>²) &nbsp;(<b>subtract</b> the squares)
+    </div>
+    <div class="eg"><span class="lbl">Example:</span> Hypotenuse 13, one side 5. Other side = √(13² − 5²) = √144 = <b>12</b>.</div>
+    <p style="margin-top:6px"><b>Trigonometry:</b> label the sides from the angle θ you are using.</p>
+    <div class="box"><b class="t">SOH CAH TOA</b><br>
+      sin θ = <span class="fr"><span>opposite</span><span>hypotenuse</span></span> &nbsp;&nbsp;
+      cos θ = <span class="fr"><span>adjacent</span><span>hypotenuse</span></span> &nbsp;&nbsp;
+      tan θ = <span class="fr"><span>opposite</span><span>adjacent</span></span>
+    </div>
+  </div>
+  <svg width="235" height="150" viewBox="0 0 235 150" aria-label="Right-angled triangle with sides labelled from angle theta">
+    <polygon points="20,125 170,125 170,25" fill="#eaf2fb" stroke="#1a1a1a" stroke-width="1.5"/>
+    <rect x="160" y="115" width="10" height="10" fill="none" stroke="#1a1a1a"/>
+    <path d="M 48 125 A 28 28 0 0 0 44 109" fill="none" stroke="#1a1a1a"/>
+    <text x="52" y="119" font-size="12" font-style="italic">θ</text>
+    <text x="70" y="70" font-size="11" fill="#1f3864" transform="rotate(-33 70 70)">hypotenuse</text>
+    <text x="176" y="80" font-size="11" fill="#1f3864">opposite</text>
+    <text x="80" y="141" font-size="11" fill="#1f3864">adjacent</text>
+  </svg>
+</div>
+<div class="cols2">
+  <div>
+    <p><b>Finding a side</b></p>
+    <ol style="margin:3px 0 3px 18px;padding:0">
+      <li>Label opp, adj and hyp from the given angle.</li>
+      <li>Choose the ratio that uses the side you know and the side you want.</li>
+      <li>If the unknown is on top: multiply. &nbsp;<span style="white-space:nowrap"><i class="v">x</i> = 20 × sin 35°</span></li>
+      <li>If the unknown is on the bottom: divide. &nbsp;<span style="white-space:nowrap"><i class="v">x</i> = 20 ÷ cos 35°</span></li>
+    </ol>
+  </div>
+  <div>
+    <p><b>Finding an angle</b></p>
+    <ul>
+      <li>Work out the ratio, then use the inverse key (shift):<br>cos θ = <span class="fr"><span>1.3</span><span>4.8</span></span> → θ = cos⁻¹(1.3 ÷ 4.8) = 74°</li>
+      <li>Degrees and minutes: 1° = 60′. Use the ° ′ ″ key. 32.5° = 32°30′.</li>
+      <li>Check your calculator is in <b>degrees</b> mode (D on the screen).</li>
+    </ul>
+  </div>
+</div>
+<div class="tip"><b>Angles of elevation and depression</b> are measured from the <b>horizontal</b>: up to an object (elevation) or down to an object (depression).</div>
+
+<!-- ============ 5 DATA ============ -->
+<h3>5 Data analysis</h3>
+<div class="cols2">
+  <div>
+    <p><b>Types of data</b></p>
+    <ul>
+      <li><b>Categorical:</b> words or categories (colour, car type, S/M/L, poor/good/excellent).</li>
+      <li><b>Numerical discrete:</b> counted, so only whole values (number of pets, goals).</li>
+      <li><b>Numerical continuous:</b> measured, so any value in a range (mass, time, length, temperature).</li>
+    </ul>
+    <p><b>Measures of centre and spread</b></p>
+    <ul>
+      <li><b>Mean</b> = <span class="fr"><span>sum of scores</span><span>number of scores</span></span></li>
+      <li><b>Median</b> = middle score when the scores are in order. With an even number of scores, average the two middle ones. Its position is the <span class="fr"><span><i class="v">n</i> + 1</span><span>2</span></span>th score.</li>
+      <li><b>Mode</b> = the most common score.</li>
+      <li><b>Range</b> = highest − lowest.</li>
+    </ul>
+  </div>
+  <div>
+    <p><b>Shape of a distribution</b></p>
+    <ul>
+      <li><b>Symmetrical:</b> both sides look roughly the same.</li>
+      <li><b>Positively skewed:</b> scores bunch on the left (low end) with a long tail to the right.</li>
+      <li><b>Negatively skewed:</b> scores bunch on the right (high end) with a tail to the left.</li>
+      <li><b>Cluster:</b> where most scores are grouped. <b>Outlier:</b> a score far from the rest.</li>
+    </ul>
+    <p><b>Outliers</b> change the <b>mean</b> a lot but the <b>median</b> very little, so the median describes data with an outlier better.</p>
+    <p><b>Comparing two sets</b> (back-to-back stem-and-leaf plots): the higher median (or mean) means "better" or "more"; the smaller range means more <b>consistent</b>.</p>
+    <p><b>Reading graphs:</b> read stem-and-leaf plots with the key (3 | 5 = 35). In a back-to-back plot, the left-hand leaves are read from the stem outward. Histogram: total = add the column heights.</p>
+  </div>
+</div>
+<div class="eg"><span class="lbl">Example:</span> 3, 5, 6, 6, 8, 20. &nbsp; Mean = 48 ÷ 6 = 8. &nbsp; Median = (6 + 6) ÷ 2 = 6. &nbsp; Mode = 6. &nbsp; Range = 20 − 3 = 17. The outlier 20 pulls the mean up, so the median is the better measure.</div>
+<div class="tip"><b>Percentage of a total:</b> <span class="fr"><span>part</span><span>total</span></span> × 100%. Check that your categories add up to the total.</div>
+
+<!-- ============ 6 EQUATIONS ============ -->
+<h3>6 Equations</h3>
+<div class="cols2">
+  <div>
+    <ul>
+      <li>Whatever you do to one side, do the same to the other side.</li>
+      <li>Undo operations in reverse order using inverse operations: + and − undo each other; × and ÷ undo each other.</li>
+      <li><b>Brackets:</b> expand first.</li>
+      <li><b>Pronumerals on both sides:</b> subtract the smaller pronumeral term from both sides first.</li>
+      <li><b>Fractions:</b> multiply both sides by the denominator.</li>
+      <li><b>Check:</b> substitute your answer back into the original equation.</li>
+      <li><b>Word problems:</b> pick a letter for the unknown, write the equation, solve it, and answer in words with units.</li>
+    </ul>
+  </div>
+  <div>
+    <div class="eg"><span class="lbl">Example 1:</span> 5<i class="v">x</i> − 4 = 2<i class="v">x</i> + 11<br>
+      −2<i class="v">x</i>: &nbsp; 3<i class="v">x</i> − 4 = 11<br>
+      +4: &nbsp; 3<i class="v">x</i> = 15<br>
+      ÷3: &nbsp; <b><i class="v">x</i> = 5</b> &nbsp; Check: 21 = 21 ✓</div>
+    <div class="eg"><span class="lbl">Example 2:</span> 2(<i class="v">a</i> + 3) = 18<br>
+      Expand: 2<i class="v">a</i> + 6 = 18 → 2<i class="v">a</i> = 12 → <b><i class="v">a</i> = 6</b></div>
+    <div class="eg"><span class="lbl">Example 3:</span> <span class="fr"><span><i class="v">x</i></span><span>3</span></span> + 4 = 9 → <span class="fr"><span><i class="v">x</i></span><span>3</span></span> = 5 → <b><i class="v">x</i> = 15</b></div>
+  </div>
+</div>
+
+<!-- ============ 7 LINEAR ============ -->
+<h3>7 Linear relationships</h3>
+<div class="cols2">
+  <div>
+    <div class="box"><b class="t">Key formulas</b><br>
+      Gradient <i class="v">m</i> = <span class="fr"><span>rise</span><span>run</span></span> = <span class="fr"><span><i class="v">y</i>₂ − <i class="v">y</i>₁</span><span><i class="v">x</i>₂ − <i class="v">x</i>₁</span></span><br>
+      Gradient–intercept form: <i class="v">y</i> = <i class="v">mx</i> + <i class="v">c</i><br>
+      &nbsp;&nbsp;<i class="v">m</i> = gradient, <i class="v">c</i> = <i class="v">y</i>-intercept<br>
+      Midpoint = (<span class="fr"><span><i class="v">x</i>₁ + <i class="v">x</i>₂</span><span>2</span></span>, <span class="fr"><span><i class="v">y</i>₁ + <i class="v">y</i>₂</span><span>2</span></span>)<br>
+      Distance = √((<i class="v">x</i>₂ − <i class="v">x</i>₁)² + (<i class="v">y</i>₂ − <i class="v">y</i>₁)²)
+    </div>
+    <ul>
+      <li>Positive gradient: line goes up from left to right. Negative gradient: line goes down.</li>
+      <li>Horizontal line <i class="v">y</i> = <i class="v">k</i>: gradient 0. Vertical line <i class="v">x</i> = <i class="v">k</i>: gradient undefined.</li>
+      <li><b>Parallel lines</b> have the same gradient.</li>
+    </ul>
+  </div>
+  <div>
+    <ul>
+      <li><b>Graphing:</b> make a table of values (e.g. <i class="v">x</i> = −1, 0, 1, 2), plot the points and rule a line through them.</li>
+      <li><b><i class="v">x</i>-intercept:</b> set <i class="v">y</i> = 0 and solve. <b><i class="v">y</i>-intercept:</b> set <i class="v">x</i> = 0.</li>
+      <li><b>Does a point lie on the line?</b> Substitute <i class="v">x</i> and check you get the same <i class="v">y</i>.</li>
+      <li><b>Real-life lines:</b> in <i class="v">C</i> = 90 + 65<i class="v">h</i>, the 90 is a fixed starting cost (the <i class="v">y</i>-intercept) and 65 is the rate per hour (the gradient).</li>
+    </ul>
+    <div class="eg"><span class="lbl">Example:</span> Line through (1, 3) and (4, 9).<br>
+      <i class="v">m</i> = <span class="fr"><span>9 − 3</span><span>4 − 1</span></span> = 2. Substitute (1, 3): 3 = 2(1) + <i class="v">c</i>, so <i class="v">c</i> = 1.<br>
+      Equation: <b><i class="v">y</i> = 2<i class="v">x</i> + 1</b>. &nbsp; Midpoint = (2.5, 6).</div>
+  </div>
+</div>
+
+<!-- ======================= PART 2: BOOKLET A ======================= -->
+<div class="page-break"></div>
+<h1>Worked solutions</h1>
+<div class="sub">Booklet A</div>
+<div class="rule"></div>
+<p class="intro">Answers are shown in <span class="ans">green bold</span>. Rounded answers follow the rounding asked for in the question.</p>
+
+<h2>Section 1: Data</h2>
+
+<div class="q"><div class="n">1</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> <span class="ans">Numerical, discrete</span> <span class="w">(pets are counted)</span></div>
+    <div class="pt"><b>b</b> <span class="ans">Categorical</span> <span class="w">(colours are words)</span></div>
+    <div class="pt"><b>c</b> <span class="ans">Numerical, continuous</span> <span class="w">(mass is measured)</span></div>
+    <div class="pt"><b>d</b> <span class="ans">Numerical, discrete</span> <span class="w">(messages are counted)</span></div>
+    <div class="pt"><b>e</b> <span class="ans">Numerical, continuous</span> <span class="w">(time is measured)</span></div>
+    <div class="pt"><b>f</b> <span class="ans">Categorical</span> <span class="w">(sizes are labels)</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">2</div><div class="body">
+  <p class="w">Dots: 0 → 4, 1 → 8, 2 → 6, 3 → 3, 4 → 2, 5 → 1, 9 → 1</p>
+  <div class="pt"><b>a</b> 4 + 8 + 6 + 3 + 2 + 1 + 1 = <span class="ans">25 students</span></div>
+  <div class="pt"><b>b</b> <span class="ans">Positively skewed</span>: the scores bunch at the low end with a tail to the right.</div>
+  <div class="pt"><b>c</b> <span class="ans">Between 0 and 2 pets</span></div>
+  <div class="pt"><b>d</b> <span class="ans">Yes, 9 pets</span> (far away from the other scores)</div>
+  <div class="pt"><b>e</b> <span class="ans">Mode = 1 pet</span> (tallest column of dots)</div>
+</div></div>
+
+<div class="q"><div class="n">3</div><div class="body">
+  <p class="w">Frequencies: 1 → 3, 2 → 7, 3 → 5, 4 → 6, 5 → 2, 6 → 1</p>
+  <div class="grid2">
+    <div class="pt"><b>a</b> 3 + 7 + 5 + 6 + 2 + 1 = <span class="ans">24 houses</span></div>
+    <div class="pt"><b>b</b> <span class="ans">2 people</span> (tallest column)</div>
+    <div class="pt"><b>c</b> 6 − 1 = <span class="ans">5</span></div>
+    <div class="pt"><b>d</b> 4, 5 or 6 people: 6 + 2 + 1 = <span class="ans">9 houses</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">4</div><div class="body">
+  <div class="pt"><b>a</b> <span class="ans">41</span></div>
+  <div class="pt"><b>b</b> Sum = 128, so mean = 128 ÷ 8 = <span class="ans">16</span>. Ordered: 9, 11, 12, 13, 13, 14, 15, 41 → median = (13 + 13) ÷ 2 = <span class="ans">13</span></div>
+  <div class="pt"><b>c</b> Sum = 87, so mean = 87 ÷ 7 = <span class="ans">12.4</span> (1 d.p.). Ordered: 9, 11, 12, <u>13</u>, 13, 14, 15 → median = <span class="ans">13</span></div>
+  <div class="pt"><b>d</b> The <span class="ans">mean</span> changed more (16 → 12.4) while the median stayed at 13. The <span class="ans">median</span> better describes the data.</div>
+</div></div>
+
+<div class="q"><div class="n">5</div><div class="body">
+  <p class="w">Scores: 23, 27, 31, 32, 35, 35, 38, 40, 42, 44, 46, 47 (12 scores)</p>
+  <div class="pt"><b>a</b> Sum = 440, so mean = 440 ÷ 12 = 36.666… = <span class="ans">36.7</span></div>
+  <div class="pt"><b>b</b> 6th and 7th scores: (35 + 38) ÷ 2 = <span class="ans">36.5</span></div>
+  <div class="grid2">
+    <div class="pt"><b>c</b> <span class="ans">35</span></div>
+    <div class="pt"><b>d</b> 47 − 23 = <span class="ans">24</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">6</div><div class="body">
+  <p class="w">Apple 12, Banana 9, Mango 15, Grapes 6, Orange 3</p>
+  <div class="grid2">
+    <div class="pt"><b>a</b> <span class="ans">Mango</span></div>
+    <div class="pt"><b>b</b> 15 − 6 = <span class="ans">9 more students</span></div>
+    <div class="pt"><b>c</b> 12 + 9 + 15 + 6 + 3 = <span class="ans">45 students</span></div>
+    <div class="pt"><b>d</b> <span class="fr"><span>12 + 9</span><span>45</span></span> × 100% = <span class="ans">46.7%</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">7</div><div class="body">
+  <p class="w">9X: 21, 25, 28, 30, 32, 33, 35, 36, 38, 41 &nbsp;|&nbsp; 9Y: 14, 18, 26, 29, 37, 40, 42, 45, 47, 49 (10 marks each)</p>
+  <div class="pt"><b>a</b> 9X: (32 + 33) ÷ 2 = <span class="ans">32.5</span> &nbsp;&nbsp; 9Y: (37 + 40) ÷ 2 = <span class="ans">38.5</span></div>
+  <div class="pt"><b>b</b> 9X: 41 − 21 = <span class="ans">20</span> &nbsp;&nbsp; 9Y: 49 − 14 = <span class="ans">35</span></div>
+  <div class="pt"><b>c</b> <span class="ans">9Y</span>, because it has the higher median (38.5 compared with 32.5).</div>
+  <div class="pt"><b>d</b> <span class="ans">9X</span>, because its range is smaller (20 compared with 35), so its marks are closer together.</div>
+</div></div>
+
+<h2>Section 2: Surface area and volume</h2>
+
+<div class="q"><div class="n">8</div><div class="body">
+  <div class="grid3">
+    <div class="pt"><b>a</b> 2.4 × 1000 = <span class="ans">2400 L</span></div>
+    <div class="pt"><b>b</b> 3750 ÷ 1000 = <span class="ans">3.75 L</span></div>
+    <div class="pt"><b>c</b> 0.6 × 1000 = <span class="ans">600 mL</span></div>
+    <div class="pt"><b>d</b> 8200 ÷ 1000 = <span class="ans">8.2 kL</span></div>
+    <div class="pt"><b>e</b> 4000 ÷ 1000 = <span class="ans">4 L</span></div>
+    <div class="pt"><b>f</b> 2.5 × 1000 = <span class="ans">2500 L</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">9</div><div class="body">
+  <p class="w">Absolute error = ½ × precision</p>
+  <div class="grid2">
+    <div class="pt"><b>a</b> (i) <span class="ans">1 mm</span> &nbsp; (ii) <span class="ans">0.5 mm</span></div>
+    <div class="pt"><b>b</b> (i) <span class="ans">25 mL</span> &nbsp; (ii) <span class="ans">12.5 mL</span></div>
+    <div class="pt"><b>c</b> (i) <span class="ans">0.1 kg</span> &nbsp; (ii) <span class="ans">0.05 kg</span></div>
+    <div class="pt"><b>d</b> (i) <span class="ans">2°C</span> &nbsp; (ii) <span class="ans">1°C</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">10</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> Parallelogram: <i class="v">A</i> = 14 × 8 = <span class="ans">112 m²</span> <span class="w">(the 9 m slanted side is not used)</span></div>
+    <div class="pt"><b>b</b> Kite: <i class="v">A</i> = ½ × 12 × 18 = <span class="ans">108 cm²</span></div>
+    <div class="pt"><b>c</b> Trapezium: <i class="v">A</i> = ½ × 7 × (9 + 15) = <span class="ans">84 cm²</span></div>
+    <div class="pt"><b>d</b> Rhombus: <i class="v">A</i> = ½ × 10 × 16 = <span class="ans">80 mm²</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">11</div><div class="body">
+  <div class="pt"><b>a</b> (i) 8 + 15 + 17 = <span class="ans">40 cm</span> &nbsp;&nbsp; (ii) ½ × 15 × 8 = <span class="ans">60 cm²</span></div>
+  <div class="pt"><b>b</b> (i) 7 + 24 + 25 = <span class="ans">56 mm</span> &nbsp;&nbsp; (ii) ½ × 7 × 24 = <span class="ans">84 mm²</span> <span class="w">(use the two sides that meet at the right angle)</span></div>
+</div></div>
+
+<div class="q"><div class="n">12</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">r</i> = 4.2 cm. &nbsp; (i) <i class="v">C</i> = 2 × π × 4.2 = 26.389… = <span class="ans">26.4 cm</span> &nbsp;&nbsp; (ii) <i class="v">A</i> = π × 4.2² = 55.417… = <span class="ans">55.4 cm²</span></div>
+  <div class="pt"><b>b</b> Diameter 15 m, so <i class="v">r</i> = 7.5 m. &nbsp; (i) <i class="v">C</i> = π × 15 = 47.123… = <span class="ans">47.1 m</span> &nbsp;&nbsp; (ii) <i class="v">A</i> = π × 7.5² = 176.714… = <span class="ans">176.7 m²</span></div>
+</div></div>
+
+<div class="q"><div class="n">13</div><div class="body">
+  <p class="w">Missing sides: the right-hand edges are 5 m and 6 m (5 + 6 = 11 ✓); the step across is 6 m (10 + 6 = 16 ✓).</p>
+  <div class="pt"><b>a</b> <i class="v">P</i> = 10 + 5 + 6 + 6 + 16 + 11 = <span class="ans">54 m</span></div>
+  <div class="pt"><b>b</b> Full rectangle − missing corner = 16 × 11 − 6 × 5 = 176 − 30 = <span class="ans">146 m²</span></div>
+  <div class="pt"><b>c</b> 146 × $38.50 = <span class="ans">$5621.00</span></div>
+</div></div>
+
+<div class="q"><div class="n">14</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">V</i> = π × 4² × 11 = 176π = 552.920… = <span class="ans">552.9 cm³</span></div>
+  <div class="pt"><b>b</b> 1 cm³ = 1 mL, so the can holds <span class="ans">552.9 mL</span> (about 553 mL)</div>
+  <div class="pt"><b>c</b> <i class="v">SA</i> = 2π(4²) + 2π(4)(11) = 32π + 88π = 120π = 376.991… = <span class="ans">377.0 cm²</span></div>
+</div></div>
+
+<div class="q"><div class="n">15</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">V</i> = 32 × 20 × 12 = <span class="ans">7680 cm³</span></div>
+  <div class="pt"><b>b</b> 7680 cm³ = 7680 mL = <span class="ans">7.68 L</span></div>
+  <div class="pt"><b>c</b> <i class="v">SA</i> = 2(32 × 20 + 32 × 12 + 20 × 12) = 2(640 + 384 + 240) = 2 × 1264 = <span class="ans">2528 cm²</span></div>
+</div></div>
+
+<h2>Section 3: Mixed topics</h2>
+
+<div class="q"><div class="n">16</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> 2(6) + 3 = <span class="ans">15</span></div>
+    <div class="pt"><b>b</b> 6² − 3 = 36 − 3 = <span class="ans">33</span></div>
+    <div class="pt"><b>c</b> 3 × 3² = 3 × 9 = <span class="ans">27</span></div>
+    <div class="pt"><b>d</b> (6 − 3)² = 3² = <span class="ans">9</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">17</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">x</i> is the hypotenuse: <i class="v">x</i>² = 6.5² + 8.2² = 42.25 + 67.24 = 109.49, so <i class="v">x</i> = √109.49 = 10.46… = <span class="ans">10.5 cm</span></div>
+  <div class="pt"><b>b</b> 14 m is the hypotenuse: <i class="v">y</i>² = 14² − 9² = 196 − 81 = 115, so <i class="v">y</i> = √115 = 10.72… = <span class="ans">10.7 m</span></div>
+</div></div>
+
+<div class="q"><div class="n">18</div><div class="body">
+  <div class="pt"><b>a</b> Discount = 20% × $85 = $17. Sale price = $85 − $17 = <span class="ans">$68</span> &nbsp;<span class="w">(or 0.8 × 85)</span></div>
+  <div class="pt"><b>b</b> Saved = 15% × $240 = <span class="ans">$36</span>. Sale price = $240 − $36 = <span class="ans">$204</span></div>
+  <div class="pt"><b>c</b> Profit = $799 − $650 = <span class="ans">$149</span>. % profit = <span class="fr"><span>149</span><span>650</span></span> × 100% = 22.92… = <span class="ans">22.9%</span></div>
+</div></div>
+
+<div class="q"><div class="n">19</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> (3 × 5)<i class="v">x</i><sup>4+3</sup> = <span class="ans">15<i class="v">x</i>⁷</span></div>
+    <div class="pt"><b>b</b> (12 ÷ 4)<i class="v">y</i><sup>9−3</sup> = <span class="ans">3<i class="v">y</i>⁶</span></div>
+    <div class="pt"><b>c</b> <i class="v">m</i><sup>2×5</sup> = <span class="ans"><i class="v">m</i>¹⁰</span></div>
+    <div class="pt"><b>d</b> (2 × 6)<i class="v">a</i><sup>3+1</sup><i class="v">b</i><sup>1+2</sup> = <span class="ans">12<i class="v">a</i>⁴<i class="v">b</i>³</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">20</div><div class="body">
+  <div class="grid3">
+    <div class="pt"><b>a</b> 78 260 ÷ 52 = <span class="ans">$1505</span></div>
+    <div class="pt"><b>b</b> 78 260 ÷ 26 = <span class="ans">$3010</span></div>
+    <div class="pt"><b>c</b> 78 260 ÷ 12 = <span class="ans">$6521.67</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">21</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> (7<i class="v">x</i> − 3<i class="v">x</i>) + (2<i class="v">y</i> + 5<i class="v">y</i>) = <span class="ans">4<i class="v">x</i> + 7<i class="v">y</i></span></div>
+    <div class="pt"><b>b</b> <span class="ans">24<i class="v">mn</i></span></div>
+    <div class="pt"><b>c</b> <span class="fr"><span>20<i class="v">ab</i></span><span>5<i class="v">a</i></span></span> = <span class="ans">4<i class="v">b</i></span></div>
+    <div class="pt"><b>d</b> (9<i class="v">k</i> + 2<i class="v">k</i>) + (−4 + 10) = <span class="ans">11<i class="v">k</i> + 6</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">22</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> <span class="ans">12<i class="v">x</i> − 8</span></div>
+    <div class="pt"><b>b</b> <span class="ans">−10<i class="v">a</i> − 15</span></div>
+    <div class="pt"><b>c</b> 2<i class="v">x</i> + 14 + 3<i class="v">x</i> − 12 = <span class="ans">5<i class="v">x</i> + 2</span></div>
+    <div class="pt"><b>d</b> 10<i class="v">y</i> − 5 − 3<i class="v">y</i> + 18 = <span class="ans">7<i class="v">y</i> + 13</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">23</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> HCF 4: <span class="ans">4(2<i class="v">x</i> + 5)</span></div>
+    <div class="pt"><b>b</b> HCF 5: <span class="ans">5(3<i class="v">m</i> − 2)</span></div>
+    <div class="pt"><b>c</b> HCF <i class="v">a</i>: <span class="ans"><i class="v">a</i>(<i class="v">a</i> + 6)</span></div>
+    <div class="pt"><b>d</b> HCF 6<i class="v">y</i>: <span class="ans">6<i class="v">y</i>(2<i class="v">y</i> − 3)</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">24</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">I</i> = 5400 × 0.035 × 4 = <span class="ans">$756</span></div>
+  <div class="pt"><b>b</b> 30 months = 2.5 years. <i class="v">I</i> = 12 000 × 0.052 × 2.5 = <span class="ans">$1560</span></div>
+</div></div>
+
+<div class="q"><div class="n">25</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> 4<i class="v">x</i> = 28 → <span class="ans"><i class="v">x</i> = 7</span></div>
+    <div class="pt"><b>b</b> <i class="v">x</i> ÷ 3 = 7 → <span class="ans"><i class="v">x</i> = 21</span></div>
+    <div class="pt"><b>c</b> 4<i class="v">m</i> − 7 = 25 → 4<i class="v">m</i> = 32 → <span class="ans"><i class="v">m</i> = 8</span></div>
+    <div class="pt"><b>d</b> 6<i class="v">y</i> − 3 = 4<i class="v">y</i> + 15 → 2<i class="v">y</i> = 18 → <span class="ans"><i class="v">y</i> = 9</span></div>
+    <div class="pt"><b>e</b> 5<i class="v">k</i> − 3<i class="v">k</i> − 6 = <i class="v">k</i> + 4 → 2<i class="v">k</i> − 6 = <i class="v">k</i> + 4 → <span class="ans"><i class="v">k</i> = 10</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">26</div><div class="body">
+  <div class="pt"><b>a</b> Commission = 1.8% × $85 000 = $1530. Total = $650 + $1530 = <span class="ans">$2180</span></div>
+  <div class="pt"><b>b</b> 6% × $23 400 = 0.06 × 23 400 = <span class="ans">$1404</span></div>
+</div></div>
+
+<div class="q"><div class="n">27</div><div class="body">
+  <div class="pt"><b>a</b> 38 × $28.40 = <span class="ans">$1079.20</span></div>
+  <div class="pt"><b>b</b> 45 − 38 = 7 overtime hours. 7 × $28.40 × 1.5 = 7 × $42.60 = <span class="ans">$298.20</span></div>
+  <div class="pt"><b>c</b> $1079.20 + $298.20 = <span class="ans">$1377.40</span></div>
+</div></div>
+
+<div class="q"><div class="n">28</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">C</i> = 90 + 65 × 3 = 90 + 195 = <span class="ans">$285</span></div>
+  <div class="pt"><b>b</b> 90 + 65<i class="v">h</i> = 415 → 65<i class="v">h</i> = 325 → <i class="v">h</i> = 5. The job took <span class="ans">5 hours</span>.</div>
+</div></div>
+
+<div class="q"><div class="n">29</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">h</i>² = 4.8² − 1.3² = 23.04 − 1.69 = 21.35, so <i class="v">h</i> = √21.35 = 4.6206… = <span class="ans">4.62 m</span></div>
+  <div class="pt"><b>b</b> Adjacent = 1.3, hypotenuse = 4.8, so use cos: cos θ = <span class="fr"><span>1.3</span><span>4.8</span></span> → θ = cos⁻¹(0.2708…) = 74.29…° = <span class="ans">74°</span></div>
+</div></div>
+
+<!-- ======================= PART 3: BOOKLET B ======================= -->
+<div class="page-break"></div>
+<h1>Worked solutions</h1>
+<div class="sub">Booklet B</div>
+<div class="rule"></div>
+
+<h2>Section 1: Data</h2>
+
+<div class="q"><div class="n">1</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> <span class="ans">Numerical, discrete</span> <span class="w">(counted)</span></div>
+    <div class="pt"><b>b</b> <span class="ans">Categorical</span> <span class="w">(car types are names)</span></div>
+    <div class="pt"><b>c</b> <span class="ans">Numerical, continuous</span> <span class="w">(measured)</span></div>
+    <div class="pt"><b>d</b> <span class="ans">Numerical, discrete</span> <span class="w">(counted)</span></div>
+    <div class="pt"><b>e</b> <span class="ans">Numerical, continuous</span> <span class="w">(measured)</span></div>
+    <div class="pt"><b>f</b> <span class="ans">Categorical</span> <span class="w">(ratings are words)</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">2</div><div class="body">
+  <p class="w">Dots: 2 → 1, 3 → 2, 4 → 4, 5 → 5, 6 → 6, 7 → 4, 8 → 2, 9 → 1</p>
+  <div class="pt"><b>a</b> 1 + 2 + 4 + 5 + 6 + 4 + 2 + 1 = <span class="ans">25 students</span></div>
+  <div class="pt"><b>b</b> <span class="ans">Symmetrical</span> (roughly the same shape on both sides of the centre)</div>
+  <div class="pt"><b>c</b> <span class="ans">Between 4 and 7</span></div>
+  <div class="pt"><b>d</b> <span class="ans">No outlier</span> (there are no gaps; every score is close to the others)</div>
+  <div class="pt"><b>e</b> <span class="ans">Mode = 6</span></div>
+</div></div>
+
+<div class="q"><div class="n">3</div><div class="body">
+  <p class="w">Frequencies: 0 → 2, 1 → 5, 2 → 8, 3 → 6, 4 → 3, 5 → 1</p>
+  <div class="grid2">
+    <div class="pt"><b>a</b> 2 + 5 + 8 + 6 + 3 + 1 = <span class="ans">25 students</span></div>
+    <div class="pt"><b>b</b> <span class="ans">2 books</span></div>
+    <div class="pt"><b>c</b> 5 − 0 = <span class="ans">5</span></div>
+    <div class="pt"><b>d</b> 0 or 1 book: 2 + 5 = <span class="ans">7 students</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">4</div><div class="body">
+  <div class="pt"><b>a</b> <span class="ans">30</span></div>
+  <div class="pt"><b>b</b> Sum = 59, so mean = 59 ÷ 8 = 7.375 ≈ <span class="ans">7.4 min</span>. Ordered: 2, 3, 4, 4, 5, 5, 6, 30 → median = (4 + 5) ÷ 2 = <span class="ans">4.5 min</span></div>
+  <div class="pt"><b>c</b> Sum = 29, so mean = 29 ÷ 7 = <span class="ans">4.1 min</span> (1 d.p.). Ordered: 2, 3, 4, <u>4</u>, 5, 5, 6 → median = <span class="ans">4 min</span></div>
+  <div class="pt"><b>d</b> The <span class="ans">mean</span> changed more (7.4 → 4.1); the median only moved from 4.5 to 4. The <span class="ans">median</span> better describes the data.</div>
+</div></div>
+
+<div class="q"><div class="n">5</div><div class="body">
+  <p class="w">Scores: 8, 12, 15, 17, 19, 21, 21, 24, 28, 30, 33 (11 scores)</p>
+  <div class="pt"><b>a</b> Sum = 228, so mean = 228 ÷ 11 = 20.72… = <span class="ans">20.7</span></div>
+  <div class="pt"><b>b</b> Middle (6th) score = <span class="ans">21</span></div>
+  <div class="grid2">
+    <div class="pt"><b>c</b> <span class="ans">21</span></div>
+    <div class="pt"><b>d</b> 33 − 8 = <span class="ans">25</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">6</div><div class="body">
+  <p class="w">Bus 18, Car 14, Walk 10, Bike 6, Train 12</p>
+  <div class="grid2">
+    <div class="pt"><b>a</b> <span class="ans">Bike</span></div>
+    <div class="pt"><b>b</b> 18 − 14 = <span class="ans">4 more students</span></div>
+    <div class="pt"><b>c</b> 18 + 14 + 10 + 6 + 12 = <span class="ans">60 students</span></div>
+    <div class="pt"><b>d</b> <span class="fr"><span>10 + 6</span><span>60</span></span> × 100% = <span class="ans">26.7%</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">7</div><div class="body">
+  <p class="w">Jai: 12, 15, 18, 19, 21, 22, 22, 24, 25, 27, 29 &nbsp;|&nbsp; Ben: 5, 9, 14, 17, 20, 26, 28, 31, 33, 36, 38 (11 games each)</p>
+  <div class="pt"><b>a</b> Jai: 6th score = <span class="ans">22</span> &nbsp;&nbsp; Ben: 6th score = <span class="ans">26</span></div>
+  <div class="pt"><b>b</b> Jai: 29 − 12 = <span class="ans">17</span> &nbsp;&nbsp; Ben: 38 − 5 = <span class="ans">33</span></div>
+  <div class="pt"><b>c</b> <span class="ans">Ben</span>, because his median is higher (26 compared with 22).</div>
+  <div class="pt"><b>d</b> <span class="ans">Jai</span>, because his range is much smaller (17 compared with 33).</div>
+</div></div>
+
+<h2>Section 2: Surface area and volume</h2>
+
+<div class="q"><div class="n">8</div><div class="body">
+  <div class="grid3">
+    <div class="pt"><b>a</b> 5.3 × 1000 = <span class="ans">5300 L</span></div>
+    <div class="pt"><b>b</b> 1250 ÷ 1000 = <span class="ans">1.25 L</span></div>
+    <div class="pt"><b>c</b> 3.75 × 1000 = <span class="ans">3750 mL</span></div>
+    <div class="pt"><b>d</b> 640 ÷ 1000 = <span class="ans">0.64 kL</span></div>
+    <div class="pt"><b>e</b> 7500 ÷ 1000 = <span class="ans">7.5 L</span></div>
+    <div class="pt"><b>f</b> 0.8 × 1000 = <span class="ans">800 L</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">9</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> (i) <span class="ans">1 cm</span> &nbsp; (ii) <span class="ans">0.5 cm</span></div>
+    <div class="pt"><b>b</b> (i) <span class="ans">50 mL</span> &nbsp; (ii) <span class="ans">25 mL</span></div>
+    <div class="pt"><b>c</b> (i) <span class="ans">0.5 kg</span> &nbsp; (ii) <span class="ans">0.25 kg</span></div>
+    <div class="pt"><b>d</b> (i) <span class="ans">10 km/h</span> &nbsp; (ii) <span class="ans">5 km/h</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">10</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> Parallelogram: 18 × 9.5 = <span class="ans">171 cm²</span> <span class="w">(not the 11 cm side)</span></div>
+    <div class="pt"><b>b</b> Kite: ½ × 14 × 20 = <span class="ans">140 m²</span></div>
+    <div class="pt"><b>c</b> Trapezium: ½ × 8 × (6 + 13) = <span class="ans">76 m²</span></div>
+    <div class="pt"><b>d</b> Rhombus: ½ × 9 × 15 = <span class="ans">67.5 cm²</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">11</div><div class="body">
+  <div class="pt"><b>a</b> (i) 20 + 21 + 29 = <span class="ans">70 m</span> &nbsp;&nbsp; (ii) ½ × 21 × 20 = <span class="ans">210 m²</span></div>
+  <div class="pt"><b>b</b> (i) 12 + 16 + 20 = <span class="ans">48 cm</span> &nbsp;&nbsp; (ii) ½ × 16 × 12 = <span class="ans">96 cm²</span></div>
+</div></div>
+
+<div class="q"><div class="n">12</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">r</i> = 8.5 mm. &nbsp; (i) <i class="v">C</i> = 2 × π × 8.5 = 53.407… = <span class="ans">53.4 mm</span> &nbsp;&nbsp; (ii) <i class="v">A</i> = π × 8.5² = 226.980… = <span class="ans">227.0 mm²</span></div>
+  <div class="pt"><b>b</b> Diameter 9 cm, so <i class="v">r</i> = 4.5 cm. &nbsp; (i) <i class="v">C</i> = π × 9 = 28.274… = <span class="ans">28.3 cm</span> &nbsp;&nbsp; (ii) <i class="v">A</i> = π × 4.5² = 63.617… = <span class="ans">63.6 cm²</span></div>
+</div></div>
+
+<div class="q"><div class="n">13</div><div class="body">
+  <p class="w">Check the sides: 6 + 4 = 10 ✓ and 5 + 7 = 12 ✓</p>
+  <div class="pt"><b>a</b> <i class="v">P</i> = 5 + 6 + 7 + 4 + 12 + 10 = <span class="ans">44 m</span> of skirting board</div>
+  <div class="pt"><b>b</b> Full rectangle − missing corner = 12 × 10 − 7 × 6 = 120 − 42 = <span class="ans">78 m²</span></div>
+  <div class="pt"><b>c</b> 78 × $45.90 = <span class="ans">$3580.20</span></div>
+</div></div>
+
+<div class="q"><div class="n">14</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">V</i> = π × 1.5² × 2 = 4.5π = 14.137… = <span class="ans">14.14 m³</span></div>
+  <div class="pt"><b>b</b> 1 m³ = 1000 L: 14.137… × 1000 = 14 137.1… = <span class="ans">14 137 L</span> <span class="w">(use the unrounded volume)</span></div>
+  <div class="pt"><b>c</b> <i class="v">SA</i> = 2π(1.5²) + 2π(1.5)(2) = 4.5π + 6π = 10.5π = 32.986… = <span class="ans">33.0 m²</span></div>
+</div></div>
+
+<div class="q"><div class="n">15</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">V</i> = 45 × 25 × 16 = <span class="ans">18 000 cm³</span></div>
+  <div class="pt"><b>b</b> 18 000 cm³ = 18 000 mL = <span class="ans">18 L</span></div>
+  <div class="pt"><b>c</b> <i class="v">SA</i> = 2(45 × 25 + 45 × 16 + 25 × 16) = 2(1125 + 720 + 400) = 2 × 2245 = <span class="ans">4490 cm²</span></div>
+</div></div>
+
+<h2>Section 3: Mixed topics</h2>
+
+<div class="q"><div class="n">16</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> 4(5) − 2 = <span class="ans">18</span></div>
+    <div class="pt"><b>b</b> 5² + 3(2) = 25 + 6 = <span class="ans">31</span></div>
+    <div class="pt"><b>c</b> 2 × 2² = 2 × 4 = <span class="ans">8</span></div>
+    <div class="pt"><b>d</b> (5 + 2)² = 7² = <span class="ans">49</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">17</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">x</i> is the hypotenuse: <i class="v">x</i>² = 4.8² + 11.5² = 23.04 + 132.25 = 155.29, so <i class="v">x</i> = √155.29 = 12.46… = <span class="ans">12.5 m</span></div>
+  <div class="pt"><b>b</b> 17.6 cm is the hypotenuse: <i class="v">y</i>² = 17.6² − 10.3² = 309.76 − 106.09 = 203.67, so <i class="v">y</i> = √203.67 = 14.27… = <span class="ans">14.3 cm</span></div>
+</div></div>
+
+<div class="q"><div class="n">18</div><div class="body">
+  <div class="pt"><b>a</b> Discount = 25% × $120 = $30. Sale price = <span class="ans">$90</span></div>
+  <div class="pt"><b>b</b> Saved = 12% × $360 = <span class="ans">$43.20</span>. Sale price = $360 − $43.20 = <span class="ans">$316.80</span></div>
+  <div class="pt"><b>c</b> Profit = $378 − $280 = <span class="ans">$98</span>. % profit = <span class="fr"><span>98</span><span>280</span></span> × 100% = <span class="ans">35%</span></div>
+</div></div>
+
+<div class="q"><div class="n">19</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> (4 × 7)<i class="v">k</i><sup>5+2</sup> = <span class="ans">28<i class="v">k</i>⁷</span></div>
+    <div class="pt"><b>b</b> (18 ÷ 3)<i class="v">w</i><sup>8−2</sup> = <span class="ans">6<i class="v">w</i>⁶</span></div>
+    <div class="pt"><b>c</b> <i class="v">p</i><sup>3×4</sup> = <span class="ans"><i class="v">p</i>¹²</span></div>
+    <div class="pt"><b>d</b> (5 × 3)<i class="v">m</i><sup>2+4</sup><i class="v">n</i><sup>3+1</sup> = <span class="ans">15<i class="v">m</i>⁶<i class="v">n</i>⁴</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">20</div><div class="body">
+  <div class="grid3">
+    <div class="pt"><b>a</b> 92 040 ÷ 52 = <span class="ans">$1770</span></div>
+    <div class="pt"><b>b</b> 92 040 ÷ 26 = <span class="ans">$3540</span></div>
+    <div class="pt"><b>c</b> 92 040 ÷ 12 = <span class="ans">$7670</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">21</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> (8<i class="v">p</i> + 2<i class="v">p</i>) + (−3<i class="v">q</i> + 7<i class="v">q</i>) = <span class="ans">10<i class="v">p</i> + 4<i class="v">q</i></span></div>
+    <div class="pt"><b>b</b> <span class="ans">15<i class="v">ac</i></span></div>
+    <div class="pt"><b>c</b> <span class="fr"><span>24<i class="v">xy</i></span><span>8<i class="v">y</i></span></span> = <span class="ans">3<i class="v">x</i></span></div>
+    <div class="pt"><b>d</b> (4<i class="v">t</i> − <i class="v">t</i>) + (9 − 3) = <span class="ans">3<i class="v">t</i> + 6</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">22</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> <span class="ans">12<i class="v">m</i> + 30</span></div>
+    <div class="pt"><b>b</b> <span class="ans">−12<i class="v">k</i> + 21</span></div>
+    <div class="pt"><b>c</b> 3<i class="v">a</i> + 12 + 2<i class="v">a</i> − 10 = <span class="ans">5<i class="v">a</i> + 2</span></div>
+    <div class="pt"><b>d</b> 12<i class="v">p</i> − 8 − 2<i class="v">p</i> − 6 = <span class="ans">10<i class="v">p</i> − 14</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">23</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> HCF 3: <span class="ans">3(2<i class="v">k</i> + 7)</span></div>
+    <div class="pt"><b>b</b> HCF 7: <span class="ans">7(2<i class="v">n</i> − 5)</span></div>
+    <div class="pt"><b>c</b> HCF <i class="v">p</i>: <span class="ans"><i class="v">p</i>(<i class="v">p</i> − 9)</span></div>
+    <div class="pt"><b>d</b> HCF 5<i class="v">x</i>: <span class="ans">5<i class="v">x</i>(2<i class="v">x</i> + 3)</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">24</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">I</i> = 8600 × 0.045 × 3 = <span class="ans">$1161</span></div>
+  <div class="pt"><b>b</b> 18 months = 1.5 years. <i class="v">I</i> = 15 000 × 0.038 × 1.5 = <span class="ans">$855</span></div>
+</div></div>
+
+<div class="q"><div class="n">25</div><div class="body">
+  <div class="grid2">
+    <div class="pt"><b>a</b> 7<i class="v">x</i> = 49 → <span class="ans"><i class="v">x</i> = 7</span></div>
+    <div class="pt"><b>b</b> <i class="v">x</i> ÷ 4 = 5 → <span class="ans"><i class="v">x</i> = 20</span></div>
+    <div class="pt"><b>c</b> 4<i class="v">a</i> + 4 = 36 → 4<i class="v">a</i> = 32 → <span class="ans"><i class="v">a</i> = 8</span></div>
+    <div class="pt"><b>d</b> 6<i class="v">p</i> + 8 = 4<i class="v">p</i> + 20 → 2<i class="v">p</i> = 12 → <span class="ans"><i class="v">p</i> = 6</span></div>
+    <div class="pt"><b>e</b> 8<i class="v">n</i> − 2<i class="v">n</i> − 10 = 3<i class="v">n</i> + 11 → 6<i class="v">n</i> − 10 = 3<i class="v">n</i> + 11 → 3<i class="v">n</i> = 21 → <span class="ans"><i class="v">n</i> = 7</span></div>
+  </div>
+</div></div>
+
+<div class="q"><div class="n">26</div><div class="body">
+  <div class="pt"><b>a</b> Commission = 3.5% × $36 200 = $1267. Total = $480 + $1267 = <span class="ans">$1747</span></div>
+  <div class="pt"><b>b</b> 5% × $18 900 = 0.05 × 18 900 = <span class="ans">$945</span></div>
+</div></div>
+
+<div class="q"><div class="n">27</div><div class="body">
+  <div class="pt"><b>a</b> 38 × $24.60 = <span class="ans">$934.80</span></div>
+  <div class="pt"><b>b</b> 41 − 38 = 3 overtime hours. 3 × $24.60 × 1.5 = 3 × $36.90 = <span class="ans">$110.70</span></div>
+  <div class="pt"><b>c</b> $934.80 + $110.70 = <span class="ans">$1045.50</span></div>
+</div></div>
+
+<div class="q"><div class="n">28</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">C</i> = 4.5 + 2.3 × 12 = 4.5 + 27.6 = <span class="ans">$32.10</span></div>
+  <div class="pt"><b>b</b> 4.5 + 2.3<i class="v">d</i> = 50.5 → 2.3<i class="v">d</i> = 46 → <i class="v">d</i> = 20. The taxi travelled <span class="ans">20 km</span>.</div>
+</div></div>
+
+<div class="q"><div class="n">29</div><div class="body">
+  <div class="pt"><b>a</b> <i class="v">d</i>² = 25² − 18² = 625 − 324 = 301, so <i class="v">d</i> = √301 = 17.349… = <span class="ans">17.35 m</span></div>
+  <div class="pt"><b>b</b> Opposite = 18, hypotenuse = 25, so use sin: sin θ = <span class="fr"><span>18</span><span>25</span></span> → θ = sin⁻¹(0.72) = 46.05…° = <span class="ans">46°</span></div>
+</div></div>
+
+<p class="footer-note">Small differences in the last decimal place can come from rounding too early. Keep full calculator values until the final step.</p>
+
+</body>
+</html>
