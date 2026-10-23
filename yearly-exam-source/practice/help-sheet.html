@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Year 9 5.2 Yearly Exam Help Sheet</title>
+<style>
+  @page { size: A4; margin: 12mm 12mm 14mm; }
+  :root { --navy: #0f3a63; --kblue: #1d71b8; --pale: #e9f0f8; --line: #b9c9dc; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fff; color: #111; font-family: Caladea, Cambria, "Liberation Serif", serif; font-size: 9.6pt; line-height: 1.25; }
+  .head { display: flex; align-items: center; gap: 6mm; border-bottom: 1.2mm solid var(--kblue); padding-bottom: 3mm; margin-bottom: 3mm; }
+  .head img { height: 17mm; }
+  .head h1 { margin: 0; font: 700 19pt/1.1 "Liberation Sans", Arial, sans-serif; color: var(--navy); }
+  .head p { margin: 1mm 0 0; font: 10pt/1.3 "Liberation Sans", Arial, sans-serif; color: #333; }
+  .how { background: var(--pale); border: 0.3mm solid var(--line); padding: 2mm 3mm; margin-bottom: 3mm; font-size: 9.6pt; }
+  h2 { background: var(--navy); color: #fff; font-size: 12.5pt; margin: 3mm 0 2mm; padding: 1.6mm 3mm; break-after: avoid; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 3.5mm; }
+  .card { border: 0.3mm solid var(--line); padding: 1.6mm 2.4mm 1.8mm; break-inside: avoid; }
+  .card.wide { grid-column: 1 / -1; }
+  .card h3 { margin: 0 0 1.2mm; font-size: 10.6pt; color: var(--navy); }
+  .card h3 .code { display: inline-block; background: var(--kblue); color: #fff; border-radius: 1mm; padding: 0 1.4mm; margin-right: 1.4mm; font-size: 9.6pt; }
+  .card p { margin: 0.8mm 0; }
+  .card ul { margin: 0.6mm 0 0.6mm 4.5mm; padding: 0; }
+  .card li { margin: 0.3mm 0; }
+  .f { background: var(--pale); border-left: 1mm solid var(--kblue); padding: 1mm 2mm; margin: 1.2mm 0; }
+  .eg { border-left: 1mm solid #9bb5d1; padding: 0.6mm 2mm; margin: 1.2mm 0; color: #222; }
+  .eg b.l { color: var(--kblue); }
+  .warn { color: #8a3b00; }
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: 0.9em; line-height: 1.05; margin: 0 0.5mm; }
+  .fr > span:first-child { border-bottom: 0.25mm solid currentColor; padding: 0 0.6mm; }
+  i { font-style: italic; }
+  table.t { border-collapse: collapse; margin: 1mm 0; font-size: 9.4pt; width: 100%; }
+  table.t td, table.t th { border: 0.25mm solid var(--line); padding: 0.6mm 1.6mm; text-align: left; }
+  table.t th { background: var(--pale); color: var(--navy); }
+  svg text { font-family: Caladea, Cambria, "Liberation Serif", serif; }
+  .pb { break-before: page; }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <img src="../assets/kingscliff-logo.png" alt="Kingscliff High School">
+  <div>
+    <h1>Year 9 5.2 Yearly Exam: Help Sheet</h1>
+    <p>Key ideas, formulas and worked examples for every skill in the practice exams</p>
+  </div>
+</div>
+
+<div class="how"><b>How to use it:</b> keep this sheet beside you while you do a practice exam. When you mark your work, the answers page tells you which topic to read (for example <b>D4</b> or <b>M6</b>) for any question you got wrong. Read that card, then try the question again. Remember: in the real exam each question gives you the formula you need as a "Note".</div>
+
+<!-- =============================== DATA =============================== -->
+<h2>Section 1: Data</h2>
+<div class="grid">
+  <div class="card">
+    <h3><span class="code">D1</span>Types of data</h3>
+    <ul>
+      <li><b>Categorical</b>: words or groups, e.g. hair colour, favourite sport, shirt size.</li>
+      <li><b>Numerical discrete</b>: <i>counted</i>, so whole numbers, e.g. number of pets, goals, people.</li>
+      <li><b>Numerical continuous</b>: <i>measured</i>, so it can be any value, e.g. height, mass, time, temperature, volume.</li>
+    </ul>
+    <p class="warn">Tip: ask "do I count it or measure it?"</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">D2</span>Shape of a distribution</h3>
+    <ul>
+      <li><b>Symmetrical</b>: both sides look the same; most scores in the middle.</li>
+      <li><b>Positively skewed</b>: scores bunched at the <i>low</i> end, tail stretching to the <i>right</i>.</li>
+      <li><b>Negatively skewed</b>: scores bunched at the <i>high</i> end, tail stretching to the <i>left</i>.</li>
+      <li><b>Cluster</b>: where most of the scores are grouped.</li>
+    </ul>
+    <p class="warn">Tip: the skew is named after the side the tail is on.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">D3</span>Reading graphs</h3>
+    <ul>
+      <li><b>Dot plot and histogram</b>: each column's height is the <i>frequency</i> (how many). The <b>mode</b> is the score under the tallest column, not the height of that column.</li>
+      <li><b>Total</b>: add up the heights of all the columns.</li>
+      <li><b>Percentage</b> = <span class="fr"><span>part</span><span>total</span></span> × 100%</li>
+    </ul>
+    <div class="eg"><b class="l">Example:</b> columns 5, 9, 4, 2. Total = 20. The column of 5 as a percentage: 5 ÷ 20 × 100% = <b>25%</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">D4</span>Mean, median, mode and range</h3>
+    <div class="f">Mean = sum of the scores ÷ number of scores<br>Range = highest score − lowest score</div>
+    <ul>
+      <li><b>Median</b>: the middle score when the scores are <i>in order</i>. With an even number of scores, average the two middle ones.</li>
+      <li><b>Mode</b>: the score that occurs most often.</li>
+    </ul>
+    <div class="eg"><b class="l">Example:</b> 4, 7, 7, 9, 13. Mean = 40 ÷ 5 = <b>8</b>; median = <b>7</b> (3rd score); mode = <b>7</b>; range = 13 − 4 = <b>9</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">D5</span>Outliers</h3>
+    <p>An <b>outlier</b> is a score far away from all the others.</p>
+    <ul>
+      <li>It changes the <b>mean</b> the most (the mean uses every score).</li>
+      <li>The median and mode hardly change, so the <b>median</b> describes data with an outlier better.</li>
+    </ul>
+    <div class="eg"><b class="l">Example:</b> 6, 7, 7, 8, 32. Mean = 12 but median = 7. Without 32: mean 7, median 7.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">D6</span>Stem-and-leaf plots: comparing two data sets</h3>
+    <ul>
+      <li>Read each score with the key: <b>4 | 6 = 46</b>.</li>
+      <li>In a <b>back-to-back</b> plot the left side is read backwards: a left leaf of 3 on stem 5 is 53.</li>
+      <li>Which group scores higher? Compare the <b>medians</b> (or means).</li>
+      <li>Which is <b>more consistent</b>? The one with the <b>smaller range</b>: its scores are closer together.</li>
+    </ul>
+    <p class="warn">Always give the numbers in your reason: "Team A, because its range is 12, smaller than Team B's 30."</p>
+  </div>
+</div>
+
+<!-- =============================== SAV =============================== -->
+<h2 class="pb">Section 2: Surface area and volume</h2>
+<div class="grid">
+  <div class="card">
+    <h3><span class="code">M1</span>Units of capacity and volume</h3>
+    <div class="f">1 kL = 1000 L &nbsp;&nbsp; 1 L = 1000 mL<br>1 cm³ = 1 mL &nbsp;&nbsp; 1 L = 1000 cm³ &nbsp;&nbsp; 1 m³ = 1000 L</div>
+    <ul>
+      <li>Big unit → small unit: <b>× 1000</b>. Small unit → big unit: <b>÷ 1000</b>.</li>
+    </ul>
+    <div class="eg"><b class="l">Examples:</b> 3.2 kL = 3200 L; 850 mL = 0.85 L; 24 000 cm³ = 24 L.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">M2</span>Area of shapes</h3>
+    <table class="t">
+      <tr><th>Shape</th><th>Area</th></tr>
+      <tr><td>Rectangle</td><td><i>A</i> = <i>lb</i></td></tr>
+      <tr><td>Triangle</td><td><i>A</i> = ½<i>bh</i></td></tr>
+      <tr><td>Parallelogram</td><td><i>A</i> = <i>bh</i></td></tr>
+      <tr><td>Kite or rhombus</td><td><i>A</i> = ½<i>xy</i> (<i>x</i>, <i>y</i> = diagonals)</td></tr>
+    </table>
+    <p class="warn">Use the <b>perpendicular height</b> (the dashed line at right angles), not the sloping side.</p>
+    <div class="eg"><b class="l">Example:</b> triangle, base 10 cm, height 7 cm: ½ × 10 × 7 = <b>35 cm²</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">M3</span>Circles</h3>
+    <div class="f">Circumference: <i>C</i> = 2π<i>r</i> &nbsp;&nbsp; Area: <i>A</i> = π<i>r</i>²</div>
+    <ul>
+      <li>The <b>radius</b> <i>r</i> is half the diameter. If the line goes right across the circle, halve it first.</li>
+      <li>Use the π key and round only at the end.</li>
+    </ul>
+    <div class="eg"><b class="l">Example:</b> diameter 12 cm, so <i>r</i> = 6. <i>C</i> = 2 × π × 6 = <b>37.7 cm</b>; <i>A</i> = π × 6² = <b>113.1 cm²</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">M4</span>Composite shapes (L-shapes)</h3>
+    <ul>
+      <li><b>Perimeter</b>: add every outside side. Find missing sides first (opposite sides add up).</li>
+      <li><b>Area</b>: split into two rectangles and add, or take a big rectangle minus the missing corner.</li>
+      <li><b>Cost</b> = area × price per m².</li>
+    </ul>
+    <svg width="240" height="84" viewBox="0 0 240 84" aria-label="L-shape split into two rectangles">
+      <polygon points="18,74 118,74 118,44 68,44 68,14 18,14" fill="#e9f0f8" stroke="#111" stroke-width="1"/>
+      <line x1="18" y1="44" x2="68" y2="44" stroke="#1d71b8" stroke-dasharray="3 2"/>
+      <text x="68" y="83" font-size="8.5" text-anchor="middle">10 m</text>
+      <text x="15" y="47" font-size="8.5" text-anchor="end">6 m</text>
+      <text x="43" y="10" font-size="8.5" text-anchor="middle">5 m</text>
+      <text x="121" y="62" font-size="8.5">3 m</text>
+      <text x="43" y="32" font-size="9" text-anchor="middle" font-weight="700">A</text>
+      <text x="68" y="62" font-size="9" text-anchor="middle" font-weight="700">B</text>
+      <text x="138" y="30" font-size="9">A = 5 × 3 = 15 m²</text>
+      <text x="138" y="46" font-size="9">B = 10 × 3 = 30 m²</text>
+      <text x="138" y="62" font-size="9" font-weight="700">Area = 45 m²</text>
+    </svg>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">M5</span>Volume</h3>
+    <div class="f">Rectangular prism: <i>V</i> = <i>lwh</i> &nbsp;&nbsp; Cylinder: <i>V</i> = π<i>r</i>²<i>h</i><br>Any prism: <i>V</i> = area of the end × length</div>
+    <div class="eg"><b class="l">Example:</b> box 40 cm × 20 cm × 15 cm: <i>V</i> = 12 000 cm³ = <b>12 L</b>.<br>Cylinder <i>r</i> = 3 cm, <i>h</i> = 10 cm: <i>V</i> = π × 3² × 10 = <b>282.7 cm³</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">M6</span>Surface area (closed solids)</h3>
+    <ul>
+      <li><b>Box</b>: 6 faces in 3 matching pairs.<br><i>SA</i> = 2<i>lw</i> + 2<i>lh</i> + 2<i>wh</i></li>
+      <li><b>Cylinder</b>: 2 circles + the curved rectangle.<br><i>SA</i> = 2π<i>r</i>² + 2π<i>rh</i></li>
+    </ul>
+    <div class="eg"><b class="l">Example:</b> box 10 × 4 × 3 cm: 2(40) + 2(30) + 2(12) = 80 + 60 + 24 = <b>164 cm²</b>.</div>
+    <p class="warn">Don't forget to double each face: there are 6 faces, not 3.</p>
+  </div>
+</div>
+
+<!-- =============================== MIXED =============================== -->
+<h2>Section 3: Mixed Topics</h2>
+<div class="grid">
+  <div class="card">
+    <h3><span class="code">A1</span>Substitution</h3>
+    <p>Replace each letter with its number, then use BODMAS. <b>Powers come before ×.</b></p>
+    <div class="eg"><b class="l">Example:</b> if <i>a</i> = 3 and <i>b</i> = 4, then 2<i>a</i>² + <i>b</i> = 2 × 3² + 4 = 2 × 9 + 4 = <b>22</b> (not 6² + 4).</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">A2</span>Simplifying</h3>
+    <ul>
+      <li>Only <b>like terms</b> (same letters) can be added or subtracted: 5<i>a</i> + 2<i>b</i> − 3<i>a</i> + <i>b</i> = <b>2<i>a</i> + 3<i>b</i></b>.</li>
+      <li>Multiply: numbers × numbers, letters × letters: 3<i>a</i> × 4<i>b</i> = <b>12<i>ab</i></b>.</li>
+      <li>Divide: cancel numbers and letters: 20<i>xy</i> ÷ 4<i>x</i> = <b>5<i>y</i></b>.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">A3</span>Expanding brackets</h3>
+    <p>Multiply every term inside by the term outside. A <b>negative</b> outside changes every sign inside.</p>
+    <div class="eg"><b class="l">Example:</b> 3(2<i>x</i> + 1) − 2(<i>x</i> − 4)<br>= 6<i>x</i> + 3 − 2<i>x</i> + 8 = <b>4<i>x</i> + 11</b></div>
+    <p class="warn">−2 × −4 = +8.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">A4</span>Factorising</h3>
+    <p>Take out the <b>highest common factor</b> (HCF) and put the rest in brackets. Check by expanding.</p>
+    <div class="eg"><b class="l">Examples:</b> 8<i>a</i> + 12 = <b>4(2<i>a</i> + 3)</b><br><i>m</i>² − 6<i>m</i> = <b><i>m</i>(<i>m</i> − 6)</b></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">A5</span>Index laws</h3>
+    <div class="f"><i>a</i><sup><i>m</i></sup> × <i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>+<i>n</i></sup> &nbsp;&nbsp; <i>a</i><sup><i>m</i></sup> ÷ <i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>−<i>n</i></sup> &nbsp;&nbsp; (<i>a</i><sup><i>m</i></sup>)<sup><i>n</i></sup> = <i>a</i><sup><i>mn</i></sup></div>
+    <div class="eg"><b class="l">Example:</b> 3<i>y</i>⁴ × 5<i>y</i>² = 15<i>y</i>⁶ (multiply the numbers, <b>add</b> the indices).</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">E1</span>Solving equations</h3>
+    <ol style="margin:0.6mm 0 0.6mm 4.5mm;padding:0">
+      <li>Expand any brackets.</li>
+      <li>Collect the pronumerals on one side (take away the smaller one).</li>
+      <li>Undo + and −, then × and ÷. Do the same to both sides.</li>
+    </ol>
+    <div class="eg"><b class="l">Example:</b> 5<i>x</i> − 2(<i>x</i> + 3) = <i>x</i> + 8<br>5<i>x</i> − 2<i>x</i> − 6 = <i>x</i> + 8 → 3<i>x</i> − 6 = <i>x</i> + 8<br>2<i>x</i> = 14 → <b><i>x</i> = 7</b>. Check: 35 − 20 = 15 ✓</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">E2</span>Formulas and word problems</h3>
+    <p>In <i>C</i> = 40 + 25<i>h</i>, 40 is the fixed fee and 25 is the cost per hour.</p>
+    <ul>
+      <li><b>Find <i>C</i></b>: substitute. For <i>h</i> = 3: <i>C</i> = 40 + 75 = <b>$115</b>.</li>
+      <li><b>Given <i>C</i></b>: write an equation and solve. 40 + 25<i>h</i> = 190 → 25<i>h</i> = 150 → <b><i>h</i> = 6</b>.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">F1</span>Percentages, discount and profit</h3>
+    <div class="f">Discount = % × marked price; &nbsp; sale price = marked price − discount<br>Profit = selling price − cost price<br>% profit = <span class="fr"><span>profit</span><span>cost price</span></span> × 100%</div>
+    <div class="eg"><b class="l">Example:</b> $80 less 15%: discount $12, sale price <b>$68</b>.<br>Bought $200, sold $260: profit $60; 60 ÷ 200 × 100% = <b>30%</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">F2</span>Simple interest</h3>
+    <div class="f"><i>I</i> = <i>Prn</i> &nbsp; (<i>P</i> = amount invested, <i>r</i> = rate as a decimal, <i>n</i> = years)</div>
+    <div class="eg"><b class="l">Example:</b> $3000 at 5% p.a. for 4 years: <i>I</i> = 3000 × 0.05 × 4 = <b>$600</b>.</div>
+    <p class="warn">Change the % to a decimal: 3.5% = 0.035.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">F3</span>Earning money</h3>
+    <div class="f">1 year = 52 weeks = 26 fortnights = 12 months</div>
+    <ul>
+      <li><b>Salary</b>: weekly = ÷ 52, fortnightly = ÷ 26, monthly = ÷ 12.</li>
+      <li><b>Overtime</b>: time-and-a-half = rate × 1.5 (double time = rate × 2). The first 38 hours are at the normal rate.</li>
+      <li><b>Commission</b> = % × sales. With a <b>retainer</b>, add the fixed amount.</li>
+    </ul>
+    <div class="eg"><b class="l">Example:</b> $30/h, 41 hours: 38 × 30 = $1140; 3 × 30 × 1.5 = $135; total <b>$1275</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">T1</span>Pythagoras’ theorem</h3>
+    <div class="f"><i>c</i>² = <i>a</i>² + <i>b</i>² &nbsp; (<i>c</i> = hypotenuse, the longest side, opposite the right angle)</div>
+    <ul>
+      <li>Hypotenuse: <b>add</b> the squares, then √.</li>
+      <li>Shorter side (e.g. a ladder's height up a wall): <b>subtract</b> the squares, then √.</li>
+    </ul>
+    <div class="eg"><b class="l">Example:</b> ladder 5 m, foot 1.5 m from the wall: <i>h</i>² = 5² − 1.5² = 22.75, so <i>h</i> = <b>4.77 m</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="code">T2</span>Trigonometry: finding an angle</h3>
+    <div class="f">sin <i>θ</i> = <span class="fr"><span>opp</span><span>hyp</span></span> &nbsp; cos <i>θ</i> = <span class="fr"><span>adj</span><span>hyp</span></span> &nbsp; tan <i>θ</i> = <span class="fr"><span>opp</span><span>adj</span></span> &nbsp; (SOH CAH TOA)</div>
+    <ol style="margin:0.6mm 0 0.6mm 4.5mm;padding:0">
+      <li>Label the sides from the angle: opposite, adjacent, hypotenuse.</li>
+      <li>Pick the ratio that uses the two sides you know.</li>
+      <li>Use the inverse key: <b>SHIFT cos</b>.</li>
+    </ol>
+    <div class="eg"><b class="l">Example:</b> adj 1.5 m, hyp 5 m: cos <i>θ</i> = 1.5 ÷ 5 → <i>θ</i> = cos⁻¹(0.3) = <b>73°</b>.</div>
+    <p class="warn">Check the calculator shows D (degrees).</p>
+  </div>
+</div>
+
+</body>
+</html>
