@@ -12,3 +12,11 @@ Writes to `../Year 10 yearly test revision/`:
 
 All questions, the help sheet and the answers are in `build.js`; answers are calculated from each question's numbers.
 Each question carries a "Help sheet A4" style tag that matches a box in the help sheet. Uses the global Playwright.
+
+## Two-page revision worksheet
+
+    node worksheet.js [--shots <dir>]
+
+Writes `Year10-Yearly-Test-2026-Revision-Worksheet.pdf` (one textbook-style question for every skill in the test,
+answered in workbooks; the build fails if it is not exactly 2 pages) and `...-Revision-Worksheet-Answers.pdf`.
+Shared number formatting and figures are in `lib.js`.
