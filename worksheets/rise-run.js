@@ -1,6 +1,7 @@
 // Rise and run of an interval: a 2-page practice worksheet (Year 9 5.2, Chapter 11, before the length-of-an-interval
 // lesson), in the Chapter 10 booklet's style. 12 intervals on grids, page 1 in the first quadrant, page 2 crossing the
-// axes. Rise and run are lengths (always positive). No answers printed.
+// axes. Students read the coordinates and use run = x2 − x1 and rise = y2 − y1 (the first letter is (x1, y1), always the
+// left-hand point, so the run is positive and a downhill interval has a negative rise). No answers printed.
 // Build: node worksheets/rise-run.js  →  worksheets/Year9-Rise-and-Run-Worksheet.pdf
 const fs = require('fs');
 const path = require('path');
@@ -45,8 +46,8 @@ function grid({ x0, x1, y0, y1, s, p, q, a, b, tri = false }) {
 }
 
 // Page 1: first quadrant, uphill then downhill. Page 2: the intervals cross one axis, then both.
-const P1 = { x0: 0, x1: 10, y0: 0, y1: 8, s: 4.2 };
-const P2 = { x0: -6, x1: 6, y0: -5, y1: 5, s: 5.1 };
+const P1 = { x0: 0, x1: 10, y0: 0, y1: 8, s: 3.45 };
+const P2 = { x0: -6, x1: 6, y0: -5, y1: 5, s: 4.65 };
 const Q = [
   [P1, [1, 1], [4, 5]], [P1, [2, 1], [8, 4]], [P1, [1, 2], [7, 7]],
   [P1, [1, 6], [5, 1]], [P1, [2, 7], [9, 3]], [P1, [1, 7], [9, 1]],
@@ -57,7 +58,7 @@ const LET = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 const card = (i) => {
   const [G, p, q] = Q[i];
   return `<div class="card"><div class="num">${i + 1}</div><div class="fig">${grid({ ...G, p, q, a: LET[2 * i], b: LET[2 * i + 1] })}</div>
-    <div class="ans"><span>Rise =</span><i></i><span>Run =</span><i></i></div></div>`;
+    <div class="ans"><span>Run = <i>x</i><sub>2</sub> − <i>x</i><sub>1</sub> =</span><i></i><span>Rise = <i>y</i><sub>2</sub> − <i>y</i><sub>1</sub> =</span><i></i></div></div>`;
 };
 const band = `<div class="band"><img src="file://${A}/kingscliff-logo.png"><div><div class="kick">Mathematics · Year 9 · Chapter 11</div>
   <div class="title">Rise and run of an interval</div></div><div class="tag">Practice</div></div>`;
@@ -96,7 +97,7 @@ body { font-family: Lexend, sans-serif; color: ${INK}; font-size: 9.5pt; line-he
 .card { position: relative; min-height: 0; background: #fff; border: 0.3mm solid #b9c6e6; border-radius: 2mm; padding: 2.5mm; display: flex; flex-direction: column; }
 .num { position: absolute; top: 2.5mm; left: 2.5mm; width: 6.5mm; height: 6.5mm; border-radius: 50%; border: 0.4mm solid ${BLUE}; color: ${BLUE}; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 9pt; }
 .fig { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
-.ans { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 2mm; align-items: end; font-weight: 600; font-size: 9pt; margin-top: 2mm; }
+.ans { display: grid; grid-template-columns: auto 1fr; gap: 2.5mm 2mm; align-items: end; font-weight: 600; font-size: 9pt; margin-top: 2mm; }
 .ans i { border-bottom: 0.3mm solid #8f9bb8; height: 5mm; }
 svg text { font-family: Lexend, sans-serif; }
 .n { font-size: 2.3px; fill: #555; paint-order: stroke; stroke: #fff; stroke-width: 0.6px; }
@@ -108,20 +109,20 @@ svg text { font-family: Lexend, sans-serif; }
 </style></head><body>
 <div class="page">${band}<div class="content">
   <div class="name"><span>Name</span><i></i><span>Date</span><i style="flex:0.4"></i></div>
-  <div class="box we">${grid({ ...P1, s: 4.1, p: [2, 2], q: [6, 5], a: 'P', b: 'Q', tri: true })}
-    <div class="steps"><span class="chip" style="background:#3d3b3c">EXAMPLE</span><span class="head">Find the rise and run of the interval PQ.</span>
-      <ol><li>Draw a right-angled triangle with the interval as its longest side.</li>
-      <li><b>Run:</b> count the squares <b>across</b> from one end to the other.</li>
-      <li><b>Rise:</b> count the squares <b>up or down</b> from one end to the other.</li>
-      <li>Rise and run are lengths, so they are <b>never negative</b>.</li></ol>
-      <div class="res">Rise = 3 units, run = 4 units</div></div></div>
-  <div class="box you"><div><span class="chip" style="background:${BLUE}">YOU DO</span><span class="head">Questions 1–6: draw the triangle, then find the rise and run of each interval.</span></div>
-    <div class="rem"><b>REMEMBER</b>Count squares across for the run, and up or down for the rise.</div>
+  <div class="box we">${grid({ ...P1, s: 3.6, p: [2, 2], q: [6, 5], a: 'P', b: 'Q', tri: true })}
+    <div class="steps"><span class="chip" style="background:#3d3b3c">EXAMPLE</span><span class="head">Find the run and rise of the interval PQ.</span>
+      <ol><li>Read the coordinates: P(2, 2) is (<i>x</i><sub>1</sub>, <i>y</i><sub>1</sub>) and Q(6, 5) is (<i>x</i><sub>2</sub>, <i>y</i><sub>2</sub>).</li>
+      <li><b>Run</b> = <i>x</i><sub>2</sub> − <i>x</i><sub>1</sub> = 6 − 2 = 4</li>
+      <li><b>Rise</b> = <i>y</i><sub>2</sub> − <i>y</i><sub>1</sub> = 5 − 2 = 3</li>
+      <li>Check on the grid: 4 squares across and 3 squares up.</li></ol>
+      <div class="res">Run = 4 units, rise = 3 units</div></div></div>
+  <div class="box you"><div><span class="chip" style="background:${BLUE}">YOU DO</span><span class="head">Questions 1–6: the first letter is (<i>x</i><sub>1</sub>, <i>y</i><sub>1</sub>). Find the run and rise of each interval.</span></div>
+    <div class="rem"><b>REMEMBER</b>Run = <i>x</i><sub>2</sub> − <i>x</i><sub>1</sub> · Rise = <i>y</i><sub>2</sub> − <i>y</i><sub>1</sub> · If the interval goes down, the rise is negative.</div>
     <div class="cards">${[0, 1, 2, 3, 4, 5].map(card).join('')}</div></div>
 </div>${foot(1)}</div>
 <div class="page">${band}<div class="content">
-  <div class="box you"><div><span class="chip" style="background:${BLUE}">YOU DO</span><span class="head">Questions 7–12: these intervals cross the axes. Find the rise and run of each interval.</span></div>
-    <div class="rem"><b>REMEMBER</b>Count the squares, not the numbers on the axes. A rise or run is never negative.</div>
+  <div class="box you"><div><span class="chip" style="background:${BLUE}">YOU DO</span><span class="head">Questions 7–12: these intervals cross the axes. The first letter is (<i>x</i><sub>1</sub>, <i>y</i><sub>1</sub>). Find the run and rise.</span></div>
+    <div class="rem"><b>REMEMBER</b>Put negative numbers in brackets: 2 − (−4) = 2 + 4 = 6.</div>
     <div class="cards">${[6, 7, 8, 9, 10, 11].map(card).join('')}</div></div>
 </div>${foot(2)}</div>
 </body></html>`;
